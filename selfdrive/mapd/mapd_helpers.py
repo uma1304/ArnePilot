@@ -19,7 +19,7 @@ DEFAULT_SPEEDS_BY_REGION = {}
 with open(DEFAULT_SPEEDS_BY_REGION_JSON_FILE, "rb") as f:
   DEFAULT_SPEEDS_BY_REGION = json.loads(f.read())
 
-def circle_through_points(p1, p2, p3, force):
+def circle_through_points(p1, p2, p3, force=False):
   """Fits a circle through three points
   Formulas from: http://www.ambrsoft.com/trigocalc/circle3d.htm"""
   x1, y1, _ = p1
