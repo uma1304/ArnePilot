@@ -1,4 +1,3 @@
-import os
 import math
 from common.realtime import sec_since_boot
 from selfdrive.swaglog import cloudlog
@@ -6,8 +5,10 @@ from selfdrive.controls.lib.lateral_mpc import libmpc_py
 from selfdrive.controls.lib.drive_helpers import MPC_COST_LAT
 from selfdrive.controls.lib.lane_planner import LanePlanner
 import selfdrive.messaging as messaging
+import selfdrive.messaging_arne as messaging_arne
+from common.travis_checker import travis
+#from selfdrive.controls.lib.curvature_learner import CurvatureLearner
 
-LOG_MPC = os.environ.get('LOG_MPC', False)
 
 
 def calc_states_after_delay(states, v_ego, steer_angle, curvature_factor, steer_ratio, delay):
@@ -21,10 +22,13 @@ class PathPlanner():
     self.LP = LanePlanner()
 
     self.last_cloudlog_t = 0
-
+    if not travis:
+      self.arne_pm = messaging_arne.PubMaster('latControl')
     self.setup_mpc(CP.steerRateCost)
     self.solution_invalid_cnt = 0
     self.path_offset_i = 0.0
+    #self.frame = 0
+    #self.curvature_offset = CurvatureLearner(debug=False)
 
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
@@ -63,6 +67,12 @@ class PathPlanner():
     #   self.LP.d_poly[3] += self.path_offset_i
     # else:
     #   self.path_offset_i = 0.0
+    
+    #if active:
+    #  curvfac = self.curvature_offset.update(angle_steers - angle_offset, self.LP.d_poly, v_ego)
+    #else:
+    #  curvfac = 0.
+    #curvature_factor = VM.curvature_factor(v_ego) + curvfac
 
     # account for actuation delay
     self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, CP.steerActuatorDelay)
@@ -121,12 +131,17 @@ class PathPlanner():
 
     pm.send('pathPlan', plan_send)
 
-    if LOG_MPC:
-      dat = messaging.new_message()
-      dat.init('liveMpc')
-      dat.liveMpc.x = list(self.mpc_solution[0].x)
-      dat.liveMpc.y = list(self.mpc_solution[0].y)
-      dat.liveMpc.psi = list(self.mpc_solution[0].psi)
-      dat.liveMpc.delta = list(self.mpc_solution[0].delta)
-      dat.liveMpc.cost = self.mpc_solution[0].cost
-      pm.send('liveMpc', dat)
+    dat = messaging.new_message()
+    dat.init('liveMpc')
+    dat.liveMpc.x = list(self.mpc_solution[0].x)
+    dat.liveMpc.y = list(self.mpc_solution[0].y)
+    dat.liveMpc.psi = list(self.mpc_solution[0].psi)
+    dat.liveMpc.delta = list(self.mpc_solution[0].delta)
+    dat.liveMpc.cost = self.mpc_solution[0].cost
+    pm.send('liveMpc', dat)
+
+    msg = messaging_arne.new_message()
+    msg.init('latControl')
+    msg.latControl.anglelater = math.degrees(list(self.mpc_solution[0].delta)[-1])
+    if not travis:
+      self.arne_pm.send('latControl', msg)

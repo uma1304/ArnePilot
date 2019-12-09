@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-from cereal import car
+from cereal import car, arne182
 from selfdrive.config import Conversions as CV
-from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event
+from selfdrive.controls.lib.drive_helpers import EventTypes as ET, create_event, create_event_arne
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.chrysler.carstate import CarState, get_can_parser, get_camera_parser
 from selfdrive.car.chrysler.values import ECU, ECU_FINGERPRINT, CAR, FINGERPRINTS
@@ -59,7 +59,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.1
     ret.steerRateCost = 0.7
 
-    if candidate in (CAR.JEEP_CHEROKEE, CAR.JEEP_CHEROKEE_2019):
+    if candidate in (CAR.JEEP_CHEROKEE_2017, CAR.JEEP_CHEROKEE_2018, CAR.JEEP_CHEROKEE_2019):
       ret.wheelbase = 2.91  # in meters
       ret.steerRatio = 12.7
       ret.steerActuatorDelay = 0.2  # in seconds
@@ -119,6 +119,7 @@ class CarInterface(CarInterfaceBase):
 
     # create message
     ret = car.CarState.new_message()
+    ret_arne182 = arne182.CarStateArne182.new_message()
 
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
 
@@ -185,14 +186,20 @@ class CarInterface(CarInterfaceBase):
     ret.genericToggle = self.CS.generic_toggle
     #ret.lkasCounter = self.CS.lkas_counter
     #ret.lkasCarModel = self.CS.lkas_car_model
-
+    
+    if ret.cruiseState.enabled and not self.cruise_enabled_prev:
+      disengage_event = True
+    else:
+      disengage_event = False
+      
     # events
     events = []
+    eventsArne182 = []
     if not (ret.gearShifter in (GearShifter.drive, GearShifter.low)):
       events.append(create_event('wrongGear', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
-    if ret.doorOpen:
+    if ret.doorOpen and disengage_event:
       events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
-    if ret.seatbeltUnlatched:
+    if ret.seatbeltUnlatched and disengage_event:
       events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if self.CS.esp_disabled:
       events.append(create_event('espDisabled', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
@@ -210,19 +217,20 @@ class CarInterface(CarInterfaceBase):
 
     # disable on gas pedal and speed isn't zero. Gas pedal is used to resume ACC
     # from a 3+ second stop.
-    if (ret.gasPressed and (not self.gas_pressed_prev) and ret.vEgo > 2.0):
-      events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
+    #if (ret.gasPressed and (not self.gas_pressed_prev) and ret.vEgo > 2.0):
+    #  events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
     if self.low_speed_alert:
       events.append(create_event('belowSteerSpeed', [ET.WARNING]))
 
     ret.events = events
+    ret_arne182.events = eventsArne182
 
     self.gas_pressed_prev = ret.gasPressed
     self.brake_pressed_prev = ret.brakePressed
     self.cruise_enabled_prev = ret.cruiseState.enabled
 
-    return ret.as_reader()
+    return ret.as_reader(), ret_arne182.as_reader()
 
   # pass in a car.CarControl
   # to be called @ 100hz

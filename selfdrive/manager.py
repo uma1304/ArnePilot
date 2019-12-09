@@ -46,6 +46,11 @@ def unblock_stdout():
 if __name__ == "__main__":
   unblock_stdout()
 
+if not (os.system("python3 -m pip list | grep 'scipy' ") == 0):
+  os.system("cd /data/openpilot/installer/scipy_installer/ && ./scipy_installer")
+if not (os.system("python3 -m pip list | grep 'cffi' ") == 0):
+  os.system("cd /data/openpilot/installer/scipy_installer/ && ./scipy_installer")
+
 import glob
 import shutil
 import hashlib
@@ -61,6 +66,7 @@ ThermalStatus = cereal.log.ThermalData.ThermalStatus
 
 from selfdrive.swaglog import cloudlog
 import selfdrive.messaging as messaging
+import selfdrive.messaging_arne as messaging_arne  # to compile
 from selfdrive.registration import register
 from selfdrive.version import version, dirty
 import selfdrive.crash as crash
@@ -90,6 +96,8 @@ managed_processes = {
   "sensord": ("selfdrive/sensord", ["./start_sensord.py"]),
   "gpsd": ("selfdrive/sensord", ["./start_gpsd.py"]),
   "updated": "selfdrive.updated",
+  "mapd": ("selfdrive/mapd", ["./mapd.py"]),
+  #"traffic": ("selfdrive/traffic", ["./traffic.py"]),
 }
 daemon_processes = {
   "manage_athenad": ("selfdrive.athena.manage_athenad", "AthenadPid"),
@@ -132,6 +140,8 @@ car_started_processes = [
   'ubloxd',
   'gpsd',
   'deleter',
+  'mapd',
+  #'traffic',
 ]
 
 def register_managed_process(name, desc, car_started=False):
@@ -223,9 +233,10 @@ def prepare_managed_process(p):
       subprocess.check_call(["make", "-j4"], cwd=os.path.join(BASEDIR, proc[0]))
     except subprocess.CalledProcessError:
       # make clean if the build failed
-      cloudlog.warning("building %s failed, make clean" % (proc, ))
-      subprocess.check_call(["make", "clean"], cwd=os.path.join(BASEDIR, proc[0]))
-      subprocess.check_call(["make", "-j4"], cwd=os.path.join(BASEDIR, proc[0]))
+      if proc[0] != 'selfdrive/mapd':
+        cloudlog.warning("building %s failed, make clean" % (proc, ))
+        subprocess.check_call(["make", "clean"], cwd=os.path.join(BASEDIR, proc[0]))
+        subprocess.check_call(["make", "-j4"], cwd=os.path.join(BASEDIR, proc[0]))
 
 def kill_managed_process(name):
   if name not in running or name not in managed_processes:
@@ -323,7 +334,7 @@ def system(cmd):
 def manager_thread():
   # now loop
   thermal_sock = messaging.sub_sock('thermal')
-
+  gps_sock = messaging.sub_sock('gpsLocation', conflate=True)
   cloudlog.info("manager start")
   cloudlog.info({"environ": os.environ})
 
@@ -351,8 +362,13 @@ def manager_thread():
   logger_dead = False
 
   while 1:
+    gps = messaging.recv_one_or_none(gps_sock)
     msg = messaging.recv_sock(thermal_sock, wait=True)
-
+    if gps:
+      if 47.3024876979 < gps.gpsLocation.latitude < 54.983104153 and 5.98865807458 < gps.gpsLocation.longitude < 15.0169958839:
+        logger_dead = True
+      else:
+        logger_dead = False
     # uploader is gated based on the phone temperature
     if msg.thermal.thermalStatus >= ThermalStatus.yellow:
       kill_managed_process("uploader")

@@ -5,16 +5,16 @@ import libpandasafety_py  # pylint: disable=import-error
 from panda import Panda
 
 MAX_RATE_UP = 10
-MAX_RATE_DOWN = 25
+MAX_RATE_DOWN = 44
 MAX_TORQUE = 1500
 
-MAX_ACCEL = 1500
-MIN_ACCEL = -3000
+MAX_ACCEL = 4000
+MIN_ACCEL = -8000
 
 MAX_RT_DELTA = 375
 RT_INTERVAL = 250000
 
-MAX_TORQUE_ERROR = 350
+MAX_TORQUE_ERROR = 500
 
 INTERCEPTOR_THRESHOLD = 475
 

@@ -20,6 +20,9 @@ const int GM_MAX_REGEN = 1404;
 const int GM_MAX_BRAKE = 350;
 
 int gm_brake_prev = 0;
+int brake_pressed = 0;
+int regen_pressed = 0;
+int gas_pressed = 0;
 int gm_gas_prev = 0;
 bool gm_moving = false;
 // silence everything if stock car control ECUs are still online
@@ -81,7 +84,7 @@ static void gm_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       brake = 0;
     }
     if (brake && (!gm_brake_prev || gm_moving)) {
-       controls_allowed = 0;
+       brake_pressed = 1;
     }
     gm_brake_prev = brake;
   }
@@ -90,7 +93,7 @@ static void gm_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   if (addr == 417) {
     int gas = GET_BYTE(to_push, 6);
     if (gas && !gm_gas_prev && long_controls_allowed) {
-      controls_allowed = 0;
+      gas_pressed = 1;
     }
     gm_gas_prev = gas;
   }
@@ -99,7 +102,7 @@ static void gm_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   if (addr == 189) {
     bool regen = GET_BYTE(to_push, 0) & 0x20;
     if (regen) {
-      controls_allowed = 0;
+      regen_pressed = 1;
     }
   }
 }
@@ -147,7 +150,7 @@ static int gm_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     bool violation = 0;
     desired_torque = to_signed(desired_torque, 11);
 
-    if (current_controls_allowed) {
+    if (controls_allowed) {
 
       // *** global torque limit check ***
       violation |= max_limit_check(desired_torque, GM_MAX_STEER, -GM_MAX_STEER);
@@ -172,7 +175,7 @@ static int gm_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     }
 
     // no torque if controls is not allowed
-    if (!current_controls_allowed && (desired_torque != 0)) {
+    if (!controls_allowed && (desired_torque != 0)) {
       violation = 1;
     }
 

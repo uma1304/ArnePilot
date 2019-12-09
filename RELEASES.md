@@ -11,6 +11,11 @@ Version 0.6.6 (2019-11-05)
  * Fix bug preventing EON from terminating processes after a drive
  * Remove support for Toyota giraffe without the 120Ohm resistor
 
+Version 0.6.5.1 (2019-10-17)
+========================
+ * Enable auto updater, every 30 minutes with auto reboot, can be disabled in multiple ways of needed
+ * FAST Braking due to acceleration in corners based on steering angle now and later predicted from model
+
 Version 0.6.5 (2019-10-07)
 ========================
  * NEOS update: upgrade to Python3 and new installer!
