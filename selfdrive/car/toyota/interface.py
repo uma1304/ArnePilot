@@ -345,6 +345,7 @@ class CarInterface(CarInterfaceBase):
 
     # cruise state
     if not self.cruise_enabled_prev:
+      self.waiting = False
       ret.cruiseState.enabled = self.CS.pcm_acc_active
     else:
       if self.keep_openpilot_engaged:
@@ -352,6 +353,7 @@ class CarInterface(CarInterfaceBase):
       if not self.CS.pcm_acc_active:
         eventsArne182.append(create_event_arne('longControlDisabled', [ET.WARNING]))
         ret.brakePressed = True
+        self.waiting = False
     if self.CS.v_ego < 1 or not self.keep_openpilot_engaged:
       ret.cruiseState.enabled = self.CS.pcm_acc_active
     ret.cruiseState.speed = self.CS.v_cruise_pcm * CV.KPH_TO_MS
@@ -397,7 +399,10 @@ class CarInterface(CarInterfaceBase):
     if self.cp_cam.can_invalid_cnt >= 100 and self.CP.enableCamera:
       events.append(create_event('invalidGiraffeToyota', [ET.PERMANENT, ET.NO_ENTRY]))
     if not ret.gearShifter == GearShifter.drive and self.CP.enableDsu:
-      events.append(create_event('wrongGear', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
+      if ret.vEgo < 5:
+        eventsArne182.append(create_event_arne('wrongGearArne', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
+      else:
+        events.append(create_event('wrongGear', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if ret.doorOpen and disengage_event:
       events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if ret.seatbeltUnlatched and disengage_event:  # place `and disengage_event` whereever you want to not disengage openpilot if this occurs. safety issue
