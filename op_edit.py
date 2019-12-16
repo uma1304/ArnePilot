@@ -35,15 +35,19 @@ class opEdit:  # use by running `python /data/openpilot/op_edit.py`
       elif parsed == 'delete':
         if self.delete_parameter() == 'error':
           return
-      else:
+      elif parsed == 'error':
         return
 
   def parse_choice(self, choice):
     if choice.isdigit():
       choice = int(choice)
-    else:
-      print('Not an integer, exiting!')
+    elif choice == '':
+      print('Exiting...')
       return 'error', choice
+    else:
+      print('\nNot an integer!\n', flush=True)
+      time.sleep(1.5)
+      return 'retry', choice
     if choice not in range(1, len(self.params) + 3):  # three for add/delete parameter
       print('Not in range!\n', flush=True)
       time.sleep(1.5)
@@ -92,13 +96,10 @@ class opEdit:  # use by running `python /data/openpilot/op_edit.py`
     choice = input('[Y/n]: ').lower()
     if choice == 'y':
       self.op_params.put(chosen_key, new_value)
-      print('\nSaved! Anything else?')
-      choice = input('[Y/n]: ').lower()
-      if choice == 'n':
-        return
+      print('\nSaved!\n')
     else:
       print('\nNot saved!\n', flush=True)
-      time.sleep(1.5)
+    time.sleep(1.5)
 
   def parse_input(self, dat):
     try:
@@ -132,13 +133,10 @@ class opEdit:  # use by running `python /data/openpilot/op_edit.py`
     choice = input('[Y/n]: ').lower()
     if choice == 'y':
       self.op_params.delete(key)
-      print('\nDeleted! Anything else?')
-      choice = input('[Y/n]: ').lower()
-      if choice == 'n':
-        return
+      print('\nDeleted!\n')
     else:
       print('\nNot saved!\n', flush=True)
-      time.sleep(1.5)
+    time.sleep(1.5)
 
   def add_parameter(self):
     print('Type the name of your new parameter:')
@@ -168,13 +166,10 @@ class opEdit:  # use by running `python /data/openpilot/op_edit.py`
     choice = input('[Y/n]: ').lower()
     if choice == 'y':
       self.op_params.put(key, value)
-      print('\nSaved! Anything else?')
-      choice = input('[Y/n]: ').lower()
-      if choice == 'n':
-        return
+      print('\nSaved!\n')
     else:
       print('\nNot saved!\n', flush=True)
-      time.sleep(1.5)
+    time.sleep(1.5)
 
 
 opEdit()
