@@ -47,7 +47,7 @@ def can_compare(bus=0, max_msg=None, addr="127.0.0.1"):
   dd = chr(27)
   for k,v in sorted(zip(msgs.keys(), map(lambda x: binascii.hexlify(x[-1]), msgs.values()))):
     try:
-      if binascii.hexlify(msgs2.values()[list(msgs2).index(k)][-1]) != binascii.hexlify(msgs3.values()[list(msgs3).index(k)][-1]) and v == binascii.hexlify(msgs3.values()[list(msgs3).index(k)][-1]):
+      if binascii.hexlify(list(msgs2.values())[list(msgs2).index(k)][-1]) != binascii.hexlify(list(msgs3.values())[list(msgs3).index(k)][-1]) and v == binascii.hexlify(list(msgs3.values())[list(msgs3).index(k)][-1]):
         dd +="%s %s\n" % ("%04X(%4d)" % (k,k), v.decode('ascii'))
         w = binascii.hexlify(msgs2.values()[list(msgs2).index(k)][-1]).decode('ascii')
         dd +="%s %s\n" % ("%04X(%4d)" % (k,k), w.decode('ascii'))
