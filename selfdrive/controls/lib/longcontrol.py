@@ -2,6 +2,7 @@ from cereal import log
 from common.numpy_fast import clip, interp
 from selfdrive.controls.lib.pid import PIController
 import time
+from common.travis_checker import travis
 
 LongCtrlState = log.ControlsState.LongControlState
 
@@ -78,6 +79,8 @@ class LongControl():
     
   def dynamic_gas(self, v_ego, gas_interceptor, gas_button_status):
     dynamic = False
+    x = [0., 9., 55]  # default BP values
+    y = [0.2, 0.5, 0.7]
     if gas_interceptor:
       if gas_button_status == 0:
         dynamic = True
@@ -97,24 +100,24 @@ class LongControl():
       elif gas_button_status == 2:
         y = [0.25, 0.2, 0.2]
 
-    if not dynamic:
-      x = [0., 9., 35.]  # default BP values
-
-    accel = interp(v_ego, x, y)
+    gas = interp(v_ego, x, y)
 
     if dynamic and self.lead_data['status']:  # dynamic gas profile specific operations, and if lead
-      if v_ego < 6.7056:  # if under 15 mph
-        x = [1.61479, 1.99067, 2.28537, 2.49888, 2.6312, 2.68224]
-        y = [-accel, -(accel / 1.06), -(accel / 1.2), -(accel / 1.8), -(accel / 4.4), 0]  # array that matches current chosen accel value
-        accel += interp(self.lead_data['vRel'], x, y)
-      else:
-        x = [-0.89408, 0, 0.89408, 4.4704]
-        y = [-.15, -.05, .005, .05]
-        accel += interp(self.lead_data['vRel'], x, y)
+      if v_ego <= 8.9408:  # if under 20 mph
+        x = [0.0, 0.24588812499999999, 0.432818589, 0.593044697, 0.730381365, 1.050833588, 1.3965, 1.714627481]  # relative velocity mod
+        y = [-(gas / 1.01), -(gas / 1.105), -(gas / 1.243), -(gas / 1.6), -(gas / 2.32), -(gas / 4.8), -(gas / 15), 0]
+        gas_mod = interp(self.lead_data['vRel'], x, y)
+        new_gas = gas + gas_mod
 
-    min_return = 0.0
-    max_return = 1.0
-    return round(max(min(accel, max_return), min_return), 5)  # ensure we return a value between range
+        x = [1.78816, 6.0, 8.9408]  # slowly ramp mods down as we approach 20 mph
+        y = [new_gas, (new_gas * 0.8 + gas * 0.2), gas]
+        gas = interp(v_ego, x, y)
+      else:
+        x = [-0.89408, 0, 2.0]  # need to tune this
+        y = [-.17, -.08, .01]
+        gas += interp(self.lead_data['vRel'], x, y)
+
+    return clip(gas, 0.0, 1.0)
 
   def process_lead(self, lead_one,has_lead):
     self.lead_data['vRel'] = lead_one.vRel
@@ -134,8 +137,10 @@ class LongControl():
     except AttributeError:
       gas_interceptor = False
 
-    gas_max = interp(v_ego, CP.gasMaxBP, CP.gasMaxV)
-    # gas_max = self.dynamic_gas(v_ego, gas_interceptor, gas_button_status)  #todo: fix this
+    if not travis:
+      gas_max = self.dynamic_gas(v_ego, gas_interceptor, gas_button_status)
+    else:
+      gas_max = interp(v_ego, CP.gasMaxBP, CP.gasMaxV)
     brake_max = interp(v_ego, CP.brakeMaxBP, CP.brakeMaxV)
 
     # Update state machine
