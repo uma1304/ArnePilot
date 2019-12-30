@@ -12,6 +12,7 @@ from selfdrive.car.honda.values import CruiseButtons, CAR, HONDA_BOSCH, VISUAL_H
 from selfdrive.car import STD_CARGO_KG, CivicParams, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V
 from selfdrive.car.interfaces import CarInterfaceBase
+from selfdrive.controls.lane_hugging import LaneHugging
 
 A_ACC_MAX = max(_A_CRUISE_MAX_V)
 
