@@ -2,9 +2,9 @@ from common.numpy_fast import interp
 import numpy as np
 from selfdrive.car.modules.ALCA_module import ALCAModelParser
 from common.op_params import opParams
-op_params = opParams()
 
-CAMERA_OFFSET = float(op_params.get('camera_offset', 0.06))  # m
+op_params = opParams()
+# CAMERA_OFFSET = float(op_params.get('camera_offset', 0.06))  # m
 
 
 def compute_path_pinv(l=50):
@@ -68,6 +68,7 @@ class LanePlanner():
 
   def update_lane(self, v_ego, md):
     # only offset left and right lane lines; offsetting p_poly does not make sense
+    CAMERA_OFFSET = op_params.get('camera_offset', 0.06)
     self.l_poly[3] += CAMERA_OFFSET
     self.r_poly[3] += CAMERA_OFFSET
 
