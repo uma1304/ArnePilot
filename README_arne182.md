@@ -31,39 +31,36 @@ More info about how to install this fork can be found [here](https://medium.com/
 
 - [ ] TODO describe how to change/add custom setting in json file
 
+# Todo
+
+- [ ] Auto Lane change from Boggyver
+
+- [ ] Traffic light detection from Littlemountainman
+
 # Features
 
-- [ ] TODO add other features
-
-- [ ] TODO check if these features are still relevant
-
-- [ ] TODO if applicable describe what config options are available
- 
-## Automatic Lane Change Assist (ALC)
-Check your surroundings, signal in the direction you would like to change lanes, and let openpilot do the rest. You can choose between three ALC profiles, Wifey, Normal, and Mad Max. Each increasing in steering torque.
-
-
-## Stock Lane Keeping Assist (LKA)
-Arne has worked on recreating the lane keeping assist system present in your car for openpilot. It works with cruise control not engaged, attempting to steer to keep you inside your lane when it detects you are departing it.
-
-
-## [Dynamic Following Distance Profile](https://github.com/ShaneSmiskol/openpilot/blob/dynamic-follow/README.md)
-(outdated: on 0.5.8, `dynamic-follow` branch only): Three following distance (TR) profiles are available to select; 0.9 seconds, 2.7 seconds, and a custom tuned dynamic follow profile. The first two behave as your stock cruise control system does. Dynamic follow aims to provide a more natural feeling drive, adjusting your distance from the lead car based on your speed, your relative velocity with the lead car, and your acceleration (or deceleration). If the system detects the lead car decelerating, your car should start to brake sooner than a hard-coded TR value. Same with accelerating.
-
-
-## Slow Mode (SLO)
-For cars with longitudinal control down to 0 mph, you have the option to activate SLO mode which enables you to set your car's cruise control under your car's limit. For example, you could coast along at 15, 10, or even 5 mph.
-
-## Acceleration Profiles (GAS)
-You can select from three acceleration profiles with the GAS button. If your car accelerates too slowly for your liking, this will solve that. **Recently added**: dynamic acceleration profile for users with comma pedals. This should provide a smoother acceleration experience in stop and go traffic.
-
-## Select Vision Model (on 0.5.8, `dynamic-follow` branch only)
-You can select whether you would like to use the wiggly model or the normal vision model for path planning. Wiggly has more torque and can better guess the road curvature without lane lines, but it occasionally crashes or mispredicts the path.
-
-## EON and openpilot Stats
-With the on-screen UI, you can view stats about your EON such as its temperature, your grey panda's GPS accuracy, the lead car's relative velocity, its distance, and more.
-
-Warning from kegman: `WARNING: Do NOT depend on OP to stop the car in time if you are approaching an object which is not in motion in the same direction as your car. The radar will NOT detect the stationary object in time to slow your car enough to stop. If you are approaching a stopped vehicle you must disengage and brake as radars ignore objects that are not in motion.`
+- Braking: 
+    - by angle(carstate), 
+    - by predicted angle in 2.5s(laneplanner), 
+    - by model(commaai), 
+    - acceleration measured by steering angle, 
+    - by curvature (mapd), 
+    - by mapped sign(stop, yield, roundabouts, bump, hump, traffic light, speed sign, road attribute)
+- No disengage for gas, only longitudinal disengage for brake, tire slip or cancel
+- Only disengage on main off and on brake at low speed
+- Reacting Toyota tssp higher acceleration and braking limits.
+- Speed sign reading 
+- Phantom: control open pilot via app like summon
+- Stock Toyota ldw steering assist
+- Control 3 gas profiles with sport eco and normal buttons on car
+- Dynamic gas and distance profiles
+- Cruise set speed available down to 7 kph
+- Lane hugging fixes
+- Smooth longitudinal controller also at low speeds
+- No disengage for seat belt remove and door opened. Practical for when stopping and then someone opens a door so that the car does not drive into the lead
+- No fingerprint compatibility problems. A completely different way to combine and split Fingerprints so that they always work I.e. comma is not supporting rav4h 2019 because of this Fingerprint method. Mine is better
+- Custom events and capnp structure so that comma is happy with the drives from my fork
+- Forward collision warning actually brakes for you.
 
 
 # Licensing
