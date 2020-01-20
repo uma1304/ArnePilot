@@ -13,7 +13,7 @@ import selfdrive.messaging as messaging
 from selfdrive.config import Conversions as CV
 from selfdrive.boardd.boardd import can_list_to_can_capnp
 from selfdrive.car.car_helpers import get_car, get_startup_alert
-from selfdrive.controls.lib.lane_planner import CAMERA_OFFSET
+# from selfdrive.controls.lib.lane_planner import CAMERA_OFFSET
 from selfdrive.controls.lib.drive_helpers import get_events, \
                                                  create_event, \
                                                  EventTypes as ET, \
@@ -29,6 +29,7 @@ from selfdrive.controls.lib.driver_monitor import DriverStatus, MAX_TERMINAL_ALE
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.controls.lib.gps_helpers import is_rhd_region
 from selfdrive.locationd.calibration_helpers import Calibration, Filter
+from common.op_params import opParams
 
 ThermalStatus = log.ThermalData.ThermalStatus
 State = log.ControlsState.OpenpilotState
@@ -383,7 +384,7 @@ def state_control(frame, rcv_frame, plan, path_plan, CS, CP, state, events, v_cr
 
 
 def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, AM,
-              driver_status, LaC, LoC, read_only, start_time, v_acc, a_acc, lac_log, events_prev):
+              driver_status, LaC, LoC, read_only, start_time, v_acc, a_acc, lac_log, events_prev, op_params):
   """Send actuators and hud commands to the car, send controlsstate and MPC logging"""
 
   CC = car.CarControl.new_message()
@@ -412,6 +413,7 @@ def data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk
   blinker = CS.leftBlinker or CS.rightBlinker
   ldw_allowed = CS.vEgo > 12.5 and not blinker
 
+  CAMERA_OFFSET = op_params.get('camera_offset', 0.06)
   if len(list(sm['pathPlan'].rPoly)) == 4:
     CC.hudControl.rightLaneDepart = bool(ldw_allowed and sm['pathPlan'].rPoly[3] > -(0.93 + CAMERA_OFFSET) and right_lane_visible)
   if len(list(sm['pathPlan'].lPoly)) == 4:
@@ -605,6 +607,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
   internet_needed = params.get("Offroad_ConnectivityNeeded", encoding='utf8') is not None
 
   prof = Profiler(False)  # off by default
+  op_params = opParams()
 
   while True:
     sm.update(0)
@@ -659,7 +662,7 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
 
     # Publish data
     CC, events_prev = data_send(sm, pm, CS, CI, CP, VM, state, events, actuators, v_cruise_kph, rk, AM, driver_status, LaC,
-                                LoC, read_only, start_time, v_acc, a_acc, lac_log, events_prev)
+                                LoC, read_only, start_time, v_acc, a_acc, lac_log, events_prev, op_params)
     prof.checkpoint("Sent")
 
     rk.monitor_time()
