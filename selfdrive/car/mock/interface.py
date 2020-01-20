@@ -111,7 +111,7 @@ class CarInterface(CarInterfaceBase):
     events = []
     eventsArne182 = []
     ret.events = events
-    ret_arne182.eventsArne182 = eventsArne182
+    ret_arne182.events = eventsArne182
 
     return ret.as_reader(), ret_arne182.as_reader()
 
