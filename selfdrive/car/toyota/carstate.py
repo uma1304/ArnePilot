@@ -268,7 +268,7 @@ class CarState():
       self.v_cruise_pcm = cp.vl["PCM_CRUISE_2"]['SET_SPEED']
       self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == 2
     if self.CP.carFingerprint in TSS2_CAR:
-      minimum_set_speed = 28.0
+      minimum_set_speed = 27.0
     else:
       minimum_set_speed = 41.0
     if cp.vl["PCM_CRUISE"]['CRUISE_STATE'] and not self.pcm_acc_status:
