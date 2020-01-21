@@ -1,1 +1,1 @@
-#define COMMA_VERSION "0.7.1-MAPS"
+#define COMMA_VERSION "0.7.1-MAPS_v0.1"
