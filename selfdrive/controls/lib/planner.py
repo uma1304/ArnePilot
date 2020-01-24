@@ -15,7 +15,7 @@ from selfdrive.controls.lib.speed_smoother import speed_smoother
 from selfdrive.controls.lib.longcontrol import LongCtrlState, MIN_CAN_SPEED
 from selfdrive.controls.lib.fcw import FCWChecker
 from selfdrive.controls.lib.long_mpc import LongitudinalMpc
-offset = 4.47
+offset = 10.0 # Speed offset in % (relativ to speed)
 osm = True
 MAX_SPEED = 255.0
 NO_CURVATURE_SPEED = 90.0
@@ -160,7 +160,7 @@ class Planner():
       if sm['liveMapData'].speedLimitValid and osm and (sm['liveMapData'].lastGps.timestamp -time.mktime(now.timetuple()) * 1000) < 10000:
         speed_limit = sm['liveMapData'].speedLimit
         if speed_limit is not None and offset is not None and speed_limit > offset:
-          v_speedlimit = speed_limit + offset
+          v_speedlimit = speed_limit + (speed_limit * (offset/100))
         else:
           v_speedlimit = speed_limit
       else:
@@ -180,7 +180,7 @@ class Planner():
         else:
           speed_limit_ahead = sm['liveMapData'].speedLimitAhead
         if speed_limit_ahead is not None and offset is not None and speed_limit_ahead > offset:
-          v_speedlimit_ahead = speed_limit_ahead + offset
+          v_speedlimit_ahead = speed_limit_ahead + (speed_limit * (offset/100))
         else:
           v_speedlimit_ahead = speed_limit_ahead
       if sm['liveMapData'].curvatureValid and osm and (sm['liveMapData'].lastGps.timestamp -time.mktime(now.timetuple()) * 1000) < 10000:
