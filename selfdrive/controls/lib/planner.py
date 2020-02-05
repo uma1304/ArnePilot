@@ -159,7 +159,7 @@ class Planner():
     try:
       if sm['liveMapData'].speedLimitValid and osm and (sm['liveMapData'].lastGps.timestamp -time.mktime(now.timetuple()) * 1000) < 10000:
         speed_limit = sm['liveMapData'].speedLimit
-        if speed_limit is not None and offset is not None and speed_limit > (speed_limit * (offset/100):
+        if speed_limit is not None and offset is not None and speed_limit > (speed_limit * (offset/100)):
           v_speedlimit = speed_limit + (speed_limit * (offset/100))
         else:
           v_speedlimit = speed_limit
