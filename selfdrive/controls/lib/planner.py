@@ -179,7 +179,7 @@ class Planner():
           speed_limit_ahead = sm['liveMapData'].speedLimitAhead + (speed_limit - sm['liveMapData'].speedLimitAhead)*(sm['liveMapData'].speedLimitAheadDistance - distanceatlowlimit)/(speed_ahead_distance - distanceatlowlimit)
         else:
           speed_limit_ahead = sm['liveMapData'].speedLimitAhead
-        if speed_limit_ahead is not None and offset is not None and speed_limit_ahead > (speed_limit_ahead * (offset/100):
+        if speed_limit_ahead is not None and offset is not None and speed_limit_ahead > (speed_limit_ahead * (offset/100)):
           v_speedlimit_ahead = speed_limit_ahead + (speed_limit_ahead * (offset/100))
         else:
           v_speedlimit_ahead = speed_limit_ahead
