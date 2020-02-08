@@ -4,9 +4,9 @@ import string
 import random
 import os
 from common.params import Params
-from common.op_params import opParams
-op_params = opParams()
-uniqueID = op_params.get('uniqueID', None)
+#from common.op_params import opParams
+#op_params = opParams()
+uniqueID = "mapd"#op_params.get('uniqueID', None)
 
 def upload_data():
   filepath = "/data/openpilot/selfdrive/data_collection/gps-data"
