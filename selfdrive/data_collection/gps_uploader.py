@@ -1,6 +1,4 @@
 import ftplib
-import json
-import string
 import random
 import os
 #from common.params import Params
@@ -29,7 +27,7 @@ def upload_data():
       #if car is not None:
       #  car = json.loads(car)
       #  username+="-{}".format(car[0])
-      car = "car"
+      
       username = "username"
 
       filename = "gps-data.{}".format(random.randint(1,99999))
