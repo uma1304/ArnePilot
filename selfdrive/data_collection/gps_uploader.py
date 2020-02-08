@@ -13,7 +13,7 @@ def upload_data():
   if os.path.isfile(filepath):
     #if uniqueID is None:
     #  op_params.put('uniqueID', ''.join([random.choice(string.ascii_lowercase+string.ascii_uppercase+string.digits) for i in range(15)]))
-    #try:
+    try:
     #  username = op_params.get('uniqueID', None)
     #  try:
     #    with open("/data/data/ai.comma.plus.offroad/files/persistStore/persist-auth", "r") as f:
