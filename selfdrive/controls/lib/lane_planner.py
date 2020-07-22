@@ -92,16 +92,19 @@ class LanePlanner():
     self.lane_width = self.lane_width_certainty * self.lane_width_estimate + \
                       (1 - self.lane_width_certainty) * speed_lane_width
     #print(current_lane_width)
-    if current_lane_width < 2.0:
-      self.r_poly[3] -= 2.0 - current_lane_width # TODO: this should be l_poly if isRHD
-      #self.p_poly[3] += (2.0 - current_lane_width)/2
-      self.lane_width = 2.0
-    elif current_lane_width > 4.0:
-      self.l_poly[3] -= current_lane_width/2 # TODO: this should be r_poly if isRHD
-      #self.p_poly[3] -= current_lane_width/4
-      #self.lane_width = 4.0
-
-    self.d_poly = calc_d_poly(self.l_poly, self.r_poly, self.p_poly, self.l_prob, self.r_prob, self.lane_width, v_ego)
+    if not op_params.get('use_virutual_middle_line', False):
+      lane_width = self.lane_width
+      if current_lane_width < 2.0:
+        self.r_poly[3] -= 2.0 - current_lane_width # TODO: this should be l_poly if isRHD
+        #self.p_poly[3] += (2.0 - current_lane_width)/2
+        self.lane_width = 2.0
+      elif current_lane_width > 4.0:
+        self.l_poly[3] -= current_lane_width/2 # TODO: this should be r_poly if isRHD
+        #self.p_poly[3] -= current_lane_width/4
+        #self.lane_width = 4.0
+    else:
+      lane_width = min(4.0, self.lane_width)
+    self.d_poly = calc_d_poly(self.l_poly, self.r_poly, self.p_poly, self.l_prob, self.r_prob, lane_width, v_ego)
 
   def update(self, v_ego, md):
     self.parse_model(md)
