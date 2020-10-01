@@ -115,7 +115,7 @@ class CarState(CarStateBase):
         self.sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']
     except:
       self.sport_on = 0
-    if self.CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2]:
+    if self.CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2, CAR.AVALONH_2021]:
       self.sport_on = cp.vl["GEAR_PACKET2"]['SPORT_ON']
       self.econ_on = cp.vl["GEAR_PACKET2"]['ECON_ON']
 
@@ -400,7 +400,7 @@ class CarState(CarStateBase):
       signals.append(("LOW_SPEED_LOCKOUT", "PCM_CRUISE_2", 0))
       checks.append(("PCM_CRUISE_2", 33))
 
-    if CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2]:
+    if CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2, CAR.AVALONH_2021]:
       signals.append(("SPORT_ON", "GEAR_PACKET2", 0))
       signals.append(("ECON_ON", "GEAR_PACKET2", 0))
 
@@ -485,7 +485,7 @@ class CarState(CarStateBase):
       signals.append(("LOW_SPEED_LOCKOUT", "PCM_CRUISE_2", 0))
       checks.append(("PCM_CRUISE_2", 33))
 
-    if CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2]:
+    if CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2, CAR.AVALONH_2021]:
       signals.append(("SPORT_ON", "GEAR_PACKET2", 0))
       signals.append(("ECON_ON", "GEAR_PACKET2", 0))
     if CP.carFingerprint in [CAR.PRIUS, CAR.PRIUS_2019]:
