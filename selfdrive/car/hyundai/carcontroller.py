@@ -42,6 +42,8 @@ class CarController():
     self.steer_rate_limited = False
     self.last_resume_frame = 0
 
+    self.p = SteerLimitParams(CP)
+
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, visual_alert,
              left_lane, right_lane, left_lane_depart, right_lane_depart):
 
@@ -50,8 +52,8 @@ class CarController():
     else:
       self.lfa_available = False
     # Steering Torque
-    new_steer = actuators.steer * SteerLimitParams.STEER_MAX
-    apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, SteerLimitParams)
+    new_steer = actuators.steer * self.p.STEER_MAX
+    apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.p)
     self.steer_rate_limited = new_steer != apply_steer
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
@@ -77,8 +79,11 @@ class CarController():
 
     if pcm_cancel_cmd:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL))
-    elif CS.out.cruiseState.standstill and CS.vrelative > 0:
-      can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL))
+    elif CS.out.cruiseState.standstill:
+      # send resume at a max freq of 5Hz
+      if (frame - self.last_resume_frame)*DT_CTRL > 0.2:
+        can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL))
+        self.last_resume_frame = frame
 
     # 20 Hz LFA MFA message
     if frame % 5 == 0 and self.lfa_available:

@@ -54,12 +54,12 @@ keys = {
   "AthenadPid": [TxType.PERSISTENT],
   "CachedFingerprint": [TxType.CLEAR_ON_PANDA_DISCONNECT],
   "CalibrationParams": [TxType.PERSISTENT],
-  "CarParams": [TxType.CLEAR_ON_PANDA_DISCONNECT],
-  "CarParamsCache": [TxType.CLEAR_ON_PANDA_DISCONNECT],
-  "CarVin": [TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "CarBatteryCapacity": [TxType.PERSISTENT],
+  "CarParams": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "CarParamsCache": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  "CarVin": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "CommunityFeaturesToggle": [TxType.PERSISTENT],
   "CompletedTrainingVersion": [TxType.PERSISTENT],
-  "ControlsParams": [TxType.PERSISTENT],
   "DisablePowerDown": [TxType.PERSISTENT],
   "DisablePowerDownTime": [TxType.PERSISTENT],
   "DisableUpdates": [TxType.PERSISTENT],
@@ -77,7 +77,6 @@ keys = {
   "HasCompletedSetup": [TxType.PERSISTENT],
   "IsDriverViewEnabled": [TxType.CLEAR_ON_MANAGER_START],
   "IsLdwEnabled": [TxType.PERSISTENT],
-  "IsGeofenceEnabled": [TxType.PERSISTENT],
   "IsMetric": [TxType.PERSISTENT],
   "IsOffroad": [TxType.CLEAR_ON_MANAGER_START],
   "IsRHD": [TxType.PERSISTENT],
@@ -86,10 +85,8 @@ keys = {
   "IsUploadRawEnabled": [TxType.PERSISTENT],
   "LastAthenaPingTime": [TxType.PERSISTENT],
   "LastUpdateTime": [TxType.PERSISTENT],
-  "LimitSetSpeed": [TxType.PERSISTENT],
-  "LimitSetSpeedNeural": [TxType.PERSISTENT],
+  "LastUpdateException": [TxType.PERSISTENT],
   "LiveParameters": [TxType.PERSISTENT],
-  "LongitudinalControl": [TxType.PERSISTENT],
   "OpenpilotEnabledToggle": [TxType.PERSISTENT],
   "VisionRadarToggle": [TxType.PERSISTENT],
   "LaneChangeEnabled": [TxType.PERSISTENT],
@@ -100,7 +97,6 @@ keys = {
   "RecordFront": [TxType.PERSISTENT],
   "ReleaseNotes": [TxType.PERSISTENT],
   "ShouldDoUpdate": [TxType.CLEAR_ON_MANAGER_START],
-  "SpeedLimitOffset": [TxType.PERSISTENT],
   "SubscriberInfo": [TxType.PERSISTENT],
   "TermsVersion": [TxType.PERSISTENT],
   "TrainingVersion": [TxType.PERSISTENT],
@@ -116,6 +112,7 @@ keys = {
   "Offroad_IsTakingSnapshot": [TxType.CLEAR_ON_MANAGER_START],
   "Offroad_NeosUpdate": [TxType.CLEAR_ON_MANAGER_START],
   "DevBBUI": [TxType.PERSISTENT],
+  "Offroad_UpdateFailed": [TxType.CLEAR_ON_MANAGER_START],
 }
 
 
@@ -128,14 +125,15 @@ def fsync_dir(path):
 
 
 class FileLock():
-  def __init__(self, path, create):
+  def __init__(self, path, create, lock_ex):
     self._path = path
     self._create = create
     self._fd = None
+    self._lock_ex = lock_ex
 
   def acquire(self):
     self._fd = os.open(self._path, os.O_CREAT if self._create else 0)
-    fcntl.flock(self._fd, fcntl.LOCK_EX)
+    fcntl.flock(self._fd, fcntl.LOCK_EX if self._lock_ex else fcntl.LOCK_SH)
 
   def release(self):
     if self._fd is not None:
@@ -163,8 +161,8 @@ class DBAccessor():
     except KeyError:
       return None
 
-  def _get_lock(self, create):
-    lock = FileLock(os.path.join(self._path, ".lock"), create)
+  def _get_lock(self, create, lock_ex):
+    lock = FileLock(os.path.join(self._path, ".lock"), create, lock_ex)
     lock.acquire()
     return lock
 
@@ -196,7 +194,7 @@ class DBAccessor():
 class DBReader(DBAccessor):
   def __enter__(self):
     try:
-      lock = self._get_lock(False)
+      lock = self._get_lock(False, False)
     except OSError as e:
       # Do not create lock if it does not exist.
       if e.errno == errno.ENOENT:
@@ -234,7 +232,7 @@ class DBWriter(DBAccessor):
 
     try:
       os.chmod(self._path, 0o777)
-      self._lock = self._get_lock(True)
+      self._lock = self._get_lock(True, True)
       self._vals = self._read_values_locked()
     except Exception:
       os.umask(self._prev_umask)
@@ -323,18 +321,19 @@ def write_db(params_path, key, value):
     value = value.encode('utf8')
 
   prev_umask = os.umask(0)
-  lock = FileLock(params_path + "/.lock", True)
+  lock = FileLock(params_path + "/.lock", True, True)
   lock.acquire()
 
   try:
-    tmp_path = tempfile.mktemp(prefix=".tmp", dir=params_path)
-    with open(tmp_path, "wb") as f:
+    tmp_path = tempfile.NamedTemporaryFile(mode="wb", prefix=".tmp", dir=params_path, delete=False)
+    with tmp_path as f:
       f.write(value)
       f.flush()
       os.fsync(f.fileno())
+    os.chmod(tmp_path.name, 0o666)
 
     path = "%s/d/%s" % (params_path, key)
-    os.rename(tmp_path, path)
+    os.rename(tmp_path.name, path)
     fsync_dir(os.path.dirname(path))
   finally:
     os.umask(prev_umask)
