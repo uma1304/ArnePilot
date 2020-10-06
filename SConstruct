@@ -322,7 +322,4 @@ if arch != "Darwin":
 
 # TODO: finish cereal, dbcbuilder, MPC
 else:
-
-
-if arch == "x86_64":
   SConscript(['tools/lib/index_log/SConscript'])
