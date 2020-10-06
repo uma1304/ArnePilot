@@ -303,7 +303,7 @@ struct ThermalData {
   memUsedPercent @19 :Int8;
   cpuPerc @20 :Int8;
 
-  ipAddr @25 :Text; #IP address for sidebar. @efini
+  ipAddr @31 :Text; #IP address for sidebar. @efini
   cpu @26 :List(Float32);
   gpu @27 :List(Float32);
   mem @28 :Float32;
