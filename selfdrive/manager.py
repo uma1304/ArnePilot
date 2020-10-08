@@ -263,6 +263,7 @@ car_started_processes = [
   'thermalonlined',
   'locationd',
   'clocksd',
+]
 
 driver_view_processes = [
   'camerad',
