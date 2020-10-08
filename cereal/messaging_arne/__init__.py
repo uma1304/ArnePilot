@@ -19,7 +19,7 @@ except ImportError:
 
 context = Context()
 
-	def new_message(service: Optional[str] = None, size: Optional[int] = None) -> capnp.lib.capnp._DynamicStructBuilder:
+def new_message(service: Optional[str] = None, size: Optional[int] = None) -> capnp.lib.capnp._DynamicStructBuilder:
   dat = log.EventArne182.new_message()
   dat.logMonoTime = int(sec_since_boot() * 1e9)
   dat.valid = True
@@ -125,7 +125,6 @@ def recv_one_retry(sock: SubSocket) -> capnp.lib.capnp._DynamicStructReader:
 class SubMaster():
   def __init__(self, services: List[str], poll: Optional[List[str]] = None,
                ignore_alive: Optional[List[str]] = None, addr:str ="127.0.0.1"):
-    self.poller = Poller()
     self.frame = -1
     self.updated = {s: False for s in services}
     self.rcv_time = {s: 0. for s in services}
