@@ -51,6 +51,7 @@ messaging_arne_objects = env.SharedObject([
   'messaging_arne/impl_zmq.cc',
   'messaging_arne/impl_msgq.cc',
   'messaging_arne/msgq.cc',
+  'messaging_arne/socketmaster.cc',
 ])
 
 messaging_lib = env.Library('messaging', messaging_objects)
