@@ -25,9 +25,6 @@ cereal_objects = env.SharedObject([
     'gen/cpp/car.capnp.c++',
     'gen/cpp/log.capnp.c++',
     'gen/cpp/arne182.capnp.c++',
-    'gen/cpp/car.capnp.c++',
-    'gen/cpp/log.capnp.c++',
-    'gen/cpp/arne182.capnp.c++',
   ])
 
 env.Library('cereal', cereal_objects)
