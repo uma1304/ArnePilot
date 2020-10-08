@@ -3,7 +3,7 @@ from .messaging_pyx import Context, Poller, SubSocket, PubSocket  # pylint: disa
 from .messaging_pyx import MultiplePublishersError, MessagingError  # pylint: disable=no-name-in-module, import-error
 import capnp
 from typing import Optional, List, Union
-from cereal import arne182 log
+from cereal import arne182 as log
 from cereal.services import service_list
 
 assert MultiplePublishersError
