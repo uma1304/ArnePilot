@@ -1632,15 +1632,6 @@ BO_ 1042 ICM_412h: 8 ICM
  SG_ PopupMessageOutput_7Level : 54|1@0+ (1,0) [0|1] "" Vector__XXX
  SG_ PopupMessageOutput_8Level : 55|1@0+ (1,0) [0|1] "" Vector__XXX
 
-BO_ 1355 EV_PC6: 8 CGW
- SG_ CF_Vcu_SbwWarnMsg : 16|3@1+ (1,0) [0|7] "" Vector__XXX
-
-BO_ 1430 EV_PC2: 8 CGW
- SG_ CR_Ldc_ActVol_LS_V : 32|8@1+ (0.1,0) [0|0] "V" Vector__XXX
-
-BO_ 1535 EV_PC10: 8 CGW
- SG_ CF_Vcu_EpbRequest : 37|1@1+ (1,0) [0|0] "" Vector__XXX
-
 BO_ 908 RSPA11: 8 RSPA
  SG_ CF_RSPA_State : 0|4@1+ (1,0) [0|15] "" XXX
  SG_ CF_RSPA_Act : 4|2@1+ (1,0) [0|3] "" XXX
