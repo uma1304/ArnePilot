@@ -2,7 +2,6 @@ Import('env', 'qt_env', 'arch', 'common', 'messaging', 'gpucommon', 'visionipc',
 
 src = ['ui.cc', 'paint.cc', 'sidebar.cc', '#phonelibs/nanovg/nanovg.c']
 libs = [common, 'zmq', 'czmq', 'capnp', 'kj', 'm', cereal, messaging, gpucommon, visionipc]
-linkflags = ['-Wl,-rpath=/system/lib64,-rpath=/system/comma/usr/lib']
 
 
 if qt_env is None:

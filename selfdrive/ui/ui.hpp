@@ -27,18 +27,6 @@
 #include "common/params.h"
 #include "sound.hpp"
 
-#include "cereal/gen/cpp/arne182.capnp.h"
-
-#define STATUS_STOPPED 0
-#define STATUS_DISENGAGED 1
-#define STATUS_ENGAGED 2
-#define STATUS_WARNING 3
-#define STATUS_ALERT 4
-
-#define NET_CONNECTED 0
-#define NET_DISCONNECTED 1
-#define NET_ERROR 2
-
 #define COLOR_BLACK nvgRGBA(0, 0, 0, 255)
 #define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
 #define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
@@ -46,11 +34,8 @@
 #define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
 #define COLOR_RED nvgRGBA(201, 34, 49, 255)
 #define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
-#define COLOR_GREEN nvgRGBA(34, 201, 49, 255)
 
 #define UI_BUF_COUNT 4
-#define SHOW_SPEEDLIMIT 1
-//#define DEBUG_TURN
 
 typedef struct Rect {
   int x, y, w, h;
@@ -96,11 +81,11 @@ typedef enum UIStatus {
 } UIStatus;
 
 static std::map<UIStatus, Color> bg_colors = {
-  {STATUS_OFFROAD, {0x0, 0x0, 0x0, 0xff}},
-  {STATUS_DISENGAGED, {0x0, 0x0, 0x0, 0xff}},
-  {STATUS_ENGAGED, {0x01, 0x50, 0x01, 0x01}},
-  {STATUS_WARNING, {0x80, 0x80, 0x80, 0x0f}},
-  {STATUS_ALERT, {0xC9, 0x22, 0x31, 0xff}},
+  {STATUS_OFFROAD, {0x07, 0x23, 0x39}},
+  {STATUS_DISENGAGED, {0x17, 0x33, 0x49}},
+  {STATUS_ENGAGED, {0x17, 0x86, 0x44}},
+  {STATUS_WARNING, {0xDA, 0x6F, 0x25}},
+  {STATUS_ALERT, {0xC9, 0x22, 0x31}},
 };
 
 typedef struct UIScene {
@@ -109,32 +94,6 @@ typedef struct UIScene {
   float mpc_y[50];
 
   mat4 extrinsic_matrix;      // Last row is 0 so we can use mat4.
-
-  //dev ui
-  float speedlimit;
-  bool speedlimit_valid;
-  float speedlimitaheaddistance;
-  bool speedlimitahead_valid;
-  float gpsAccuracy;
-  float angleSteersDes;
-  float angleSteers;
-  float pa0;
-  float freeSpace;
-  int lead_status;
-  int lead_status2;
-  float lead_d_rel, lead_y_rel, lead_v_rel;
-  float lead_d_rel2, lead_y_rel2, lead_v_rel2;
-  int engaged;
-  bool brakeLights;
-  bool leftBlinker;
-  bool steerOverride;
-  bool rightBlinker;
-  int blinker_blinkingrate;
-  std::string ipAddr;
-  float output_scale;
-  cereal::CarState::GearShifter gear;
-  bool rightblindspot;
-  bool leftblindspot;
   bool world_objects_visible;
 
   bool is_rhd;
@@ -149,23 +108,12 @@ typedef struct UIScene {
   std::string alert_type;
   cereal::ControlsState::AlertSize alert_size;
 
-  // Used to show gps planner status
-  bool gps_planner_active;
-
-  // @shanes, dynamic Follow and e2e (modellong)
-  int dfButtonStatus;
-  bool mlButtonEnabled;
-
-  // dashcam
-  bool recording;
-
   cereal::HealthData::HwType hwType;
   int satelliteCount;
   NetStatus athenaStatus;
 
   cereal::ThermalData::Reader thermal;
   cereal::RadarState::LeadData::Reader lead_data[2];
-  cereal::DMonitoringState::Reader dmonitoring_state;
   cereal::ControlsState::Reader controls_state;
   cereal::DriverState::Reader driver_state;
   cereal::DMonitoringState::Reader dmonitoring_state;
@@ -203,7 +151,6 @@ typedef struct UIState {
   int font_sans_semibold;
   int font_sans_bold;
   int img_wheel;
-  int img_hands_on_wheel;
   int img_turn;
   int img_face;
   int img_button_settings;
@@ -211,13 +158,8 @@ typedef struct UIState {
   int img_battery;
   int img_battery_charging;
   int img_network[6];
-  //dev ui
-  int img_brake;
-  int img_speed;
 
   SubMaster *sm;
-  //SubMaster *arne_sm;
-  PubMaster *pm;
 
   Sound *sound;
   UIStatus status;
@@ -242,42 +184,14 @@ typedef struct UIState {
   // device state
   bool awake;
   int awake_timeout;
-  int controls_timeout;
-  int speed_lim_off_timeout;
-  int is_metric_timeout;
-  int longitudinal_control_timeout;
-  int limit_set_speed_timeout;
-  int hardware_timeout;
-  int last_athena_ping_timeout;
-  int dev_bbui_timeout;
-
-  bool controls_seen;
   std::atomic<float> light_sensor;
 
   bool started;
   bool ignition;
   bool is_metric;
   bool longitudinal_control;
-  bool limit_set_speed;
-  bool dev_bbui;
-  float speed_lim_off;
-  bool is_ego_over_limit;
-  float alert_blinking_alpha;
-  bool alert_blinked;
-  bool started;
-  bool preview_started;
-  bool vision_seen;
-
-  bool livempc_or_radarstate_changed;
   uint64_t last_athena_ping;
   uint64_t started_frame;
-
-  std::atomic<float> light_sensor;
-
-  int touch_fd;
-
-  GLuint frame_vao[2], frame_vbo[2], frame_ibo[2];
-  mat4 rear_frame_mat, front_frame_mat;
 
   bool alert_blinked;
   float alert_blinking_alpha;
