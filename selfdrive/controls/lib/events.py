@@ -1,8 +1,6 @@
 from cereal import log, car, arne182
 from functools import total_ordering
 from typing import Dict, Union, Callable, Any
-
-from cereal import log, car
 import cereal.messaging as messaging
 from common.realtime import DT_CTRL
 from selfdrive.config import Conversions as CV

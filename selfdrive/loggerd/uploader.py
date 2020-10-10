@@ -20,7 +20,6 @@ from common.hardware import HARDWARE
 #from common.params import Params
 from common.api import Api
 from selfdrive.loggerd.xattr_cache import getxattr, setxattr
-from selfdrive.swaglog import cloudlog
 
 NetworkType = log.ThermalData.NetworkType
 UPLOAD_ATTR_NAME = 'user.upload'

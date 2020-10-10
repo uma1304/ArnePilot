@@ -21,8 +21,6 @@ from selfdrive.controls.lib.alertmanager import AlertManager
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
-
-from selfdrive.car.disable_radar import disable_radar
 from common.op_params import opParams
 from selfdrive.controls.lib.dynamic_follow.df_manager import dfManager
 from common.travis_checker import travis
