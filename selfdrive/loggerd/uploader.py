@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-import ctypes
-import inspect
-import json
 import os
 import random
 import re
@@ -19,13 +16,10 @@ from selfdrive.swaglog import cloudlog
 #from selfdrive.loggerd.config import ROOT
 from selfdrive.data_collection import gps_uploader
 from cereal import log
-from common.hardware import HARDWARES
-from common import android
+from common.hardware import HARDWARE
 #from common.params import Params
 from common.api import Api
-from common.params import Params
 from selfdrive.loggerd.xattr_cache import getxattr, setxattr
-from selfdrive.loggerd.config import ROOT
 from selfdrive.swaglog import cloudlog
 
 NetworkType = log.ThermalData.NetworkType

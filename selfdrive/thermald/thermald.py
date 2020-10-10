@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 import os
 import re
-import json
-import copy
 import datetime
 import time
 from collections import namedtuple
 import psutil
-import datetime
 import subprocess
 from smbus2 import SMBus
-
 import cereal.messaging as messaging
 from cereal import log
 from common.filter_simple import FirstOrderFilter
@@ -20,7 +16,7 @@ from common.params import Params, put_nonblocking
 from common.realtime import DT_TRML, sec_since_boot
 from selfdrive.controls.lib.alertmanager import set_offroad_alert
 from selfdrive.loggerd.config import get_available_percent
-from selfdrive.pandad import get_expected_signature
+from selfdrive.pandad import get_expected_version
 from selfdrive.swaglog import cloudlog
 from selfdrive.thermald.power_monitoring import (PowerMonitoring,
                                                  get_battery_capacity,
@@ -150,7 +146,7 @@ def handle_fan_eon(max_cpu_temp, bat_temp, fan_speed, ignition):
     # update speed if using the low thresholds results in fan speed decrement
     fan_speed = new_speed_l
 
-  if bat_temp < _BAT_TEMP_THRESHOLD:
+  if bat_temp < _BAT_TEMP_THERSHOLD:
     # no max fan speed unless battery is hot
     fan_speed = min(fan_speed, _FAN_SPEEDS[-2])
 
@@ -206,13 +202,6 @@ def thermald_thread():
   ts_last_ip = None
   ip_addr = '255.255.255.255'
 
-  is_uno = (read_tz(29, clip=False) < -1000)
-  if is_uno or not ANDROID:
-    handle_fan = handle_fan_uno
-  else:
-    setup_eon_fan()
-    handle_fan = handle_fan_eon
-
   params = Params()
   pm = PowerMonitoring()
   no_panda_cnt = 0
@@ -248,7 +237,7 @@ def thermald_thread():
       if handle_fan is None and health.health.hwType != log.HealthData.HwType.unknown:
         is_uno = health.health.hwType == log.HealthData.HwType.uno
 
-        if is_uno or not ANDROID:
+        if (not EON) or is_uno:
           cloudlog.info("Setting up UNO fan handler")
           handle_fan = handle_fan_uno
         else:

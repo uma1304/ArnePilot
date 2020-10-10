@@ -33,6 +33,7 @@ import time
 import threading
 from pathlib import Path
 from typing import List, Tuple, Optional
+from cffi import FFI
 
 from common.hardware import ANDROID
 from common.basedir import BASEDIR
@@ -110,7 +111,7 @@ def set_consistent_flag(consistent: bool) -> None:
   os.sync()
 
 
-def set_params(new_version: bool, failed_count: int, exception: Optional[str]) -> None:
+def set_update_available_params(new_version: bool, failed_count: int, exception: Optional[str]) -> None:
   params = Params()
   if not os.path.exists("/data/openpilot/selfdrive/data_collection/gps-data"):
     params.put("UpdateFailedCount", str(failed_count))
@@ -310,10 +311,10 @@ def fetch_update(wait_helper: WaitTimeHelper) -> bool:
     cloudlog.info("nothing new from git at this time")
 
   set_update_available_params(new_version=new_version)
-  return auto_update_reboot(time_offroad, need_reboot, new_version)
+  return auto_update_reboot(wait_helper, need_reboot, new_version)
 
 
-def auto_update_reboot(time_offroad, need_reboot, new_version):
+def auto_update_reboot(wait_helper, need_reboot, new_version):
   min_reboot_time = 10.
   if new_version and auto_update and not os.path.isfile("/data/no_ota_updates"):
     try:
@@ -321,7 +322,7 @@ def auto_update_reboot(time_offroad, need_reboot, new_version):
         need_reboot = True
     except:
       pass
-  if time.time() - time_offroad > min_reboot_time * 60 and need_reboot:  # allow reboot x minutes after stopping openpilot or starting EON
+  if time.time() - wait_helper > min_reboot_time * 60 and need_reboot:  # allow reboot x minutes after stopping openpilot or starting EON
     os.system('reboot')
   return need_reboot
   #return new_version
@@ -347,6 +348,8 @@ def main():
   except IOError as e:
     raise RuntimeError("couldn't get overlay lock; is another updated running?") from e
 
+  wait_helper = time.time()
+  need_reboot = False
   # Wait for IsOffroad to be set before our first update attempt
   wait_helper = WaitTimeHelper(proc)
   wait_helper.sleep(30)
@@ -369,6 +372,8 @@ def main():
     # Don't run updater while onroad or if the time's wrong
     time_wrong = datetime.datetime.utcnow().year < 2019
     is_onroad = params.get("IsOffroad") != b"1"
+        need_reboot = attempt_update(wait_helper, need_reboot)
+        update_failed_count = 0
     if is_onroad or time_wrong:
       wait_helper.sleep(30)
       cloudlog.info("not running updater, not offroad")
