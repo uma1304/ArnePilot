@@ -27,7 +27,7 @@
 #include "common/params.h"
 #include "sound.hpp"
 
-#include "cereal/gen/c/arne182.capnp.h"
+#include "cereal/gen/cpp/arne182.capnp.h"
 
 #define STATUS_STOPPED 0
 #define STATUS_DISENGAGED 1
