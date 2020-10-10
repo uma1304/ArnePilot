@@ -483,7 +483,7 @@ EVENTS = {
   },
 
   EventName.keepHandsOnWheel: {
-    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("Driver kept hands off sterring wheel"),
+    ET.SOFT_DISABLE: ImmediateDisableAlert("Driver kept hands off sterring wheel"),
   },
 
   EventName.driverMonitorLowAcc: {
