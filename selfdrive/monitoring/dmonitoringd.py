@@ -98,7 +98,9 @@ def dmonitoringd_thread(sm=None, pm=None):
       "handsOnWheelState": hands_on_wheel_status.hands_on_wheel_state,
     }
     pm.send('dMonitoringState', dat)
+  
+def main(sm=None, pm=None):
   dmonitoringd_thread(sm, pm)
-
+  
 if __name__ == '__main__':
   main()
