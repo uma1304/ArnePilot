@@ -103,7 +103,6 @@ class CarInterface(CarInterfaceBase):
 
   # returns a car.CarState
   def update(self, c, can_strings):
-    canMonoTimes = []
 
     ret_arne182 = arne182.CarStateArne182.new_message()
     buttonEvents = []
