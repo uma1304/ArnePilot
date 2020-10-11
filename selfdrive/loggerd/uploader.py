@@ -286,36 +286,36 @@ def uploader_fn(exit_event):
     #  time.sleep(backoff + random.uniform(0, backoff))
     #  backoff = min(backoff*2, 120)
     #cloudlog.info("upload done, success=%r", success)
-  backoff = 0.1
-  counter = 0
-  should_upload = False
-  while not exit_event.is_set():
-    offroad = params.get("IsOffroad") == b'1'
-    allow_raw_upload = (params.get("IsUploadRawEnabled") != b"0") and offroad
-    check_network = (counter % 12 == 0 if offroad else True)
-    if check_network:
-      on_hotspot = is_on_hotspot()
-      on_wifi = is_on_wifi()
-      should_upload = on_wifi and not on_hotspot
+  #backoff = 0.1
+  #counter = 0
+  #should_upload = False
+  #while not exit_event.is_set():
+  #  offroad = params.get("IsOffroad") == b'1'
+  #  allow_raw_upload = (params.get("IsUploadRawEnabled") != b"0") and offroad
+  #  check_network = (counter % 12 == 0 if offroad else True)
+  #  if check_network:
+  #    on_hotspot = is_on_hotspot()
+  #    on_wifi = is_on_wifi()
+  #    should_upload = on_wifi and not on_hotspot
+#
+#    d = uploader.next_file_to_upload(with_raw=allow_raw_upload and should_upload)
+#    counter += 1
+#    if d is None:  # Nothing to upload
+#      time.sleep(60 if offroad else 5)
+#      continue
+#
+#    key, fn = d
 
-    d = uploader.next_file_to_upload(with_raw=allow_raw_upload and should_upload)
-    counter += 1
-    if d is None:  # Nothing to upload
-      time.sleep(60 if offroad else 5)
-      continue
-
-    key, fn = d
-
-    cloudlog.event("uploader_netcheck", is_on_hotspot=on_hotspot, is_on_wifi=on_wifi)
-    cloudlog.info("to upload %r", d)
-    success = uploader.upload(key, fn)
-    if success:
-      backoff = 0.1
-    else:
-      cloudlog.info("backoff %r", backoff)
-      time.sleep(backoff + random.uniform(0, backoff))
-      backoff = min(backoff*2, 120)
-    cloudlog.info("upload done, success=%r", success)
+#    cloudlog.event("uploader_netcheck", is_on_hotspot=on_hotspot, is_on_wifi=on_wifi)
+#    cloudlog.info("to upload %r", d)
+#    success = uploader.upload(key, fn)
+#    if success:
+#      backoff = 0.1
+#    else:
+#      cloudlog.info("backoff %r", backoff)
+#      time.sleep(backoff + random.uniform(0, backoff))
+#      backoff = min(backoff*2, 120)
+#    cloudlog.info("upload done, success=%r", success)
 
 def main():
   uploader_fn(threading.Event())
