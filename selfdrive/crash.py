@@ -38,7 +38,7 @@ dirty = not arne_remote
 dirty = dirty or (subprocess.call(["git", "diff-index", "--quiet", branch, "--"]) != 0)
 
 from selfdrive.swaglog import cloudlog
-from common.android import ANDROID
+from common.hardware import PC
 
 def save_exception(exc_text):
   i = 0
@@ -51,7 +51,7 @@ def save_exception(exc_text):
     f.write(exc_text)
   print('Logged current crash to {}'.format(log_file))
 
-if os.getenv("NOLOG") or os.getenv("NOCRASH") or not ANDROID:
+if os.getenv("NOLOG") or os.getenv("NOCRASH") or not PC:
   def capture_exception(*args, **kwargs):
     pass
 
