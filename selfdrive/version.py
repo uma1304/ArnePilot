@@ -37,26 +37,19 @@ def get_git_full_branchname(default=None):
     return default
 
 
-def get_git_remote(default=None):
+def get_git_remote(default: Optional[str] = None) -> Optional[str]:
   if cloak:
     return "https://github.com/commaai/openpilot.git"
   try:
     local_branch = subprocess.check_output(["git", "name-rev", "--name-only", "HEAD"], encoding='utf8').strip()
     tracking_remote = subprocess.check_output(["git", "config", "branch." + local_branch + ".remote"], encoding='utf8').strip()
     return subprocess.check_output(["git", "config", "remote." + tracking_remote + ".url"], encoding='utf8').strip()
-
-
-def get_git_full_branchname(default: Optional[str] = None) -> Optional[str]:
-  return run_cmd_default(["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], default=default)
-
-
-def get_git_remote(default: Optional[str] = None) -> Optional[str]:
-  try:
-    local_branch = run_cmd(["git", "name-rev", "--name-only", "HEAD"])
-    tracking_remote = run_cmd(["git", "config", "branch." + local_branch + ".remote"])
-    return run_cmd(["git", "config", "remote." + tracking_remote + ".url"])
-  except subprocess.CalledProcessError:  # Not on a branch, fallback
-    return run_cmd_default(["git", "config", "--get", "remote.origin.url"], default=default)
+  except subprocess.CalledProcessError:
+    try:
+      # Not on a branch, fallback
+      return subprocess.check_output(["git", "config", "--get", "remote.origin.url"], encoding='utf8').strip()
+    except subprocess.CalledProcessError:
+      return default
 
 
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "common", "version.h")) as _versionf:
