@@ -1,6 +1,9 @@
 FROM commaai/openpilot-base:latest
 
 ENV PYTHONUNBUFFERED 1
+
+RUN pip install overpy
+
 ENV PYTHONPATH /tmp/openpilot:${PYTHONPATH}
 
 RUN mkdir -p /tmp/openpilot
@@ -22,6 +25,8 @@ COPY ./opendbc /tmp/openpilot/opendbc
 COPY ./cereal /tmp/openpilot/cereal
 COPY ./panda /tmp/openpilot/panda
 COPY ./selfdrive /tmp/openpilot/selfdrive
+
+
 
 RUN mkdir -p /tmp/openpilot/selfdrive/test/out
 RUN cd /tmp/openpilot && scons -j$(nproc)
