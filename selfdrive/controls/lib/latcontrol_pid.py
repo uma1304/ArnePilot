@@ -10,7 +10,7 @@ class LatControlPID():
                                (CP.lateralTuning.pid.kiBP, CP.lateralTuning.pid.kiV),
                                (CP.lateralTuning.pid.kdBP, CP.lateralTuning.pid.kdV),
                                (CP.lateralTuning.pid.kfBP, CP.lateralTuning.pid.kfV),
-                               k_f=CP.lateralTuning.pid.kf, pos_limit=1.0, neg_limit=-1.0,
+                               pos_limit=1.0, neg_limit=-1.0,
                                sat_limit=CP.steerLimitTimer)
     self.angle_steers_des = 0.
 
