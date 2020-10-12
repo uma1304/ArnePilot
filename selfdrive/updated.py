@@ -1,4 +1,4 @@
-!/usr/bin/env python3
+#!/usr/bin/env python3
 
 # Safe Update: A simple service that waits for network access and tries to
 # update every 10 minutes. It's intended to make the OP update process more
