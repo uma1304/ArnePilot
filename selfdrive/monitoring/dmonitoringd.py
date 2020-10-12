@@ -4,7 +4,7 @@ from common.params import Params
 import cereal.messaging as messaging
 from selfdrive.controls.lib.events import Events
 from selfdrive.monitoring.driver_monitor import DriverStatus, MAX_TERMINAL_ALERTS, MAX_TERMINAL_DURATION
-from selfdrive.locationd.calibration import Calibration
+from selfdrive.locationd.calibrationd import Calibration
 from selfdrive.monitoring.hands_on_wheel_monitor import HandsOnWheelStatus
 
 
