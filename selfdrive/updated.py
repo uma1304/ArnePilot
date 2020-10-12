@@ -372,8 +372,8 @@ def main():
     # Don't run updater while onroad or if the time's wrong
     time_wrong = datetime.datetime.utcnow().year < 2019
     is_onroad = params.get("IsOffroad") != b"1"
-        need_reboot = attempt_update(wait_helper, need_reboot)
-        update_failed_count = 0
+      need_reboot = attempt_update(wait_helper, need_reboot)
+      update_failed_count = 0
     if is_onroad or time_wrong:
       wait_helper.sleep(30)
       cloudlog.info("not running updater, not offroad")
