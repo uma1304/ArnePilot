@@ -126,7 +126,7 @@ class CarState(CarStateBase):
     if self.sport_on == 0 and self.econ_on == 0:
       self.gasbuttonstatus = 0
     msg = messaging_arne.new_message('arne182Status')
-    if frame > 999 and not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH):
+    if frame > 999 and not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH or self.CP.carFingerprint == CAR.AVALONH_2021):
       if cp.vl["DEBUG"]['BLINDSPOTSIDE']==65: #Left
         if cp.vl["DEBUG"]['BLINDSPOTD1'] != self.leftblindspotD1:
           self.leftblindspotD1 = cp.vl["DEBUG"]['BLINDSPOTD1']
@@ -414,7 +414,7 @@ class CarState(CarStateBase):
       signals.append(("INTERCEPTOR_GAS2", "GAS_SENSOR", 0))
       checks.append(("GAS_SENSOR", 50))
 
-    if CP.carFingerprint in TSS2_CAR or CP.carFingerprint == CAR.AVALON_2021:
+    if CP.carFingerprint in TSS2_CAR or CP.carFingerprint == CAR.AVALON_2021 or CP.carFingerprint == CAR.AVALONH_2021:
       signals += [("L_ADJACENT", "BSM", 0)]
       signals += [("R_ADJACENT", "BSM", 0)]
 
@@ -497,7 +497,7 @@ class CarState(CarStateBase):
       signals.append(("INTERCEPTOR_GAS2", "GAS_SENSOR", 0))
       checks.append(("GAS_SENSOR", 50))
 
-    if CP.carFingerprint in TSS2_CAR or CP.carFingerprint == CAR.AVALON_2021:
+    if CP.carFingerprint in TSS2_CAR or CP.carFingerprint == CAR.AVALON_2021 or CP.carFingerprint == CAR.AVALONH_2021:
       signals += [("L_ADJACENT", "BSM", 0)]
       signals += [("L_APPROACHING", "BSM", 0)]
       signals += [("R_ADJACENT", "BSM", 0)]
