@@ -346,8 +346,8 @@ class Planner():
     self.mpc2.set_cur_state(self.v_acc_start, self.a_acc_start)
     self.mpc_model.set_cur_state(self.v_acc_start, self.a_acc_start)
 
-    self.mpc1.update(pm, sm['carState'], lead_1, v_cruise_setpoint)
-    self.mpc2.update(pm, sm['carState'], lead_2, v_cruise_setpoint)
+    self.mpc1.update(pm, sm['carState'], lead_1)
+    self.mpc2.update(pm, sm['carState'], lead_2)
     self.mpc_model.update(sm['carState'].vEgo, sm['carState'].vEgo,
                           sm['model'].longitudinal.distances,
                           sm['model'].longitudinal.speeds,
