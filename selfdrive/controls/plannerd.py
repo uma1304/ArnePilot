@@ -23,7 +23,7 @@ def plannerd_thread(sm=None, pm=None, arne_sm=None):
   VM = VehicleModel(CP)
 
   if sm is None:
-    sm = messaging.SubMaster(['carState', 'controlsState', 'radarState', 'model', 'liveParameters', 'liveMapData']
+    sm = messaging.SubMaster(['carState', 'controlsState', 'radarState', 'model', 'liveParameters', 'liveMapData'],
                              poll=['radarState', 'model'])
   if arne_sm is None:
     arne_sm = messaging_arne.SubMaster(['arne182Status', 'latControl', 'modelLongButton'])
