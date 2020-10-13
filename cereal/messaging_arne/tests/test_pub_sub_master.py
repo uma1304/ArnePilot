@@ -3,8 +3,8 @@ import random
 import time
 import unittest
 
-import cereal.messaging as messaging
-from cereal.messaging.tests.test_messaging import events, random_sock, random_socks, \
+import cereal.messaging_arne as messaging
+from cereal.messaging_arne.tests.test_messaging import events, random_sock, random_socks, \
                                                   random_bytes, random_carstate, assert_carstate, \
                                                   zmq_sleep
 
