@@ -442,7 +442,14 @@ routes = {
     'carFingerprint': MAZDA.CX5,
     'enableCamera': True,
   },
-
+  "10b5a4b380434151|2020-08-26--17-11-45": {
+    'carFingerprint': MAZDA.CX9,
+    'enableCamera': True,
+  },
+  "74f1038827005090|2020-08-26--20-05-50": {
+    'carFingerprint': MAZDA.Mazda3,
+    'enableCamera': True,
+  },
   #"tbd": {
   #  'carFingerprint': VOLKSWAGEN.SKODA_SUPERB_B8,
   #  'enableCamera': True,
