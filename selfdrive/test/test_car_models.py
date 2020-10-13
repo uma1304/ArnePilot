@@ -241,11 +241,11 @@ routes = {
     'enableCamera': True,
     'enableDsu': False,
   },
-  "399f98d4e88eb662|2020-09-29--23-04-42": {
-    'carFingerprint': TOYOTA.AVALON_2021,
-    'enableCamera': True,
-    'enableDsu': False,
-  },
+  #"399f98d4e88eb662|2020-09-29--23-04-42": {
+  #  'carFingerprint': TOYOTA.AVALON_2021,
+  #  'enableCamera': True,
+  #  'enableDsu': False,
+  #},
   "b0f5a01cf604185c|2018-01-26--00-54-32": {
     'carFingerprint': TOYOTA.COROLLA,
     'enableCamera': True,
@@ -488,6 +488,7 @@ non_tested_cars = [
   NISSAN.XTRAIL,
   NISSAN.ROGUE,
   TOYOTA.AVALONH_2021,
+  TOYOTA.AVALON_2021,
   TOYOTA.PRIUS_2019,
   TOYOTA.CAMRYH,
   TOYOTA.CHR,
