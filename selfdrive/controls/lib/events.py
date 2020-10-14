@@ -819,7 +819,6 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.steerRequired, AudibleAlert.none, .0, .0, .1),
-    },
     ET.NO_ENTRY: NoEntryAlert("Planner Solution Error"),
   },
 
