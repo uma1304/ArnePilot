@@ -398,7 +398,7 @@ routes = {
     'carFingerprint': SUBARU.ASCENT,
     'enableCamera': True,
   },
-  "1851183c395ef471|2020-10-14--16-29-35": {
+  "c321c6b697c5a5ff|2020-06-23--11-04-33": {
     'carFingerprint': SUBARU.FORESTER,
     'enableCamera': True,
   },
