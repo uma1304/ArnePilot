@@ -6,7 +6,11 @@ Ecu = car.CarParams.Ecu
 
 # Steer torque limits
 class SteerLimitParams:
-  STEER_MAX = 255   # 409 is the max, 255 is stock
+  def __init__(self, CP):
+    if CP.carFingerprint in [CAR.SONATA, CAR.PALISADE]:
+      self.STEER_MAX = 384
+    else:
+      self.STEER_MAX = 255
   STEER_DELTA_UP = 3
   STEER_DELTA_DOWN = 7
   STEER_DRIVER_ALLOWANCE = 50
