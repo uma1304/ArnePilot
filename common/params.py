@@ -77,6 +77,7 @@ keys = {
   "HasCompletedSetup": [TxType.PERSISTENT],
   "IsDriverViewEnabled": [TxType.CLEAR_ON_MANAGER_START],
   "IsLdwEnabled": [TxType.PERSISTENT],
+  "IsGeofenceEnabled": [TxType.PERSISTENT],
   "IsMetric": [TxType.PERSISTENT],
   "IsOffroad": [TxType.CLEAR_ON_MANAGER_START],
   "IsRHD": [TxType.PERSISTENT],
