@@ -480,7 +480,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
   },
 
   EventName.keepHandsOnWheel: {
-    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("Driver kept hands off sterring wheel"),
+    ET.SOFT_DISABLE: ImmediateDisableAlert("Driver kept hands off sterring wheel"),
   },
 
   EventName.driverMonitorLowAcc: {
@@ -813,7 +813,15 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("Cruise Is Off"),
   },
 
-
+  EventName.plannerError: {
+    ET.WARNING: Alert(
+      "Planner Solution Error",
+      "",
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOWEST, VisualAlert.steerRequired, AudibleAlert.none, .0, .0, .1),
+    },
+    ET.NO_ENTRY: NoEntryAlert("Planner Solution Error"),
+  },
 
   EventName.relayMalfunction: {
     ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("Harness Malfunction"),
