@@ -265,8 +265,8 @@ const char* Panda::get_firmware_version(){
     return fw_sig_buf;
   //}
 
-  #delete[] fw_sig_buf;
-  #return NULL;
+  //delete[] fw_sig_buf;
+  //return NULL;
 }
 
 const char* Panda::get_serial(){
