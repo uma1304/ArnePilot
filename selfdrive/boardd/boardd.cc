@@ -129,7 +129,7 @@ bool usb_connect() {
 
   const char *fw_sig_buf = panda->get_firmware_version();
   if (fw_sig_buf){
-    write_db_value("PandaFirmware", fw_sig_buf, 128);
+    write_db_value("PandaFirmware", fw_sig_buf, 64);
 
     // Convert to hex for offroad
     char fw_sig_hex_buf[16] = {0};
