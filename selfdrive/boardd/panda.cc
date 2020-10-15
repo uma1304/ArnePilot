@@ -255,17 +255,18 @@ void Panda::set_loopback(bool loopback){
 }
 
 const char* Panda::get_firmware_version(){
-  const char* fw_sig_buf = new char[128]();
+  const char* fw_sig_buf = new char[64]();
 
-  int read_1 = usb_read(0xd3, 0, 0, (unsigned char*)fw_sig_buf, 64);
-  int read_2 = usb_read(0xd4, 0, 0, (unsigned char*)fw_sig_buf + 64, 64);
+  int read_1 = usb_read(0xd6, 0, 0, (unsigned char*)fw_sig_buf, 64);
+  printf("got verion: %d\n", read_1);
+  //int read_2 = usb_read(0xd4, 0, 0, (unsigned char*)fw_sig_buf + 64, 64);
 
-  if ((read_1 == 64) && (read_2 == 64)) {
+  //if ((read_1 == 64) && (read_2 == 64)) {
     return fw_sig_buf;
-  }
+  //}
 
-  delete[] fw_sig_buf;
-  return NULL;
+  #delete[] fw_sig_buf;
+  #return NULL;
 }
 
 const char* Panda::get_serial(){
