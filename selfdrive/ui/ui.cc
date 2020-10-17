@@ -123,6 +123,7 @@ void update_sockets(UIState *s) {
 
   if (s->started && sm.updated("controlsState")) {
     auto event = sm["controlsState"];
+    auto data = event.getControlsState();
     scene.controls_state = event.getControlsState();
 
     // TODO: the alert stuff shouldn't be handled here
