@@ -223,7 +223,7 @@ void update_sockets(UIState *s) {
   //dev ui
   if (sm.updated("carState")) {
     auto data = sm["carState"].getCarState();
-    scene.brakeLights = data.getBrakeLights();
+    //scene.brakeLights = data.getBrakeLights();
   }
 
 #ifdef QCOM2 // TODO: use this for QCOM too

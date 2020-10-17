@@ -546,32 +546,6 @@ static void ui_draw_driver_view(UIState *s) {
 }
 
 //dev ui
-static void ui_draw_vision_brake(UIState *s) {
-const UIScene *scene = &s->scene;
-const int brake_size = 96;
-const int brake_x = (scene->ui_viz_rx + (brake_size * 5) + (bdr_s * 4));
-const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
-const int brake_img_size = (brake_size * 1.5);
-const int brake_img_x = (brake_x - (brake_img_size / 2));
-const int brake_img_y = (brake_y - (brake_size / 4));
-
-bool brake_valid = scene->brakeLights;
-float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
-float brake_bg_alpha = brake_valid ? 0.3f : 0.1f;
-NVGcolor brake_bg = nvgRGBA(0, 0, 0, (255 * brake_bg_alpha));
-NVGpaint brake_img = nvgImagePattern(s->vg, brake_img_x, brake_img_y,
-  brake_img_size, brake_img_size, 0, s->img_brake, brake_img_alpha);
-
-nvgBeginPath(s->vg);
-nvgCircle(s->vg, brake_x, (brake_y + (bdr_s * 1.5)), brake_size);
-nvgFillColor(s->vg, brake_bg);
-nvgFill(s->vg);
-
-nvgBeginPath(s->vg);
-nvgRect(s->vg, brake_img_x, brake_img_y, brake_img_size, brake_img_size);
-nvgFillPaint(s->vg, brake_img);
-nvgFill(s->vg);
-}
 
 static void ui_draw_vision_header(UIState *s) {
   const Rect &viz_rect = s->scene.viz_rect;
@@ -1099,9 +1073,6 @@ void ui_nvg_init(UIState *s) {
   assert(s->img_battery != 0);
   s->img_battery_charging = nvgCreateImage(s->vg, "../assets/images/battery_charging.png", 1);
   assert(s->img_battery_charging != 0);
-  //dev ui
-  s->img_brake = nvgCreateImage(s->vg, "../assets/img_brake_disc.png", 1);
-  assert(s->img_brake != 0);
 
   for(int i=0;i<=5;++i) {
     char network_asset[32];
