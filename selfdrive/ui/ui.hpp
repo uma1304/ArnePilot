@@ -27,6 +27,8 @@
 #include "common/params.h"
 #include "sound.hpp"
 
+#include "cereal/gen/c/arne182.capnp.h"
+
 #define COLOR_BLACK nvgRGBA(0, 0, 0, 255)
 #define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
 #define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
@@ -95,6 +97,10 @@ typedef struct UIScene {
 
   mat4 extrinsic_matrix;      // Last row is 0 so we can use mat4.
   bool world_objects_visible;
+  float gpsAccuracy;
+  //float speedlimit;
+  float angleSteers;
+  bool brakeLights;
 
   bool is_rhd;
   bool frontview;
@@ -121,6 +127,8 @@ typedef struct UIScene {
   float left_lane_points[MODEL_PATH_DISTANCE];
   float path_points[MODEL_PATH_DISTANCE];
   float right_lane_points[MODEL_PATH_DISTANCE];
+  float angleSteersDes;
+  float angleSteers;
 } UIScene;
 
 typedef struct {

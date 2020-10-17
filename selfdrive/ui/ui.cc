@@ -24,7 +24,7 @@ int write_param_float(float param, const char* param_name, bool persistent_param
 
 void ui_init(UIState *s) {
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
-                         "health", "carParams", "ubloxGnss", "driverState", "dMonitoringState", "sensorEvents"});
+                         "health", "carParams", "ubloxGnss", "driverState", "dMonitoringState", "sensorEvents", "carState"});
 
   s->started = false;
   s->status = STATUS_OFFROAD;
@@ -164,6 +164,8 @@ void update_sockets(UIState *s) {
         }
       }
     }
+    scene.angleSteers = data.getAngleSteers();
+    scene.angleSteersDes = data.getAngleSteersDes();
   }
   if (sm.updated("radarState")) {
     auto data = sm["radarState"].getRadarState();
@@ -216,6 +218,11 @@ void update_sockets(UIState *s) {
     scene.frontview = scene.dmonitoring_state.getIsPreview();
   } else if ((sm.frame - sm.rcv_frame("dMonitoringState")) > UI_FREQ/2) {
     scene.frontview = false;
+  }
+  //dev ui
+  if (sm.update("carState")) {
+    auto data = sm["carState"].getCarState();
+    scene.brakeLights = data.getBrakeLights();
   }
 
 #ifdef QCOM2 // TODO: use this for QCOM too
