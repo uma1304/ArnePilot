@@ -412,10 +412,10 @@ routes = {
     #'enableCamera': True,
   #},
   # Dashcam
-  "df5ca7660000fba8|2020-06-16--17-37-19": {
-    'carFingerprint': SUBARU.LEGACY_PREGLOBAL,
-    'enableCamera': True,
-  },
+  #"df5ca7660000fba8|2020-06-16--17-37-19": {
+    #'carFingerprint': SUBARU.LEGACY_PREGLOBAL,
+    #'enableCamera': True,
+  #},
   # Dashcam
   "5ab784f361e19b78|2020-06-08--16-30-41": {
     'carFingerprint': SUBARU.OUTBACK_PREGLOBAL,
@@ -515,6 +515,7 @@ non_tested_cars = [
   NISSAN.XTRAIL,
   NISSAN.ROGUE,
   SUBARU.FORESTER_PREGLOBAL,
+  SUBARU.LEGACY_PREGLOBAL,
   TOYOTA.AVALON_2021,
   TOYOTA.PRIUS_2019,
   TOYOTA.CAMRYH,
