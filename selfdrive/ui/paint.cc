@@ -765,6 +765,7 @@ void ui_draw_bbui(UIState *s) {
 
 static void ui_draw_vision_footer(UIState *s) {
   ui_draw_vision_face(s);
+  ui_draw_bbui(s);
   //ui_draw_vision_brake(s);
 }
 
