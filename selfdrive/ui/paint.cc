@@ -611,6 +611,25 @@ void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) {
   float d_rel = s->scene.lead_data[0].getDRel();
   float v_rel = s->scene.lead_data[0].getVRel();
 
+  // add battery temperature
+  if (true) {
+    char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    if (s->scene.pa0 > 50) {
+      val_color = nvgRGBA(255, 0, 0, 200);
+    } else if (s->scene.pa0 > 40) {
+      val_color = nvgRGBA(255, 188, 3, 200);
+    }
+
+    snprintf(val_str, sizeof(val_str), "%2.0f°C", s->scene.pa0);
+    snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "BAT TEMP",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
   //add visual radar relative distance
   if (true) {
     char val_str[16];
