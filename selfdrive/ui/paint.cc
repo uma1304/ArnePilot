@@ -765,7 +765,7 @@ void ui_draw_bbui(UIState *s) {
 
 static void ui_draw_vision_footer(UIState *s) {
   ui_draw_vision_face(s);
-  ui_draw_vision_brake(s);
+  //ui_draw_vision_brake(s);
 }
 
 void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, int va_color,
