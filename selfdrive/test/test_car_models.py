@@ -410,7 +410,7 @@ routes = {
   #"95441c38ae8c130e|2020-06-08--12-10-17": {
     #'carFingerprint': SUBARU.FORESTER_PREGLOBAL,
     #'enableCamera': True,
-  },
+  #},
   # Dashcam
   "df5ca7660000fba8|2020-06-16--17-37-19": {
     'carFingerprint': SUBARU.LEGACY_PREGLOBAL,
