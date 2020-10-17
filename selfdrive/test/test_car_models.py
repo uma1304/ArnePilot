@@ -407,9 +407,9 @@ routes = {
     'enableCamera': True,
   },
   # Dashcam
-  "95441c38ae8c130e|2020-06-08--12-10-17": {
-    'carFingerprint': SUBARU.FORESTER_PREGLOBAL,
-    'enableCamera': True,
+  #"95441c38ae8c130e|2020-06-08--12-10-17": {
+    #'carFingerprint': SUBARU.FORESTER_PREGLOBAL,
+    #'enableCamera': True,
   },
   # Dashcam
   "df5ca7660000fba8|2020-06-16--17-37-19": {
@@ -514,6 +514,7 @@ non_tested_cars = [
   HYUNDAI.KIA_CADENZA_HEV,
   NISSAN.XTRAIL,
   NISSAN.ROGUE,
+  SUBARU.FORESTER_PREGLOBAL,
   TOYOTA.AVALON_2021,
   TOYOTA.PRIUS_2019,
   TOYOTA.CAMRYH,
