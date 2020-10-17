@@ -97,9 +97,32 @@ typedef struct UIScene {
 
   mat4 extrinsic_matrix;      // Last row is 0 so we can use mat4.
   bool world_objects_visible;
-  float gpsAccuracy;
+
+  //dev ui
   //float speedlimit;
-  bool brakeLights;
+  //bool speedlimit_valid;
+  //float speedlimitaheaddistance;
+  //bool speedlimitahead_valid;
+  float gpsAccuracy;
+  float angleSteersDes;
+  float angleSteers;
+  float pa0;
+  float freeSpace;
+  int lead_status;
+  int lead_status2;
+  float lead_d_rel, lead_y_rel, lead_v_rel;
+  float lead_d_rel2, lead_y_rel2, lead_v_rel2;
+  int engaged;
+  //bool brakeLights;
+  bool leftBlinker;
+  //bool steerOverride;
+  bool rightBlinker;
+  int blinker_blinkingrate;
+  //std::string ipAddr;
+  //float output_scale;
+  //cereal::CarState::GearShifter gear;
+  //bool rightblindspot;
+  //bool leftblindspot;
 
   bool is_rhd;
   bool frontview;
@@ -126,8 +149,8 @@ typedef struct UIScene {
   float left_lane_points[MODEL_PATH_DISTANCE];
   float path_points[MODEL_PATH_DISTANCE];
   float right_lane_points[MODEL_PATH_DISTANCE];
-  float angleSteersDes;
-  float angleSteers;
+  //float angleSteersDes;
+  //float angleSteers;
 } UIScene;
 
 typedef struct {

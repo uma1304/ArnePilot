@@ -426,7 +426,7 @@ static void ui_draw_vision_speed(UIState *s) {
   const int viz_speed_x = viz_rect.centerX() - viz_speed_w/2;
   char speed_str[32];
 
-  //turning blinker from kegman
+  // turning blinker from kegman
   if(scene->leftBlinker) {
     nvgBeginPath(s->vg);
     nvgMoveTo(s->vg, viz_speed_x, box_y + header_h/4);
@@ -436,7 +436,6 @@ static void ui_draw_vision_speed(UIState *s) {
     nvgFillColor(s->vg, nvgRGBA(23,134,68,scene->blinker_blinkingrate>=50?210:60));
     nvgFill(s->vg);
   }
-
   if(scene->rightBlinker) {
     nvgBeginPath(s->vg);
     nvgMoveTo(s->vg, viz_speed_x+viz_speed_w, box_y + header_h/4);
@@ -450,7 +449,7 @@ static void ui_draw_vision_speed(UIState *s) {
     s->scene.blinker_blinkingrate -= 3;
     if(scene->blinker_blinkingrate<0) s->scene.blinker_blinkingrate = 120;
   }
-  
+
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
   snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
