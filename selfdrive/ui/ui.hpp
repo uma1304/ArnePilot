@@ -113,7 +113,7 @@ typedef struct UIScene {
   float lead_d_rel, lead_y_rel, lead_v_rel;
   float lead_d_rel2, lead_y_rel2, lead_v_rel2;
   int engaged;
-  //bool brakeLights;
+  bool brakeLights;
   bool leftBlinker;
   //bool steerOverride;
   bool rightBlinker;
