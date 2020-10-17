@@ -99,7 +99,6 @@ typedef struct UIScene {
   bool world_objects_visible;
   float gpsAccuracy;
   //float speedlimit;
-  float angleSteers;
   bool brakeLights;
 
   bool is_rhd;

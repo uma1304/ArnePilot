@@ -220,7 +220,7 @@ void update_sockets(UIState *s) {
     scene.frontview = false;
   }
   //dev ui
-  if (sm.update("carState")) {
+  if (sm.updated("carState")) {
     auto data = sm["carState"].getCarState();
     scene.brakeLights = data.getBrakeLights();
   }
