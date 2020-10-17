@@ -224,6 +224,11 @@ void update_sockets(UIState *s) {
   if (sm.updated("carState")) {
     auto data = sm["carState"].getCarState();
     //scene.brakeLights = data.getBrakeLights();
+    if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker()) {
+      scene.blinker_blinkingrate = 100;
+    }
+    scene.leftBlinker = data.getLeftBlinker();
+    scene.rightBlinker = data.getRightBlinker();
   }
 
 #ifdef QCOM2 // TODO: use this for QCOM too
