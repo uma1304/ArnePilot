@@ -27,7 +27,7 @@
 #include "common/params.h"
 #include "sound.hpp"
 
-#include "cereal/gen/c/arne182.capnp.h"
+//#include "cereal/gen/c/arne182.capnp.h"
 
 #define COLOR_BLACK nvgRGBA(0, 0, 0, 255)
 #define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
