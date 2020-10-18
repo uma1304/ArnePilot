@@ -73,7 +73,6 @@ class opParams:
                                                                "All profiles support dynamic follow so you'll get your preferred distance while\n"
                                                                "retaining the smoothness and safety of dynamic follow!", live=True),
                         'eco_mode': Param(False, bool, "Default to eco instead of normal."),
-                        'e2e_model': Param(False, bool, "comma's long model.", live=True),
                         'force_pedal': Param(False, bool, "If openpilot isn't recognizing your comma pedal, set this to True"),
                         'global_df_mod': Param(None, VT.none_or_number, 'The multiplier for the current distance used by dynamic follow. The range is limited from 0.85 to 1.2\n'
                                                                         'Smaller values will get you closer, larger will get you farther\n'

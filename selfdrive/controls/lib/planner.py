@@ -26,7 +26,6 @@ smart_speed_max_vego = op_params.get('smart_speed_max_vego')
 offset_limit = op_params.get('offset_limit')
 default_brake_distance = op_params.get('default_brake_distance')
 eco_mode = op_params.get('eco_mode')
-e2e_model = op_prams.get('e2e_model')
 
 if not travis:
   curvature_factor = opParams().get('curvature_factor')
@@ -147,7 +146,7 @@ class Planner():
         solutions['mpc1'] = self.mpc1.v_mpc
       if self.mpc2.prev_lead_status and lead2_check:
         solutions['mpc2'] = self.mpc2.v_mpc
-      if self.mpc_model.valid and (e2e_model) or (model_enabled):
+      if self.mpc_model.valid and model_enabled:
         solutions['model'] = self.mpc_model.v_mpc + mpc_offset
       solutions['cruise'] = self.v_cruise
 
