@@ -160,33 +160,6 @@ static void update_offroad_layout_state(UIState *s, PubMaster *pm) {
   }
 }
 
-// e2e model button.
-static void send_ml(UIState *s, bool enabled) {
-  capnp::MallocMessageBuilder msg;
-  auto event = msg.initRoot<cereal::Event>();
-  event.setLogMonoTime(nanos_since_boot());
-  auto mlStatus = event.initModelLongButton();
-  mlStatus.setEnabled(enabled);
-  s->pm->send("modelLongButton", msg);
-}
-
-static bool handle_ml_touch(UIState *s, int touch_x, int touch_y) {
-  //mlButton manager
-  if ((s->awake && s->vision_connected && s->status != STATUS_STOPPED) || s->ui_debug) {
-    int padding = 40;
-    int btn_w = 500;
-    int btn_h = 138;
-    int xs[2] = {1920 / 2 - btn_w / 2, 1920 / 2 + btn_w / 2};
-    int y_top = 915 - btn_h / 2;
-    if (xs[0] <= touch_x + padding && touch_x - padding <= xs[1] && y_top - padding <= touch_y) {
-      s->scene.mlButtonEnabled = !s->scene.mlButtonEnabled;
-      send_ml(s, s->scene.mlButtonEnabled);
-      return true;
-    }
-  }
-    return false;
-}
-
 int main(int argc, char* argv[]) {
   int err;
   setpriority(PRIO_PROCESS, 0, -14);
@@ -202,7 +175,7 @@ int main(int argc, char* argv[]) {
   set_awake(s, true);
   enable_event_processing(true);
 
-  PubMaster *pm = new PubMaster({"offroadLayout", "modelLongButton"});
+  PubMaster *pm = new PubMaster({"offroadLayout"});
   pthread_t light_sensor_thread_handle;
   err = pthread_create(&light_sensor_thread_handle, NULL,
                        light_sensor_thread, s);

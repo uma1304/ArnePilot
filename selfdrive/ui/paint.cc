@@ -545,35 +545,8 @@ static void ui_draw_driver_view(UIState *s) {
   ui_draw_circle_image(s->vg, x, y, face_size, s->img_face, scene->dmonitoring_state.getFaceDetected());
 }
 
-static void ui_draw_ml_button(UIState *s) {
-  int btn_w = 500;
-  int btn_h = 138;
-  int x = 1920 / 2;
-  int y = 915;
-  int btn_x = x - btn_w / 2;
-  int btn_y = y - btn_h / 2;
-
-  nvgBeginPath(s->vg);
-  nvgRoundedRect(s->vg, btn_x, btn_y, btn_w, btn_h, 25);
-  if (s->scene.mlButtonEnabled) {  // change outline color based on status of button
-    nvgStrokeColor(s->vg, nvgRGBA(55, 184, 104, 255));
-  } else {
-    nvgStrokeColor(s->vg, nvgRGBA(184, 55, 55, 255));
-  }
-  nvgStrokeWidth(s->vg, 12);
-  nvgStroke(s->vg);
-
-  nvgBeginPath(s->vg);  // dark background for readability
-  nvgRoundedRect(s->vg, btn_x, btn_y, btn_w, btn_h, 25);
-  nvgFillColor(s->vg, nvgRGBA(75, 75, 75, 75));
-  nvgFill(s->vg);
-
-  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 255));
-  nvgFontSize(s->vg, 65);
-  nvgText(s->vg, x, y + btn_h / 8, "e2e long", NULL);
-}
-
 //dev ui
+
 static void ui_draw_vision_header(UIState *s) {
   const Rect &viz_rect = s->scene.viz_rect;
   NVGpaint gradient = nvgLinearGradient(s->vg, viz_rect.x,
@@ -746,10 +719,10 @@ void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w ) {
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
       //show Orange if more than 6 degrees
       //show red if  more than 12 degrees
-      if(((int)(s->scene.angleSteers) < -30) || ((int)(s->scene.angleSteers) > 30)) {
+      if(((int)(s->scene.angleSteers) < -6) || ((int)(s->scene.angleSteers) > 6)) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if(((int)(s->scene.angleSteers) < -60) || ((int)(s->scene.angleSteers) > 60)) {
+      if(((int)(s->scene.angleSteers) < -12) || ((int)(s->scene.angleSteers) > 12)) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // steering is in degrees
@@ -770,10 +743,10 @@ void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w ) {
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     //show Orange if more than 6 degrees
     //show red if  more than 12 degrees
-    if(((int)(s->scene.angleSteersDes) < -30) || ((int)(s->scene.angleSteersDes) > 30)) {
+    if(((int)(s->scene.angleSteersDes) < -6) || ((int)(s->scene.angleSteersDes) > 6)) {
       val_color = nvgRGBA(255, 188, 3, 200);
     }
-    if(((int)(s->scene.angleSteersDes) < -60) || ((int)(s->scene.angleSteersDes) > 60)) {
+    if(((int)(s->scene.angleSteersDes) < -12) || ((int)(s->scene.angleSteersDes) > 12)) {
       val_color = nvgRGBA(255, 0, 0, 200);
     }
     // steering is in degrees
@@ -812,7 +785,6 @@ void ui_draw_bbui(UIState *s) {
 static void ui_draw_vision_footer(UIState *s) {
   ui_draw_vision_face(s);
   ui_draw_bbui(s);
-  ui_draw_ml_button(s);
   //ui_draw_vision_brake(s);
 }
 
