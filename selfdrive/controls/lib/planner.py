@@ -26,7 +26,7 @@ smart_speed_max_vego = op_params.get('smart_speed_max_vego')
 offset_limit = op_params.get('offset_limit')
 default_brake_distance = op_params.get('default_brake_distance')
 eco_mode = op_params.get('eco_mode')
-e2e_model = op_prams.get('e2e_model')
+e2e_model = op_params.get('e2e_model')
 
 if not travis:
   curvature_factor = opParams().get('curvature_factor')
