@@ -123,7 +123,7 @@ typedef struct UIScene {
   //cereal::CarState::GearShifter gear;
   //bool rightblindspot;
   //bool leftblindspot;
-
+  bool mlButtonEnabled;
   bool is_rhd;
   bool frontview;
   bool uilayout_sidebarcollapsed;

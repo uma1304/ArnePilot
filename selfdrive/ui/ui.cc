@@ -40,6 +40,7 @@ void ui_init(UIState *s) {
 static void ui_init_vision(UIState *s) {
   // Invisible until we receive a calibration message.
   s->scene.world_objects_visible = false;
+  s->scene.mlButtonEnabled = false;
 
   for (int i = 0; i < UI_BUF_COUNT; i++) {
     if (s->khr[i] != 0) {
