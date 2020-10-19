@@ -386,8 +386,8 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.PRIUS_TSS2:
       #ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # braking tune from rav4h
       #ret.longitudinalTuning.kiV = [0.195, 0.10]
-      ret.longitudinalTuning.kpV = [0.25, 0.3, 0.325]  # braking tune from rav4h
-      ret.longitudinalTuning.kiV = [0.068, 0.10]
+      ret.longitudinalTuning.kpV = [0.5, 0.4, 0.3]  # braking tune from rav4h
+      ret.longitudinalTuning.kiV = [0.135, 0.10]
       stop_and_go = True
       ret.safetyParam = 55
       ret.wheelbase = 2.70002
