@@ -105,7 +105,6 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     preKeepHandsOnWheel @92;
     promptKeepHandsOnWheel @93;
     keepHandsOnWheel @94;
-    deviceFalling @95;
 
     gasUnavailableDEPRECATED @3;
     dataNeededDEPRECATED @16;
