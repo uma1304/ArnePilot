@@ -35,6 +35,7 @@ import threading
 import time
 from cffi import FFI
 
+from common.hardware import ANDROID, TICI
 from common.basedir import BASEDIR
 from common.params import Params
 from selfdrive.swaglog import cloudlog
@@ -149,9 +150,24 @@ def setup_git_options(cwd):
   except subprocess.CalledProcessError:
     trustctime_set = False
 
-  if not trustctime_set:
-    cloudlog.info("Setting core.trustctime false")
-    run(["git", "config", "core.trustctime", "false"], cwd)
+  # We are using copytree to copy the directory, which also changes
+  # inode numbers. Ignore those changes too.
+  git_cfg = [
+    ("core.trustctime", "false"),
+    ("core.checkStat", "minimal"),
+  ]
+  for option, value in git_cfg:
+    run(["git", "config", option, value], cwd)
+
+
+def dismount_overlay() -> None:
+  if os.path.ismount(OVERLAY_MERGED):
+    cloudlog.info("unmounting existing overlay")
+    args = ["umount", "-l", OVERLAY_MERGED]
+    if TICI:
+      args = ["sudo"] + args
+    run(args)
+
 
   # We are temporarily using copytree to copy the directory, which also changes
   # inode numbers. Ignore those changes too.
@@ -193,7 +209,13 @@ def init_ovfs():
   Path(os.path.join(BASEDIR, ".overlay_init")).touch()
 
   overlay_opts = f"lowerdir={BASEDIR},upperdir={OVERLAY_UPPER},workdir={OVERLAY_METADATA}"
-  run(["mount", "-t", "overlay", "-o", overlay_opts, "none", OVERLAY_MERGED])
+
+  mount_cmd = ["mount", "-t", "overlay", "-o", overlay_opts, "none", OVERLAY_MERGED]
+  if TICI:
+    run(["sudo"] + mount_cmd)
+    run(["sudo", "chmod", "755", os.path.join(OVERLAY_METADATA, "work")])
+  else:
+    run(mount_cmd)
 
 
 def inodes_in_tree(search_dir):

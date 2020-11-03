@@ -53,7 +53,7 @@ def get_expected_signature(fw_fn=None):
 
 def update_panda():
   repo_version = get_expected_version()
-  
+
   panda = None
   panda_dfu = None
 

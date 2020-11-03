@@ -3,7 +3,7 @@ import os
 from cereal import car, log
 from common.hardware import HARDWARE
 from common.numpy_fast import clip
-from common.realtime import sec_since_boot, config_rt_process, Priority, Ratekeeper, DT_CTRL
+from common.realtime import sec_since_boot, config_realtime_process, Priority, Ratekeeper, DT_CTRL
 from common.profiler import Profiler
 from common.params import Params, put_nonblocking
 import cereal.messaging as messaging
@@ -49,7 +49,7 @@ EventName = car.CarEvent.EventName
 
 class Controls:
   def __init__(self, sm=None, pm=None, can_sock=None, arne_sm=None):
-    config_rt_process(3, Priority.CTRL_HIGH)
+    config_realtime_process(3, Priority.CTRL_HIGH)
 
     # Setup sockets
     self.pm = pm
@@ -149,6 +149,8 @@ class Controls:
       self.distance_traveled_override = 0
 
     self.distance_traveled_frame = 0
+    self.distance_traveled = 0
+    self.last_functional_fan_frame = 0
     self.events_prev = []
     self.current_alert_types = [ET.PERMANENT]
 
@@ -158,7 +160,7 @@ class Controls:
     self.sm['dMonitoringState'].awarenessStatus = 1.
     self.sm['dMonitoringState'].faceDetected = False
 
-    self.startup_event = get_startup_event(car_recognized, controller_available)
+    self.startup_event = get_startup_event(car_recognized, controller_available, hw_type)
 
     if not sounds_available:
       self.events.add(EventName.soundsUnavailable, static=True)
@@ -200,6 +202,14 @@ class Controls:
       self.events.add(EventName.outOfSpace)
     if self.sm['thermal'].memUsedPercent > 90:
       self.events.add(EventName.lowMemory)
+
+    # Alert if fan isn't spinning for 5 seconds
+    if self.sm['health'].hwType in [HwType.uno, HwType.dos]:
+      if self.sm['health'].fanSpeedRpm == 0 and self.sm['thermal'].fanSpeed > 50:
+        if (self.sm.frame - self.last_functional_fan_frame) * DT_CTRL > 5.0:
+          self.events.add(EventName.fanMalfunction)
+      else:
+        self.last_functional_fan_frame = self.sm.frame
 
     # Handle calibration status
     cal_status = self.sm['liveCalibration'].calStatus
@@ -249,9 +259,6 @@ class Controls:
       self.events.add(EventName.posenetInvalid)
     if not self.sm['liveLocationKalman'].deviceStable:
       self.events.add(EventName.deviceFalling)
-    if not self.sm['frame'].recoverState < 2:
-      # counter>=2 is active
-      self.events.add(EventName.focusRecoverActive)
     if not self.sm['plan'].radarValid:
       self.events.add(EventName.radarFault)
     if self.sm['plan'].radarCanError:
@@ -483,6 +490,7 @@ class Controls:
       self.events.add(EventName.ldw)
       self.last_ldw_frame = self.sm.frame
 
+    clear_event = ET.WARNING if ET.WARNING not in self.current_alert_types else None
     alerts = self.events.create_alerts(self.current_alert_types, [self.CP, self.sm, self.is_metric])
     alertsArne182 = self.eventsArne182.create_alerts(self.current_alert_types, [self.CP, self.sm, self.is_metric])
     self.last_model_long = self.arne_sm['modelLongButton'].enabled
@@ -517,7 +525,7 @@ class Controls:
           self.AM.add_custom(self.sm.frame, 'trafficGreen', ET.WARNING, self.enabled, extra_text_2=' ({}%)'.format(traffic_confidence))
         elif traffic_status == 'DEAD':  # confidence will be 100
           self.AM.add_custom(self.sm.frame, 'trafficDead', ET.WARNING, self.enabled)
-    self.AM.process_alerts(self.sm.frame)
+    self.AM.process_alerts(self.sm.frame, clear_event)
     CC.hudControl.visualAlert = self.AM.visual_alert
 
     if not self.read_only:

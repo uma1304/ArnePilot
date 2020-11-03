@@ -49,10 +49,11 @@ This is done automatically otherwise run `pkill -f boardd; cd /data/openpilot/pa
 
 ## Supported Cars
 Fork is known to work in both US and Europe
+- Avalon 2021
 - RAV4 Hybrid 2016-19
 - RAV4 2017-19
 - Corolla 2019-20
-- Prius 2017
+- Prius 2017-2021
 - RX hyrid 2017
 - CT 2018
 - Hyundia is fully supported thank to @xps-genesis
