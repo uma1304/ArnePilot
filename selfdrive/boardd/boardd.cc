@@ -272,7 +272,7 @@ void can_health_thread() {
   char *s;
   size_t sz;
   bool persistent_param = false;
-  const int result = read_db_value("DisablePowerDownTime", &s, &sz, persistent_param);
+  const int result = write_db_value("DisablePowerDownTime", &s, &sz, persistent_param);
   if (result == 0) {
     hours = strtod(s, NULL);
   }
