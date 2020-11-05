@@ -232,7 +232,6 @@ void update_sockets(UIState *s) {
     scene.rightBlinker = data.getRightBlinker();
   }
 
-#ifdef QCOM2 // TODO: use this for QCOM too
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
       if (sensor.which() == cereal::SensorEventData::LIGHT) {
@@ -289,7 +288,6 @@ void ui_update(UIState *s) {
       s->status = STATUS_ALERT;
     }
   }
-
   // Read params
   if ((s->sm)->frame % (5*UI_FREQ) == 0) {
     read_param(&s->is_metric, "IsMetric");
