@@ -420,10 +420,15 @@ def thermald_thread():
     should_start = ignition
 
     # with 2% left, we killall, otherwise the phone will take a long time to boot
+    should_start = should_start and fw_version_match
     startup_conditions["free_space"] = msg.thermal.freeSpace > 0.02
     startup_conditions["completed_training"] = completed_training or (current_branch in ['dashcam', 'dashcam-staging'])
     startup_conditions["not_driver_view"] = not params.get("IsDriverViewEnabled") == b"1"
-    startup_conditions["not_taking_snapshot"] = not params.get("IsTakingSnapshot") == b"1"
+    startup_conditions["not_taking_snapshot"] = not params.get("IsTakingSnapshot") == b"1"\
+    if fw_version_match and not fw_version_match_prev:
+      set_offroad_alert("Offroad_PandaFirmwareMismatch", False)
+    if not fw_version_match and fw_version_match_prev:
+      set_offroad_alert("Offroad_PandaFirmwareMismatch", True)
     # if any CPU gets above 107 or the battery gets above 63, kill all processes
     # controls will warn with CPU above 95 or battery above 60
     startup_conditions["device_temp_good"] = thermal_status < ThermalStatus.danger
@@ -440,10 +445,8 @@ def thermald_thread():
         started_seen = True
         os.system('echo performance > /sys/class/devfreq/soc:qcom,cpubw/governor')
     else:
-      if startup_conditions["ignition"] and (startup_conditions != startup_conditions_prev):
-        cloudlog.event("Startup blocked", startup_conditions=startup_conditions)
       if should_start_prev or (count == 0):
-        params.put("IsOffroad", "1")
+        put_nonblocking("IsOffroad", "1")
 
       started_ts = None
       if off_ts is None:
@@ -474,6 +477,7 @@ def thermald_thread():
 
     set_offroad_alert_if_changed("Offroad_ChargeDisabled", (not usb_power))
 
+    fw_version_match_prev = fw_version_match
     should_start_prev = should_start
     startup_conditions_prev = startup_conditions.copy()
 

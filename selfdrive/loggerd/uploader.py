@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 import os
-#import random
-import re
-import subprocess
 import threading
 import time
 import json
@@ -74,6 +71,16 @@ def clear_locks(root):
 
 def is_on_wifi():
   return HARDWARE.get_network_type() == NetworkType.wifi
+
+def is_on_hotspot():
+  try:
+    result = subprocess.check_output(["ifconfig", "wlan0"], stderr=subprocess.STDOUT, encoding='utf8')
+    result = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+    return (result.startswith('192.168.43.') or  # android
+            result.startswith('172.20.10.') or  # ios
+            result.startswith('10.0.2.'))  # toyota entune
+  except Exception:
+    return False
 
 class Uploader():
   def __init__(self, dongle_id, root):

@@ -35,7 +35,6 @@ import threading
 import time
 from cffi import FFI
 
-from common.hardware import ANDROID, TICI
 from common.basedir import BASEDIR
 from common.params import Params
 from selfdrive.swaglog import cloudlog
@@ -149,6 +148,10 @@ def setup_git_options(cwd):
     trustctime_set = (trustctime.strip() == "false")
   except subprocess.CalledProcessError:
     trustctime_set = False
+
+  if not trustctime_set:
+    cloudlog.info("Setting core.trustctime false")
+    run(["git", "config", "core.trustctime", "false"], cwd)
 
   # We are using copytree to copy the directory, which also changes
   # inode numbers. Ignore those changes too.

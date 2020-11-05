@@ -11,7 +11,7 @@ import datetime
 import textwrap
 from typing import Dict, List
 from selfdrive.swaglog import cloudlog, add_logentries_handler
-from common.basedir import BASEDIR, PARAMS
+#from common.basedir import BASEDIR, PARAMS
 #from common.android import ANDROID // i dont think we need this.
 from common.op_params import opParams
 from common.travis_checker import travis
