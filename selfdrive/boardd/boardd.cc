@@ -268,15 +268,15 @@ void can_recv_thread() {
 void can_health_thread() {
   LOGD("start health thread");
   // health = 8011
-  float hours = 30;
-  char *s;
-  size_t sz;
-  bool persistent_param = false;
-  const int result = write_db_value("DisablePowerDownTime", &s, &sz, persistent_param);
-  if (result == 0) {
-    hours = strtod(s, NULL);
-  }
-  free(s);
+//  float hours = 30;
+//  char *s;
+//  size_t sz;
+//  bool persistent_param = false;
+//  const int result = write_db_value("DisablePowerDownTime", &s, &sz, persistent_param);
+//  if (result == 0) {
+//    hours = strtod(s, NULL);
+//  }
+//  free(s);
   PubMaster pm({"health"});
 
   uint32_t no_ignition_cnt = 0;
