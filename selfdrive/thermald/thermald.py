@@ -204,6 +204,7 @@ def thermald_thread():
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
   cpu_temp_filter = FirstOrderFilter(0., CPU_TEMP_TAU, DT_TRML)
   health_prev = None
+  fw_version_match_prev = True
   should_start_prev = False
   handle_fan = None
   is_uno = False
@@ -246,37 +247,6 @@ def thermald_thread():
       # Setup fan handler on first connect to panda
       if handle_fan is None and health.health.hwType != log.HealthData.HwType.unknown:
         is_uno = health.health.hwType == log.HealthData.HwType.uno
-
-        if (not EON) or is_uno:
-          cloudlog.info("Setting up UNO fan handler")
-          handle_fan = handle_fan_uno
-        else:
-          cloudlog.info("Setting up EON fan handler")
-          setup_eon_fan()
-          handle_fan = handle_fan_eon
-
-      # Handle disconnect
-      if health_prev is not None:
-        if health.health.hwType == log.HealthData.HwType.unknown and \
-          health_prev.health.hwType != log.HealthData.HwType.unknown:
-          params.panda_disconnect()
-      health_prev = health
-
-      # If we lose connection to the panda, wait 5 seconds before going offroad
-      if health.health.hwType == log.HealthData.HwType.unknown:
-        no_panda_cnt += 1
-        if no_panda_cnt > DISCONNECT_TIMEOUT / DT_TRML:
-          if ignition:
-            cloudlog.error("Lost panda connection while onroad")
-          ignition = False
-      else:
-        no_panda_cnt = 0
-        ignition = health.health.ignitionLine or health.health.ignitionCan
-
-      # Setup fan handler on first connect to panda
-      if handle_fan is None and health.health.hwType != log.HealthData.HwType.unknown:
-        is_uno = health.health.hwType == log.HealthData.HwType.uno
-        has_relay = health.health.hwType in [log.HealthData.HwType.blackPanda, log.HealthData.HwType.uno, log.HealthData.HwType.dos]
 
         if (not EON) or is_uno:
           cloudlog.info("Setting up UNO fan handler")
@@ -443,8 +413,10 @@ def thermald_thread():
         started_seen = True
         os.system('echo performance > /sys/class/devfreq/soc:qcom,cpubw/governor')
     else:
+      if startup_conditions["ignition"] and (startup_conditions != startup_conditions_prev):
+        cloudlog.event("Startup blocked", startup_conditions=startup_conditions)
       if should_start_prev or (count == 0):
-        put_nonblocking("IsOffroad", "1")
+        params.put("IsOffroad", "1"
 
       started_ts = None
       if off_ts is None:
