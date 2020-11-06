@@ -425,7 +425,7 @@ def thermald_thread():
     startup_conditions["completed_training"] = completed_training or (current_branch in ['dashcam', 'dashcam-staging'])
     startup_conditions["not_driver_view"] = not params.get("IsDriverViewEnabled") == b"1"
     startup_conditions["not_taking_snapshot"] = not params.get("IsTakingSnapshot") == b"1"
-    startup_conditions["fw_version_match"] = not params.get("fw_version_match_prev") == b"1"\
+    startup_conditions["fw_version_match"] = not params.get("fw_version_match_prev") == b"1"
       set_offroad_alert_if_changed("Offroad_PandaFirmwareMismatch", False)
     # if any CPU gets above 107 or the battery gets above 63, kill all processes
     # controls will warn with CPU above 95 or battery above 60
