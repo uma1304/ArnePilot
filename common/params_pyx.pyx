@@ -25,12 +25,16 @@ keys = {
   b"CompletedTrainingVersion": [TxType.PERSISTENT],
   b"DisablePowerDown": [TxType.PERSISTENT],
   b"DisableUpdates": [TxType.PERSISTENT],
+  b"DistanceTraveled": [TxType.PERSISTENT],
+  b"DistanceTraveledEngaged": [TxType.PERSISTENT],
+  b"DistanceTraveledOverride": [TxType.PERSISTENT],
   b"DoUninstall": [TxType.CLEAR_ON_MANAGER_START],
   b"DongleId": [TxType.PERSISTENT],
   b"GitBranch": [TxType.PERSISTENT],
   b"GitCommit": [TxType.PERSISTENT],
   b"GitRemote": [TxType.PERSISTENT],
   b"GithubSshKeys": [TxType.PERSISTENT],
+  b"HandsOnWheelMonitoring": [TxType.PERSISTENT],
   b"HasAcceptedTerms": [TxType.PERSISTENT],
   b"HasCompletedSetup": [TxType.PERSISTENT],
   b"IsDriverViewEnabled": [TxType.CLEAR_ON_MANAGER_START],
@@ -44,6 +48,8 @@ keys = {
   b"LastAthenaPingTime": [TxType.PERSISTENT],
   b"LastUpdateTime": [TxType.PERSISTENT],
   b"LastUpdateException": [TxType.PERSISTENT],
+  b"LimitSetSpeed": [TxType.PERSISTENT],
+  b"LimitSetSpeedNeural": [TxType.PERSISTENT],
   b"LiveParameters": [TxType.PERSISTENT],
   b"OpenpilotEnabledToggle": [TxType.PERSISTENT],
   b"LaneChangeEnabled": [TxType.PERSISTENT],
@@ -69,6 +75,7 @@ keys = {
   b"Offroad_IsTakingSnapshot": [TxType.CLEAR_ON_MANAGER_START],
   b"Offroad_NeosUpdate": [TxType.CLEAR_ON_MANAGER_START],
   b"Offroad_UpdateFailed": [TxType.CLEAR_ON_MANAGER_START],
+  b"DevBBUI": [TxType.PERSISTENT],
 }
 
 def ensure_bytes(v):
