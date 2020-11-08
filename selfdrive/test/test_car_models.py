@@ -61,10 +61,10 @@ def get_route_log(route_name):
 
 
 routes = {
-  "420a8e183f1aed48|2020-03-05--07-15-29": {
-    'carFingerprint': CHRYSLER.PACIFICA_2017_HYBRID,
-    'enableCamera': True,
-  },
+  #"420a8e183f1aed48|2020-03-05--07-15-29": {
+  #  'carFingerprint': CHRYSLER.PACIFICA_2017_HYBRID,
+  #  'enableCamera': True,
+  #},
   "8190c7275a24557b|2020-01-29--08-33-58": {  # 2020 model year
     'carFingerprint': CHRYSLER.PACIFICA_2019_HYBRID,
     'enableCamera': True,
@@ -478,6 +478,7 @@ forced_dashcam_routes = [
 # TODO: add routes for these cars
 
 non_tested_cars = [
+  CHRYSLER.PACIFICA_2017_HYBRID,
   CHRYSLER.JEEP_CHEROKEE_2019,
   CHRYSLER.JEEP_CHEROKEE_2017,
   CHRYSLER.JEEP_CHEROKEE_2018,
