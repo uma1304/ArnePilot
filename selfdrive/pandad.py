@@ -97,19 +97,19 @@ def update_panda():
     "None",#fw_signature.hex(),
   ))
 
-  if panda.bootstub or not panda_version.startswith(repo_version):# or panda_signature != fw_signature:
-    cloudlog.info("Panda firmware out of date, update required")
-    try:
-      panda.flash()
-    except:
-      pass
-    cloudlog.info("Done flashing")
+  #if panda.bootstub or not panda_version.startswith(repo_version):# or panda_signature != fw_signature:
+    #cloudlog.info("Panda firmware out of date, update required")
+    #try:
+    #  panda.flash()
+    #except:
+    #  pass
+    #cloudlog.info("Done flashing")
 
-  if panda.bootstub:
-    bootstub_version = panda.get_version()
-    cloudlog.info(f"Flashed firmware not booting, flashing development bootloader. Bootstub version: {bootstub_version}")
-    panda.recover()
-    cloudlog.info("Done flashing bootloader")
+  #if panda.bootstub:
+    #bootstub_version = panda.get_version()
+    #cloudlog.info(f"Flashed firmware not booting, flashing development bootloader. Bootstub version: {bootstub_version}")
+    #panda.recover()
+    #cloudlog.info("Done flashing bootloader")
 
   if panda.bootstub:
     cloudlog.info("Panda still not booting, exiting")
