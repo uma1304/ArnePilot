@@ -40,7 +40,11 @@ def get_expected_signature(fw_fn=None):
   if fw_fn is None:
     fw_fn = get_firmware_fn()
 
-  return Panda.get_signature_from_firmware(fw_fn)
+  try:
+    return Panda.get_signature_from_firmware(fw_fn)
+  except Exception:
+    cloudlog.exception("Error computing expected signature")
+    return b""
 
 
 def update_panda():
@@ -83,16 +87,16 @@ def update_panda():
     fw_signature.hex(),
   ))
 
-  #if panda.bootstub or panda_signature != fw_signature:
-  #  cloudlog.info("Panda firmware out of date, update required")
-  #  panda.flash(fw_fn)
-  #  cloudlog.info("Done flashing")
+ # if panda.bootstub or panda_signature != fw_signature:
+    #cloudlog.info("Panda firmware out of date, update required")
+    #panda.flash(fw_fn)
+    #cloudlog.info("Done flashing")
 
   #if panda.bootstub:
-  #  bootstub_version = panda.get_version()
-  #  cloudlog.info(f"Flashed firmware not booting, flashing development bootloader. Bootstub version: {bootstub_version}")
-  #  panda.recover()
-  #  cloudlog.info("Done flashing bootloader")
+    #bootstub_version = panda.get_version()
+    #cloudlog.info(f"Flashed firmware not booting, flashing development bootloader. Bootstub version: {bootstub_version}")
+    #panda.recover()
+    #cloudlog.info("Done flashing bootloader")
 
   if panda.bootstub:
     cloudlog.info("Panda still not booting, exiting")
@@ -100,8 +104,8 @@ def update_panda():
 
   #panda_signature = panda.get_signature()
   #if panda_signature != fw_signature:
-  #  cloudlog.info("Version mismatch after flashing, exiting")
-  #  raise AssertionError
+    #cloudlog.info("Version mismatch after flashing, exiting")
+    #raise AssertionError
 
 
 def main():
