@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     try {
       capnp::FlatArrayMessageReader reader(words);
       words = kj::arrayPtr(reader.getEnd(), words.end());
-    } catch (kj::Exception exc) {
+    } catch (const kj::Exception& exc) {
       break;
     }
   }
