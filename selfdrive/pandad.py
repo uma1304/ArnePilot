@@ -8,6 +8,11 @@ from common.gpio import GPIO_HUB_RST_N, GPIO_STM_BOOT0, GPIO_STM_RST_N, gpio_ini
 from panda import BASEDIR, Panda, PandaDFU, build_st
 from selfdrive.swaglog import cloudlog
 
+def get_expected_version():
+  with open(os.path.join(BASEDIR, "VERSION")) as f:
+    repo_version = f.read()
+  repo_version += "-EON" if os.path.isfile('/EON') else "-DEV"
+  return repo_version
 
 def set_panda_power(power=True):
   if not TICI:
