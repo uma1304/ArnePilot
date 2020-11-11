@@ -67,6 +67,33 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.indi.actuatorEffectiveness = 1.0
       ret.steerActuatorDelay = 0.5
 
+    elif candidate == CAR.PRIUS_TSS2:
+      #ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # braking tune from rav4h
+      #ret.longitudinalTuning.kiV = [0.195, 0.10]
+      ret.longitudinalTuning.kpV = [0.5, 0.4, 0.3]  # braking tune from rav4h
+      ret.longitudinalTuning.kiV = [0.135, 0.10]
+      stop_and_go = True
+      ret.safetyParam = 55
+      ret.wheelbase = 2.70002
+      ret.steerRatio = 13.4   # True steerRation from older prius
+      tire_stiffness_factor = 0.6371   # hand-tune
+      ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
+      ret.steerActuatorDelay = 0.5
+      if prius_pid:
+        ret.lateralTuning.init('pid')
+        ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
+        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.35], [0.1]]
+        ret.lateralTuning.pid.kdBP = [0.]
+        ret.lateralTuning.pid.kdV = [2.]
+        ret.lateralTuning.pid.kfV = [0.00007818594]
+      else:
+        ret.lateralTuning.init('indi')
+        ret.lateralTuning.indi.innerLoopGain = 4.0
+        ret.lateralTuning.indi.outerLoopGain = 3.0
+        ret.lateralTuning.indi.timeConstant = 0.1
+        ret.lateralTuning.indi.actuatorEffectiveness = 1.0
+        ret.steerActuatorDelay = 0.5
+
     elif candidate in [CAR.RAV4H]:
       stop_and_go = True if (candidate in CAR.RAV4H) else False
       ret.safetyParam = 73
@@ -382,33 +409,6 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 3500. * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kfV = [0.00007]
-
-    elif candidate == CAR.PRIUS_TSS2:
-      #ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # braking tune from rav4h
-      #ret.longitudinalTuning.kiV = [0.195, 0.10]
-      ret.longitudinalTuning.kpV = [0.5, 0.4, 0.3]  # braking tune from rav4h
-      ret.longitudinalTuning.kiV = [0.135, 0.10]
-      stop_and_go = True
-      ret.safetyParam = 55
-      ret.wheelbase = 2.70002
-      ret.steerRatio = 13.4   # True steerRation from older prius
-      tire_stiffness_factor = 0.6371   # hand-tune
-      ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.steerActuatorDelay = 0.5
-      if prius_pid:
-        ret.lateralTuning.init('pid')
-        ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
-        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.35], [0.1]]
-        ret.lateralTuning.pid.kdBP = [0.]
-        ret.lateralTuning.pid.kdV = [2.]
-        ret.lateralTuning.pid.kfV = [0.00007818594]
-      else:
-        ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGain = 4.0
-        ret.lateralTuning.indi.outerLoopGain = 3.0
-        ret.lateralTuning.indi.timeConstant = 0.1
-        ret.lateralTuning.indi.actuatorEffectiveness = 1.0
-        ret.steerActuatorDelay = 0.5
 
     ret.steerRateCost = 0.5
     ret.centerToFront = ret.wheelbase * 0.44
