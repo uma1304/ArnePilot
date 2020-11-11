@@ -15,7 +15,6 @@
 #include "ui.hpp"
 #include "paint.hpp"
 #include "android/sl_sound.hpp"
-#include "cereal/gen/cpp/arne182.capnp.h"
 
 volatile sig_atomic_t do_exit = 0;
 static void set_do_exit(int sig) {
