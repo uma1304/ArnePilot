@@ -194,7 +194,7 @@ void update_sockets(UIState *s) {
   }
   if (sm.updated("thermal")) {
     scene.thermal = sm["thermal"].getThermal();
-    scene.bat = scene.thermal.getbat();
+    scene.pa0 = scene.thermal.getbat();
   }
   if (sm.updated("ubloxGnss")) {
     auto data = sm["ubloxGnss"].getUbloxGnss();
