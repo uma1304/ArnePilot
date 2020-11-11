@@ -24,7 +24,7 @@ EventName = car.CarEvent.EventName
 HwType = log.HealthData.HwType
 
 
-def get_startup_event(car_recognized, controller_available):
+def get_startup_event(car_recognized, controller_available, hw_type):
   if comma_remote and tested_branch:
     event = EventName.startup
   else:
@@ -33,6 +33,8 @@ def get_startup_event(car_recognized, controller_available):
     event = EventName.startupNoCar
   elif car_recognized and not controller_available:
     event = EventName.startupNoControl
+  #elif hw_type == HwType.greyPanda:
+    #event = EventName.startupGreyPanda
   return event
 
 
@@ -185,7 +187,7 @@ def fingerprint(logcan, sendcan, has_relay):
             car_fingerprint = "TOYOTA COROLLA HYBRID TSS2 2019"
           if any(("TOYOTA PRIUS 2017" in c) for c in candidate_cars[b]):
             car_fingerprint = "TOYOTA PRIUS 2017"
-         
+
 
     # bail if no cars left or we've been waiting for more than 2s
     failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 200

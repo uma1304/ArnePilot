@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-import struct
 from common.numpy_fast import clip
 from common.params import Params
 from copy import copy
 from cereal import car, log
 import cereal.messaging as messaging
-from selfdrive.car.car_helpers import get_car
+from selfdrive.car.car_helpers import get_car, get_one_can
 from selfdrive.boardd.boardd import can_list_to_can_capnp
 
 HwType = log.HealthData.HwType
@@ -15,7 +14,6 @@ def steer_thread():
   poller = messaging.Poller()
 
   logcan = messaging.sub_sock('can')
-  health = messaging.sub_sock('health')
   joystick_sock = messaging.sub_sock('testJoystick', conflate=True, poller=poller)
 
   carstate = messaging.pub_sock('carState')
@@ -25,13 +23,11 @@ def steer_thread():
   button_1_last = 0
   enabled = False
 
-  # wait for health and CAN packets
-  hw_type = messaging.recv_one(health).health.hwType
-  has_relay = hw_type in [HwType.blackPanda, HwType.uno]
+  # wait for CAN packets
   print("Waiting for CAN messages...")
-  messaging.get_one_can(logcan)
+  get_one_can(logcan)
 
-  CI, CP = get_car(logcan, sendcan, has_relay)
+  CI, CP = get_car(logcan, sendcan)
   Params().put("CarParams", CP.to_bytes())
 
   CC = car.CarControl.new_message()
@@ -65,11 +61,7 @@ def steer_thread():
       #print "enable", enabled, "steer", actuators.steer, "accel", actuators.gas - actuators.brake
 
       hud_alert = 0
-      audible_alert = 0
-      if joystick.testJoystick.buttons[2]:
-        audible_alert = "beepSingle"
       if joystick.testJoystick.buttons[3]:
-        audible_alert = "chimeRepeated"
         hud_alert = "steerRequired"
 
     CC.actuators.gas = actuators.gas
@@ -84,14 +76,12 @@ def steer_thread():
     sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan'))
 
     # broadcast carState
-    cs_send = messaging.new_message()
-    cs_send.init('carState')
+    cs_send = messaging.new_message('carState')
     cs_send.carState = copy(CS)
     carstate.send(cs_send.to_bytes())
 
     # broadcast carControl
-    cc_send = messaging.new_message()
-    cc_send.init('carControl')
+    cc_send = messaging.new_message('carControl')
     cc_send.carControl = copy(CC)
     carcontrol.send(cc_send.to_bytes())
 

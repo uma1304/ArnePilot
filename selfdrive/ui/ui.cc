@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <assert.h>
+#include <math.h>
 #include <poll.h>
 #include <sys/mman.h>
 
@@ -19,7 +20,7 @@ extern volatile sig_atomic_t do_exit;
 int write_param_float(float param, const char* param_name, bool persistent_param) {
   char s[16];
   int size = snprintf(s, sizeof(s), "%f", param);
-  return write_db_value(param_name, s, size < sizeof(s) ? size : sizeof(s), persistent_param);
+  return Params(persistent_param).write_db_value(param_name, s, size < sizeof(s) ? size : sizeof(s));
 }
 
 void ui_init(UIState *s) {
@@ -231,15 +232,17 @@ void update_sockets(UIState *s) {
     scene.rightBlinker = data.getRightBlinker();
   }
 
-#ifdef QCOM2 // TODO: use this for QCOM too
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
       if (sensor.which() == cereal::SensorEventData::LIGHT) {
         s->light_sensor = sensor.getLight();
+      } else if (!s->started && sensor.which() == cereal::SensorEventData::ACCELERATION) {
+        s->accel_sensor = sensor.getAcceleration().getV()[2];
+      } else if (!s->started && sensor.which() == cereal::SensorEventData::GYRO_UNCALIBRATED) {
+        s->gyro_sensor = sensor.getGyroUncalibrated().getV()[1];
       }
     }
   }
-#endif
 
   s->started = scene.thermal.getStarted() || scene.frontview;
 }
@@ -285,7 +288,6 @@ void ui_update(UIState *s) {
       s->status = STATUS_ALERT;
     }
   }
-
   // Read params
   if ((s->sm)->frame % (5*UI_FREQ) == 0) {
     read_param(&s->is_metric, "IsMetric");
