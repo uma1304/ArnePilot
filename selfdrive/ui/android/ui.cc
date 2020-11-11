@@ -33,14 +33,14 @@ static void ui_set_brightness(UIState *s, int brightness) {
 
 static void send_df(UIState *s, int status) {
   MessageBuilder msg;
-  auto dfStatus = EventArne182.initDynamicFollowButton();
+  auto dfStatus = msg.initEvent().initDynamicFollowButton();
   dfStatus.setStatus(status);
   s->pm->send("dynamicFollowButton", msg);
 }
 
 static void send_ml(UIState *s, bool enabled) {
   MessageBuilder msg;
-  auto mlStatus = EventArne182.initModelLongButton();
+  auto mlStatus = msg.initEvent().initModelLongButton();
   mlStatus.setEnabled(enabled);
   s->pm->send("modelLongButton", msg);
 }
