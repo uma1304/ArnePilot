@@ -31,21 +31,15 @@ static void ui_set_brightness(UIState *s, int brightness) {
   }
 }
 
-//dfButton manager
 static void send_df(UIState *s, int status) {
-  capnp::MallocMessageBuilder msg;
-  auto EventArne182 = msg.initRoot<cereal::EventArne182>();
-  EventArne182.setLogMonoTime(nanos_since_boot());
+  MessageBuilder msg;
   auto dfStatus = EventArne182.initDynamicFollowButton();
   dfStatus.setStatus(status);
   s->pm->send("dynamicFollowButton", msg);
 }
 
-// e2e model button.
 static void send_ml(UIState *s, bool enabled) {
-  capnp::MallocMessageBuilder msg;
-  auto EventArne182 = msg.initRoot<cereal::EventArne182>();
-  EventArne182.setLogMonoTime(nanos_since_boot());
+  MessageBuilder msg;
   auto mlStatus = EventArne182.initModelLongButton();
   mlStatus.setEnabled(enabled);
   s->pm->send("modelLongButton", msg);
