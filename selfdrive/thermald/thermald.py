@@ -17,7 +17,7 @@ from common.params import Params
 from common.realtime import DT_TRML, sec_since_boot
 from selfdrive.controls.lib.alertmanager import set_offroad_alert
 from selfdrive.loggerd.config import get_available_percent
-from selfdrive.pandad import get_expected_signature
+from selfdrive.pandad import get_expected_version
 from selfdrive.swaglog import cloudlog
 from selfdrive.thermald.power_monitoring import (PowerMonitoring,
                                                  get_battery_capacity,
@@ -34,7 +34,7 @@ NoctuaMode = op_params.get('NoctuaMode')
 
 ThermalConfig = namedtuple('ThermalConfig', ['cpu', 'gpu', 'mem', 'bat', 'ambient'])
 
-FW_SIGNATURE = get_expected_signature()
+FW_SIGNATURE = get_expected_version()
 
 ThermalStatus = log.ThermalData.ThermalStatus
 NetworkType = log.ThermalData.NetworkType
