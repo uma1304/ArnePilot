@@ -21,6 +21,9 @@ fi
 apt update
 apt install -y --allow-unauthenticated opencv
 apt install -y --allow-unauthenticated scipy
+apt install gcc-8
+setupclang-gfort-8
+python3 -m pip install scipy
 python3 -m pip install overpy
 # python3 -m pip install requests
 # python3 -m pip install pyzmq
