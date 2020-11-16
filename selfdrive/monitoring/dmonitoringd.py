@@ -51,6 +51,7 @@ def dmonitoringd_thread(sm=None, pm=None):
                                 v_cruise != v_cruise_last or \
                                 sm['carState'].steeringPressed
       driver_engaged = steering_wheel_engaged or \
+                        sm['carState'].gasPressed
       if driver_engaged:
         driver_status.update(Events(), True, sm['carState'].cruiseState.enabled, sm['carState'].standstill)
       # Update events and state from hands on wheel monitoring status when steering wheel in engaged
