@@ -482,8 +482,8 @@ static void ui_draw_vision_event(UIState *s) {
     NVGcolor color = bg_colors[s->status];
 
     ui_draw_circle_image(s->vg, bg_wheel_x, bg_wheel_y, bg_wheel_size, s->img_wheel, color, 1.0f, bg_wheel_y - 25);
-  }
-  auto handsOnWheelState = s->scene.dmonitoring_state.getHandsOnWheelState();
+    // draw hands on wheel pictogram under wheel pictogram.
+    auto handsOnWheelState = s->scene.dmonitoring_state.getHandsOnWheelState();
     if (handsOnWheelState >= cereal::DMonitoringState::HandsOnWheelState::WARNING) {
       if (handsOnWheelState == cereal::DMonitoringState::HandsOnWheelState::WARNING) {
         color = COLOR_YELLOW;
@@ -495,6 +495,7 @@ static void ui_draw_vision_event(UIState *s) {
       const int wheel_y = bg_wheel_y + bdr_s + bg_wheel_size + wheel_size;
       ui_draw_circle_image(s->vg, wheel_x, wheel_y, wheel_size, s->img_hands_on_wheel, color, 1.0f, wheel_y - 25);
     }
+  }
 }
 
 static void ui_draw_vision_face(UIState *s) {
