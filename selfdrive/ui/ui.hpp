@@ -100,10 +100,6 @@ typedef struct UIScene {
   //float speedlimitaheaddistance;
   //bool speedlimitahead_valid;
   float gpsAccuracy;
-  float angleSteersDes;
-  float angleSteers;
-  float pa0;
-  float freeSpace;
   int lead_status;
   int lead_status2;
   float lead_d_rel, lead_y_rel, lead_v_rel;
@@ -126,9 +122,6 @@ typedef struct UIScene {
   // responsive layout
   Rect viz_rect;
   int ui_viz_ro;
-
-  int lead_status;
-  float lead_d_rel, lead_v_rel;
 
   std::string alert_text1;
   std::string alert_text2;
@@ -161,8 +154,6 @@ typedef struct UIScene {
   float left_lane_points[MODEL_PATH_DISTANCE];
   float path_points[MODEL_PATH_DISTANCE];
   float right_lane_points[MODEL_PATH_DISTANCE];
-  //float angleSteersDes;
-  //float angleSteers;
 } UIScene;
 
 typedef struct {
