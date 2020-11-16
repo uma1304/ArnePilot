@@ -479,10 +479,22 @@ static void ui_draw_vision_event(UIState *s) {
     const int bg_wheel_size = 90;
     const int bg_wheel_x = viz_event_x + (viz_event_w-bg_wheel_size);
     const int bg_wheel_y = viz_event_y + (bg_wheel_size/2);
-    const NVGcolor color = bg_colors[s->status];
+    NVGcolor color = bg_colors[s->status];
 
     ui_draw_circle_image(s->vg, bg_wheel_x, bg_wheel_y, bg_wheel_size, s->img_wheel, color, 1.0f, bg_wheel_y - 25);
   }
+  auto handsOnWheelState = s->scene.dmonitoring_state.getHandsOnWheelState();
+    if (handsOnWheelState >= cereal::DMonitoringState::HandsOnWheelState::WARNING) {
+      if (handsOnWheelState == cereal::DMonitoringState::HandsOnWheelState::WARNING) {
+        color = COLOR_YELLOW;
+      } else {
+        color = COLOR_RED;
+      }
+      const int wheel_size = 96;
+      const int wheel_x = viz_event_x + viz_event_w - wheel_size;
+      const int wheel_y = bg_wheel_y + bdr_s + bg_wheel_size + wheel_size;
+      ui_draw_circle_image(s->vg, wheel_x, wheel_y, wheel_size, s->img_hands_on_wheel, color, 1.0f, wheel_y - 25);
+    }
 }
 
 static void ui_draw_vision_face(UIState *s) {
@@ -1096,6 +1108,8 @@ void ui_nvg_init(UIState *s) {
   assert(s->img_battery_charging != 0);
   assert(s->img_brake >= 0);
   s->img_brake = nvgCreateImage(s->vg, "../assets/img_brake_disc.png", 1);
+  s->img_hands_on_wheel = nvgCreateImage(s->vg, "../assets/img_hands_on_wheel.png", 1);
+  assert(s->img_hands_on_wheel != 0);
 
   for(int i=0;i<=5;++i) {
     char network_asset[32];

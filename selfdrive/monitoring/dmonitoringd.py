@@ -17,10 +17,10 @@ def dmonitoringd_thread(sm=None, pm=None):
     sm = messaging.SubMaster(['driverState', 'liveCalibration', 'carState', 'model'], poll=['driverState'])
 
   driver_status = DriverStatus()
-  hands_on_wheel_status = HandsOnWheelStatus()
   driver_status.is_rhd_region = Params().get("IsRHD") == b"1"
 
   offroad = Params().get("IsOffroad") == b"1"
+  hands_on_wheel_status = HandsOnWheelStatus()
 
   sm['liveCalibration'].calStatus = Calibration.INVALID
   sm['liveCalibration'].rpyCalib = [0, 0, 0]
@@ -47,10 +47,10 @@ def dmonitoringd_thread(sm=None, pm=None):
     # Get interaction
     if sm.updated['carState']:
       v_cruise = sm['carState'].cruiseState.speed
-      driver_engaged = len(sm['carState'].buttonEvents) > 0 or \
-                        v_cruise != v_cruise_last or \
-                        sm['carState'].steeringPressed or \
-                        sm['carState'].gasPressed
+      steering_wheel_engaged = len(sm['carState'].buttonEvents) > 0 or \
+                                v_cruise != v_cruise_last or \
+                                sm['carState'].steeringPressed
+      driver_engaged = steering_wheel_engaged or \
       if driver_engaged:
         driver_status.update(Events(), True, sm['carState'].cruiseState.enabled, sm['carState'].standstill)
       # Update events and state from hands on wheel monitoring status when steering wheel in engaged
@@ -98,9 +98,9 @@ def dmonitoringd_thread(sm=None, pm=None):
       "handsOnWheelState": hands_on_wheel_status.hands_on_wheel_state,
     }
     pm.send('dMonitoringState', dat)
-  
+
 def main(sm=None, pm=None):
   dmonitoringd_thread(sm, pm)
-  
+
 if __name__ == '__main__':
   main()
