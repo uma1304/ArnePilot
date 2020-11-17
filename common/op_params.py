@@ -93,6 +93,7 @@ class opParams:
                         'smart_speed_max_vego': Param(26.8, VT.number, 'Speed limit to ignore Smartspeed in m/s'),
                         'spairrowtuning': Param(False, bool, 'INDI Tuning for Corolla'),
                         'speed_offset': Param(0, VT.number, 'Speed limit offset in m/s', live=True),
+                        'steer_actuator_delay': Param(0.5, VT.number, 'The steer actuator delay', live=True),
                         'traffic_light_alerts': Param(False, bool, "Switch off the traffic light alerts"),
                         'traffic_lights': Param(False, bool, "Should Openpilot stop for traffic lights"),
                         'traffic_lights_without_direction': Param(False, bool, "Should Openpilot stop for traffic lights without a direction specified"),

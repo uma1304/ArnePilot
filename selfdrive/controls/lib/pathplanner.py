@@ -209,7 +209,7 @@ class PathPlanner():
     self.LP.update_d_poly(v_ego)
 
     # account for actuation delay
-    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, CP.steerActuatorDelay)
+    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, self.op_params.get('steer_actuator_delay'))
 
     #if abs(angle_steers - angle_offset) > 4 and CP.lateralTuning.which() == 'pid': #check if this causes laggy steering
     #  self.cur_state[0].delta = math.radians(angle_steers - angle_offset) / VM.sR
