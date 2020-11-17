@@ -78,6 +78,7 @@ class opParams:
                                                                         'Smaller values will get you closer, larger will get you farther\n'
                                                                         'This is multiplied by any profile that\'s active. Set to None to disable', live=True),
                         'hide_auto_df_alerts': Param(True, bool, 'Hides the alert that shows what profile the model has chosen'),
+                        'hotspot_on_boot': Param(False, bool, 'Enable Hotspot On Boot'),
                         'keep_openpilot_engaged': Param(True, bool, 'True is stock behavior in this fork. False lets you use the brake and cruise control stalk to disengage as usual'),
                         'lat_d': Param(9.0, VT.number, 'The lateral derivative gain, default is 9.0 for TSS2 Corolla. This is active at all speeds', live=True),
                         'limit_rsa': Param(False, bool, "Switch off RSA above rsa_max_speed"),
