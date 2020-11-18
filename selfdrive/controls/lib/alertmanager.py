@@ -33,6 +33,9 @@ class AlertManager:
     self.activealerts: List[Alert] = []
     self.clear_current_alert()
 
+  def alert_present(self) -> bool:
+    return len(self.activealerts) > 0
+
   def clear_current_alert(self) -> None:
     self.alert_type: str = ""
     self.alert_text_1: str = ""
@@ -44,9 +47,8 @@ class AlertManager:
     self.alert_rate: float = 0.
 
   def add_many(self, frame: int, alerts: List[Alert], enabled: bool = True) -> None:
-    for alert in alerts:
-      added_alert = copy.copy(alert)
-      added_alert.start_time = frame * DT_CTRL
+    for a in alerts:
+      self.add(frame, a, enabled=enabled)
 
   def add_custom(self, frame, alert_name, event_type, enabled=True, extra_text_1='', extra_text_2=''):
     alert = EVENTSARNE182[alert_name][event_type]
@@ -56,7 +58,7 @@ class AlertManager:
     added_alert.alert_text_2 += extra_text_2
 
     # if new alert is higher priority, log it
-    if not len(self.activealerts) or added_alert.alert_priority > self.activealerts[0].alert_priority:
+    if not self.alert_present() or added_alert.alert_priority > self.activealerts[0].alert_priority:
       cloudlog.event('alert_add', alert_type=added_alert.alert_type, enabled=enabled)
 
     self.activealerts.append(added_alert)
@@ -69,14 +71,17 @@ class AlertManager:
     added_alert.start_time = frame * DT_CTRL
 
     # if new alert is higher priority, log it
-    if not len(self.activealerts) or added_alert.alert_priority > self.activealerts[0].alert_priority:
+    if not self.alert_present() or added_alert.alert_priority > self.activealerts[0].alert_priority:
       cloudlog.event('alert_add', alert_type=added_alert.alert_type, enabled=enabled)
 
-      # if new alert is higher priority, log it
-      if not len(self.activealerts) or added_alert.alert_priority > self.activealerts[0].alert_priority:
-        cloudlog.event('alert_add', alert_type=added_alert.alert_type, enabled=enabled)
+    self.activealerts.append(added_alert)
 
-      self.activealerts.append(added_alert)
+    # on disable, wipe out all steering required alerts
+    #if alert_type == 'disable':
+     # self.activealerts = [a for a in self.activealerts if a.visual_alert != VisualAlert.steerRequired]
+
+    # sort by priority first and then by start_time
+    self.activealerts.sort(key=lambda k: (k.alert_priority, k.start_time), reverse=True)
 
   def process_alerts(self, frame: int, clear_event_type=None) -> None:
     cur_time = frame * DT_CTRL
@@ -85,15 +90,11 @@ class AlertManager:
     self.activealerts = [a for a in self.activealerts if a.event_type != clear_event_type and
                          a.start_time + max(a.duration_sound, a.duration_hud_alert, a.duration_text) > cur_time]
 
-    # sort by priority first and then by start_time
-    self.activealerts.sort(key=lambda k: (k.alert_priority, k.start_time), reverse=True)
-
     # start with assuming no alerts
     self.clear_current_alert()
 
-    if len(self.activealerts):
-      current_alert = self.activealerts[0]
-
+    current_alert = self.activealerts[0] if self.alert_present() else None
+    if current_alert is not None:
       self.alert_type = current_alert.alert_type
 
       if current_alert.start_time + current_alert.duration_sound > cur_time:
