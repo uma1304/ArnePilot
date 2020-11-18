@@ -31,11 +31,15 @@ def upload_data():
       if car is not None:
         car = json.loads(car)
         username+="-{}".format(car[0])
-
+      
       filename = "gps-data.{}".format(random.randint(1,99999))
       fp = open(filepath,"rb")
       data = fp.read()
       bindata = bytearray(data)
+      files = os.listdir("/data/")
+      for file in files:
+        if file.endswith(".gz"):
+          os.remove(os.path.join("/data/", file))
       with gzip.open("/data/" + filename + ".gz", "wb") as f:
         f.write(bindata)
       ftp = ftplib.FTP("arneschwarck.dyndns.org")
