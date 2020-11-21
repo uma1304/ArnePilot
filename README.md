@@ -9,7 +9,7 @@ Find me on Discord https://discord.gg/Ebgn8Mr
 
 # Installation
 Put this URL in the custom URL field after uninstalling through the UI
-https://d.sdut.me/arne/release4
+https://tinyurl.com/arnepilot
 or if you want to use the command line or https://github.com/jfrux/workbench
 `cd /data; rm -rf openpilot; git clone --depth 1 https://github.com/arne182/openpilot -b release4; reboot`
 
