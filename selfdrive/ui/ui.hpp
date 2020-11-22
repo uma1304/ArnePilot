@@ -230,6 +230,7 @@ typedef struct UIState {
   bool longitudinal_control;
   bool limit_set_speed;
   bool is_ego_over_limit;
+  float speed_lim_off;
   uint64_t last_athena_ping;
   uint64_t started_frame;
 
