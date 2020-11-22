@@ -309,11 +309,11 @@ class CarInterface(CarInterfaceBase):
         ret.steerLimitTimer = 5.0
         tire_stiffness_factor = 0.996  # not optimized yet
         ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGain = 9.0
+        ret.lateralTuning.indi.innerLoopGain = 15.0
         ret.lateralTuning.indi.outerLoopGainBP = [20, 21, 25 ,26]
-        ret.lateralTuning.indi.outerLoopGainV = [5.0, 9.0, 9.0, 15.0]
+        ret.lateralTuning.indi.outerLoopGainV = [5.0, 9.0, 9.0, 14.99]
         ret.lateralTuning.indi.timeConstant = 5.5
-        ret.lateralTuning.indi.actuatorEffectiveness = 9.0
+        ret.lateralTuning.indi.actuatorEffectiveness = 15.0
       else:
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.5], [0.1]]
         ret.lateralTuning.pid.kfV = [0.00007818594]
@@ -339,11 +339,11 @@ class CarInterface(CarInterfaceBase):
         ret.steerLimitTimer = 5.0
         tire_stiffness_factor = 0.996  # not optimized yet
         ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGain = 9.0
+        ret.lateralTuning.indi.innerLoopGain = 15.0
         ret.lateralTuning.indi.outerLoopGainBP = [20, 21, 25 ,26]
-        ret.lateralTuning.indi.outerLoopGainV = [5.0, 9.0, 9.0, 15.0]
+        ret.lateralTuning.indi.outerLoopGainV = [5.0, 9.0, 9.0, 14.99]
         ret.lateralTuning.indi.timeConstant = 5.5
-        ret.lateralTuning.indi.actuatorEffectiveness = 9.0
+        ret.lateralTuning.indi.actuatorEffectiveness = 15.0
       else:
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.5], [0.1]]
         ret.lateralTuning.pid.kfV = [0.00007818594]
