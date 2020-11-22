@@ -227,6 +227,7 @@ typedef struct UIState {
   bool ignition;
   bool is_metric;
   bool longitudinal_control;
+  bool limit_set_speed;
   uint64_t last_athena_ping;
   uint64_t started_frame;
 
