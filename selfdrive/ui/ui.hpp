@@ -95,10 +95,11 @@ typedef struct UIScene {
   bool world_objects_visible;
 
   //dev ui
-  //float speedlimit;
-  //bool speedlimit_valid;
-  //float speedlimitaheaddistance;
-  //bool speedlimitahead_valid;
+  float speedlimit;
+  bool speedlimit_valid;
+  float speedlimitaheaddistance;
+  bool speedlimitahead_valid;
+  bool map_valid;
   float gpsAccuracy;
   int lead_status;
   int lead_status2;
