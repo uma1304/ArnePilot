@@ -194,6 +194,8 @@ typedef struct UIState {
   int img_battery_charging;
   int img_network[6];
   int img_brake;
+  int img_map;
+  int img_speed;
 
   SubMaster *sm;
 
