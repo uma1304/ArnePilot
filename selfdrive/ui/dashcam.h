@@ -142,7 +142,7 @@ void start_capture() {
   struct tm tm = get_time_struct();
   snprintf(filename,sizeof(filename),"%04d%02d%02d-%02d%02d%02d.mp4", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
   //snprintf(cmd,sizeof(cmd),"screenrecord --size 1280x720 --bit-rate 10000000 %s/%s&",videos_dir,filename);
-  snprintf(cmd,sizeof(cmd),"screenrecord --size 1920x1080 --bit-rate 5000000 %s/%s&",videos_dir,filename);
+  snprintf(cmd,sizeof(cmd),"screenrecord --size 960x540 --bit-rate 5000000 %s/%s&",videos_dir,filename);
   strcpy(filenames[captureNum],filename);
 
   printf("Capturing to file: %s\n",cmd);
@@ -167,7 +167,7 @@ bool screen_lock_button_clicked(int touch_x, int touch_y, dashcam_element el) {
   }
 
   if (touch_x >= el.pos_x && touch_x <= el.pos_x + el.width) {
-    if (touch_y >= el.pos_y - 50 && touch_y <= el.pos_y + el.height) {
+    if (touch_y >= el.pos_y && touch_y <= el.pos_y + el.height) {
       return true;
     }
   }
@@ -175,8 +175,8 @@ bool screen_lock_button_clicked(int touch_x, int touch_y, dashcam_element el) {
 }
 
 bool screen_button_clicked(int touch_x, int touch_y) {
-  if (touch_x >= 1660 && touch_x <= 1810) {
-    if (touch_y >= 835 && touch_y <= 1030) {
+  if (touch_x >= 1660 && touch_x <= 1820) {
+    if (touch_y >= 885 && touch_y <= 1055) {
       return true;
     }
   }
@@ -227,7 +227,7 @@ void draw_lock_button(UIState *s) {
   int btn_w = 150;
   int btn_h = 150;
   int btn_x = 1920 - btn_w - 150;
-  int btn_y = 1080 - 50 - btn_h;
+  int btn_y = 1080 - btn_h;
   float alpha = 0.3f;
 
   if (!lock_image) {
@@ -240,8 +240,8 @@ void draw_lock_button(UIState *s) {
   }
 
   nvgBeginPath(s->vg);
-  NVGpaint imgPaint = nvgImagePattern(s->vg, btn_x-125, btn_y-45, 150, 150, 0, lock_image, alpha);
-  nvgRoundedRect(s->vg, btn_x-125, btn_y-45, 150, 150, 100);
+  NVGpaint imgPaint = nvgImagePattern(s->vg, btn_x-125, btn_y-30, 150, 150, 0, lock_image, alpha);
+  nvgRoundedRect(s->vg, btn_x-125, btn_y-30, 150, 150, 100);
   nvgFillPaint(s->vg, imgPaint);
   nvgFill(s->vg);
 
@@ -265,10 +265,10 @@ static void screen_draw_button(UIState *s, int touch_x, int touch_y) {
 
     int btn_w = 150;
     int btn_h = 150;
-    int btn_x = 1920 - btn_w;
-    int btn_y = 1080 - 50 - btn_h;
+    int btn_x = 1920 - btn_w+12;
+    int btn_y = 1080 - btn_h+5; //Shift REC button down some -wirelessnet2
     nvgBeginPath(s->vg);
-      nvgRoundedRect(s->vg, btn_x-110, btn_y-45, btn_w, btn_h, 100);
+      nvgRoundedRect(s->vg, btn_x-110+12, btn_y-45+5, btn_w, btn_h, 100); //Shift REC button down some -wirelessnet2
       nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
       nvgStrokeWidth(s->vg, 6);
       nvgStroke(s->vg);
@@ -284,7 +284,7 @@ static void screen_draw_button(UIState *s, int touch_x, int touch_y) {
       else {
         nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
       }
-      nvgText(s->vg,btn_x-37,btn_y+50,"REC",NULL);
+      nvgText(s->vg,btn_x-35+12,btn_y+50+5,"REC",NULL); //Shift REC button down some -wirelessnet2
   }
 
   if (captureState == CAPTURE_STATE_CAPTURING) {
@@ -332,6 +332,10 @@ void dashcam( UIState *s, int touch_x, int touch_y ) {
 
   if (screen_lock_button_clicked(touch_x,touch_y,lock_button)) {
     screen_toggle_lock();
+  }
+  if (!s->started) {
+    // Assume car is not in drive so stop recording
+    stop_capture();
   }
   s->scene.recording = (captureState != CAPTURE_STATE_NOT_CAPTURING);
 }
