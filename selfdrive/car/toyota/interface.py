@@ -47,7 +47,7 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # braking tune from rav4h
       ret.longitudinalTuning.kiV = [0.195, 0.10]
 
-    if candidate not in [CAR.PRIUS_2019, CAR.PRIUS, CAR.RAV4, CAR.RAV4H, CAR.COROLLA, CAR.PRIUS_TSS2] and not spairrowtuning: # These cars use LQR/INDI
+    if candidate not in [CAR.PRIUS_2019, CAR.PRIUS, CAR.RAV4, CAR.RAV4H, CAR.RAV4H_TSS2, CAR.COROLLA, CAR.PRIUS_TSS2] and not spairrowtuning: # These cars use LQR/INDI
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
       ret.lateralTuning.pid.kdBP, ret.lateralTuning.pid.kdV = [[0.], [0.]]
