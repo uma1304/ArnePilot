@@ -7,7 +7,7 @@ from cereal import car, log
 from common.basedir import BASEDIR
 from common.params import Params
 from common.realtime import DT_CTRL
-from selfdrive.controls.lib.events import Alert, EVENTSARNE182
+from selfdrive.controls.lib.events import Alert, EVENTSARNE182, ET
 from selfdrive.swaglog import cloudlog
 
 
