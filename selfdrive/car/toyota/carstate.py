@@ -168,7 +168,7 @@ class CarState(CarStateBase):
     if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
       self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
       msg_df = messaging_arne.new_message('dynamicFollowButton')
-      msg_df.dynamicFollowButton.status = self.read_distance_lines - 1
+      msg_df.dynamicFollowButton.status = max(self.read_distance_lines - 1, 0)
       self.arne_pm.send('dynamicFollowButton', msg_df)
     
     msg.arne182Status.leftBlindspot = self.leftblindspot
