@@ -55,6 +55,7 @@ class AlertManager:
     added_alert.start_time = frame * DT_CTRL
     added_alert.alert_text_1 += extra_text_1
     added_alert.alert_text_2 += extra_text_2
+    added_alert.alert_type = f"{alert_name}/{ET.PERMANENT}"  # fixes alerts being silent
     added_alert.event_type = event_type
 
     # if new alert is higher priority, log it
