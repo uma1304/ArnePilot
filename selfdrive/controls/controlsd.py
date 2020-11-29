@@ -60,10 +60,10 @@ class Controls:
     self.sm = sm
     if self.sm is None:
       self.sm = messaging.SubMaster(['thermal', 'health', 'frame', 'model', 'liveCalibration',
-                                     'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman', 'radarState'])
+                                     'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman', 'modelLongButton' , 'radarState'])
     self.arne_sm = arne_sm
     if self.arne_sm is None:
-      self.arne_sm = messaging_arne.SubMaster(['arne182Status', 'dynamicFollowButton', 'trafficModelEvent', 'modelLongButton' ])
+      self.arne_sm = messaging_arne.SubMaster(['arne182Status', 'dynamicFollowButton', 'trafficModelEvent'])
 
     self.op_params = opParams()
     self.df_manager = dfManager(self.op_params)
@@ -493,13 +493,13 @@ class Controls:
     clear_event = ET.WARNING if ET.WARNING not in self.current_alert_types else None
     alerts = self.events.create_alerts(self.current_alert_types, [self.CP, self.sm, self.is_metric])
     alertsArne182 = self.eventsArne182.create_alerts(self.current_alert_types, [self.CP, self.sm, self.is_metric])
-    self.last_model_long = self.arne_sm['modelLongButton'].enabled
+    self.last_model_long = self.sm['modelLongButton'].enabled
     self.AM.add_many(self.sm.frame, alerts, self.enabled)
     self.AM.add_many(self.sm.frame, alertsArne182, self.enabled)
 
     df_out = self.df_manager.update()
     frame = self.sm.frame
-    if self.arne_sm['modelLongButton'].enabled != self.last_model_long:
+    if self.sm['modelLongButton'].enabled != self.last_model_long:
       extra_text_1 = 'disabled!' if self.last_model_long else 'enabled!'
       self.AM.add_custom(frame, 'modelLongAlert', ET.WARNING, self.enabled, extra_text_1=extra_text_1)
       return
