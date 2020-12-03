@@ -7,6 +7,7 @@ from selfdrive.swaglog import cloudlog
 from selfdrive.car.interfaces import CarInterfaceBase
 from common.dp_common import common_interface_atl, common_interface_get_params_lqr
 from common.params import Params
+from common.op_params import opParams
 
 GearShifter = car.CarState.GearShifter
 
