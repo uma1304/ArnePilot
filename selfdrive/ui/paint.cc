@@ -138,7 +138,7 @@ static void draw_lead(UIState *s, const cereal::RadarState::LeadData::Reader &le
     }
     fillAlpha = (int)(fmin(fillAlpha, 255));
   }
-  draw_chevron(s, d_rel, lead.getYRel(), 25, nvgRGBA(201, 34, 49, fillAlpha), COLOR_YELLOW);
+  draw_chevron(s, d_rel, lead.getYRel(), 25, nvgRGBA(20, 20, 20, fillAlpha), nvgRGBA(255, 255, 255, 255));
 }
 
 static void ui_draw_lane_line(UIState *s, const model_path_vertices_data *pvd, NVGcolor color) {
@@ -922,10 +922,10 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
       //show Orange if more than 6 degrees
       //show red if  more than 12 degrees
-      if(((int)(s->scene.angleSteers) < -6) || ((int)(s->scene.angleSteers) > 6)) {
+      if(((int)(s->scene.angleSteers) < -30) || ((int)(s->scene.angleSteers) > 30)) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if(((int)(s->scene.angleSteers) < -12) || ((int)(s->scene.angleSteers) > 12)) {
+      if(((int)(s->scene.angleSteers) < -60) || ((int)(s->scene.angleSteers) > 60)) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // steering is in degrees
@@ -947,10 +947,10 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (scene->controls_state.getEnabled()) {
       //show Orange if more than 6 degrees
       //show red if  more than 12 degrees
-      if(((int)(s->scene.angleSteersDes) < -6) || ((int)(s->scene.angleSteersDes) > 6)) {
+      if(((int)(s->scene.angleSteersDes) < -30) || ((int)(s->scene.angleSteersDes) > 30)) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if(((int)(s->scene.angleSteersDes) < -12) || ((int)(s->scene.angleSteersDes) > 12)) {
+      if(((int)(s->scene.angleSteersDes) < -60) || ((int)(s->scene.angleSteersDes) > 60)) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // steering is in degrees
