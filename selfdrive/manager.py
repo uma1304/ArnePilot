@@ -466,13 +466,13 @@ def manager_thread():
   params = Params()
 
   # save boot log
-  if params.get("dp_logger") == b'1':
+  if params.get("dp_logger") == b'0':
     subprocess.call(["./loggerd", "--bootlog"], cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
 
-  if params.get("dp_athenad") == b'1':
+  if params.get("dp_athenad") == b'0':
     # start daemon processes
-    for p in daemon_processes:
-      start_daemon_process(p)
+    #for p in daemon_processes:
+      #start_daemon_process(p)
 
   # start persistent processes
   for p in persistent_processes:
@@ -491,7 +491,7 @@ def manager_thread():
       del managed_processes[k]
 
   started_prev = False
-  logger_dead = False
+  logger_dead = True
 
   while 1:
     msg = messaging.recv_sock(thermal_sock, wait=True)
@@ -506,7 +506,7 @@ def manager_thread():
         else:
           start_managed_process(p)
     else:
-      logger_dead = False
+      logger_dead = True
       driver_view = params.get("IsDriverViewEnabled") == b"1"
 
       # TODO: refactor how manager manages processes
