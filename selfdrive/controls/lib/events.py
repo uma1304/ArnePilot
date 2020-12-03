@@ -759,6 +759,14 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.NO_ENTRY: NoEntryAlert(_("Cruise Fault: Restart the Car")),
   },
 
+  EventName.longControlDisabled: {
+    ET.WARNING: Alert(
+      _("Steer Assist Active"),
+      _("Brake Pressed Acceleration Disabled"),
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 2., 0.2),
+  },
+
   # dp
   EventName.preLaneChangeLeftALC: {
     ET.WARNING: Alert(
