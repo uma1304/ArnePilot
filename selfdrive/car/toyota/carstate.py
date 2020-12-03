@@ -96,7 +96,7 @@ class CarState(CarStateBase):
       ret.cruiseState.speed = cp.vl["PCM_CRUISE_ALT"]['SET_SPEED'] * CV.KPH_TO_MS
       self.low_speed_lockout = False
     else:
-      ret.cruiseState.available = cp.vl["PCM_CRUISE_2"]['MAIN_ON'] != 0
+      self.main_on = cp.vl["PCM_CRUISE_2"]['MAIN_ON'] != 0
       ret.cruiseState.speed = cp.vl["PCM_CRUISE_2"]['SET_SPEED'] * CV.KPH_TO_MS
       self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == 2
       ret.cruiseState.available = self.main_on
