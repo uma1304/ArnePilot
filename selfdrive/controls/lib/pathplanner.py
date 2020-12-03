@@ -70,6 +70,7 @@ class PathPlanner():
     self.dragon_auto_lc_delay = 2.
     self.dp_continuous_auto_lc = False
     self.dp_did_auto_lc = False
+    self.op_params = opParams()
 
   def setup_mpc(self):
     self.libmpc = libmpc_py.libmpc
