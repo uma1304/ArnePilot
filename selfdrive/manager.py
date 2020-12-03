@@ -471,8 +471,8 @@ def manager_thread():
 
   if params.get("dp_athenad") == b'0':
     # start daemon processes
-    #for p in daemon_processes:
-      #start_daemon_process(p)
+    for p in daemon_processes:
+      start_daemon_process(p)
 
   # start persistent processes
   for p in persistent_processes:
