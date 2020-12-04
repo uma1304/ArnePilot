@@ -234,17 +234,17 @@ class Controls:
                                                  LaneChangeState.laneChangeFinishing]:
       self.events.add(EventName.laneChange)
 
-    if self.can_rcv_error or (not CS.canValid and self.sm.frame > 10 / DT_CTRL):
+    if self.can_rcv_error or (not CS.canValid and self.sm.frame > 5 / DT_CTRL):
       self.events.add(EventName.canError)
     if self.mismatch_counter >= 200:
       self.events.add(EventName.controlsMismatch)
     if not self.sm.alive['plan'] and self.sm.alive['pathPlan']:
       # only plan not being received: radar not communicating
       self.events.add(EventName.radarCommIssue)
-    elif not self.sm.all_alive_and_valid() and self.sm.frame > 10 / DT_CTRL:
+    elif not self.sm.all_alive_and_valid() and self.sm.frame > 5 / DT_CTRL:
       self.sm.print_dead_and_not_valid()
       self.events.add(EventName.commIssue)
-    if not self.sm['pathPlan'].mpcSolutionValid and self.sm.frame > 10 / DT_CTRL:
+    if not self.sm['pathPlan'].mpcSolutionValid and self.sm.frame > 5 / DT_CTRL:
       self.events.add(EventName.plannerError)
     if not self.sm['liveLocationKalman'].sensorsOK and not NOSENSOR:
       if self.sm.frame > 5 / DT_CTRL:  # Give locationd some time to receive all the inputs
@@ -285,7 +285,7 @@ class Controls:
     self.sm.update(0)
 
     # Check for CAN timeout
-    if not can_strs and self.sm.frame > 10 / DT_CTRL:
+    if not can_strs:
       self.can_error_counter += 1
       self.can_rcv_error = True
     else:
