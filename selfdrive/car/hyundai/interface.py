@@ -181,7 +181,7 @@ class CarInterface(CarInterfaceBase):
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
-    ret.mdpsHarness = opParams().get('MdpsHarnessEnabled') == b'1'
+    ret.mdpsHarness = opParams().get('MdpsHarnessEnabled') == True
     ret.sasBus = 0 if (688 in fingerprint[0] or not ret.mdpsHarness) else 1
     ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
     ret.bsmAvailable = True if 1419 in fingerprint[0] else False
@@ -190,15 +190,15 @@ class CarInterface(CarInterfaceBase):
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
 
-    if opParams().get('SccEnabled') == b'1':
-      ret.sccBus = 2 if 1057 in fingerprint[2] and opParams().get('SccHarnessPresent') == b'1' else 0 if 1057 in fingerprint[0] else -1
+    if opParams().get('SccEnabled') == True:
+      ret.sccBus = 2 if 1057 in fingerprint[2] and opParams().get('SccHarnessPresent') == True else 0 if 1057 in fingerprint[0] else -1
     else:
       ret.sccBus = -1
 
     ret.radarOffCan = (ret.sccBus == -1)
     #ret.radarTimeStep = 0.1
 
-    ret.openpilotLongitudinalControl = opParams().get('LongControlEnabled') == b'1' and not (ret.sccBus == 0)
+    ret.openpilotLongitudinalControl = opParams().get('LongControlEnabled') == True and not (ret.sccBus == 0)
     if ret.openpilotLongitudinalControl:
       ret.radarTimeStep = .05
 
@@ -212,7 +212,7 @@ class CarInterface(CarInterfaceBase):
                           CAR.KIA_CADENZA_HEV, CAR.GRANDEUR_HEV, CAR.KIA_NIRO_HEV, CAR.KONA_HEV]):
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunity
 
-    if ret.radarOffCan or (ret.sccBus == 2) or opParams().get('EnableOPwithCC') == b'0':
+    if ret.radarOffCan or (ret.sccBus == 2) or opParams().get('EnableOPwithCC') == False:
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityNonscc
 
     if ret.mdpsHarness:
@@ -232,9 +232,9 @@ class CarInterface(CarInterfaceBase):
     ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) \
                        or has_relay or opParams().get('forceenablecamera')
 
-    ret.radarDisablePossible = opParams().get('RadarDisableEnabled') == b'1'
+    ret.radarDisablePossible = opParams().get('RadarDisableEnabled') == True
 
-    ret.enableCruise = opParams().get('EnableOPwithCC') == b'1' and ret.sccBus == 0
+    ret.enableCruise = opParams().get('EnableOPwithCC') == True and ret.sccBus == 0
 
     if ret.radarDisablePossible:
       ret.openpilotLongitudinalControl = True
