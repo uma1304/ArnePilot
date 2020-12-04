@@ -103,6 +103,9 @@ class opParams:
                         'min_TR': Param(None, VT.none_or_number, 'The minimum allowed following distance in seconds. Default is 0.9 seconds.\n'
                                                                  'The range is limited from 0.85 to 1.3. Set to None to disable', live=True),
                         'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left.'),
+                        ##
+                        #  ONLY USED FOR HYUNDAI
+                        ##
                         'MdpsHarnessEnabled': Param(False, bool, 'Enable MDPS Harness support'),
                         'SccEnabled': Param(True, bool, 'Car has stock SCC'),
                         'SccHarnessPresent': Param(False, bool, 'Car has SCC Harness( scc moved to bus 2)'),
@@ -112,6 +115,7 @@ class opParams:
                         'enableLKASbutton': Param(True, bool, 'general toggle to enable LKAS button, LKAS button press will cancel OP steer'),
                         'smartMDPS': Param(True, bool, 'Toggle to enable smart MDPS'),
                         'nonlinearsas': Param(True, bool, 'Toggle to enable non linear desired steering angle based tune'),
+                        'Enable_INDI': Param(False, bool, 'Toggle to enable INDI'),
                         'uniqueID': Param(None, [type(None), str], 'User\'s unique ID')
                        }
 
