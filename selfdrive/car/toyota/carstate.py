@@ -22,6 +22,7 @@ class CarState(CarStateBase):
     self.setspeedcounter = 0
     self.pcm_acc_active = False
     self.main_on = False
+    self.distance = 0
 
     # On NO_DSU cars but not TSS2 cars the cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
     # is zeroed to where the steering angle is at start.
@@ -124,6 +125,8 @@ class CarState(CarStateBase):
     # 2 is standby, 10 is active. TODO: check that everything else is really a faulty state
     self.steer_state = cp.vl["EPS_STATUS"]['LKA_STATE']
 
+    self.distance = cp_cam.vl["ACC_CONTROL"]['DISTANCE']
+
     if self.CP.carFingerprint in TSS2_CAR:
       ret.leftBlindspot = (cp.vl["BSM"]['L_ADJACENT'] == 1) or (cp.vl["BSM"]['L_APPROACHING'] == 1)
       ret.rightBlindspot = (cp.vl["BSM"]['R_ADJACENT'] == 1) or (cp.vl["BSM"]['R_APPROACHING'] == 1)
@@ -161,6 +164,9 @@ class CarState(CarStateBase):
       ("LKA_STATE", "EPS_STATUS", 0),
       ("BRAKE_LIGHTS_ACC", "ESP_CONTROL", 0),
       ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
+      ("SPORT_ON", "GEAR_PACKET", 0),
+      ("ECON_ON", "GEAR_PACKET", 0),
+      ("DISTANCE_LINES", "PCM_CRUISE_SM", 0),
     ]
 
     checks = [
@@ -230,6 +236,7 @@ class CarState(CarStateBase):
     signals = [
       ("FORCE", "PRE_COLLISION", 0),
       ("PRECOLLISION_ACTIVE", "PRE_COLLISION", 0)
+      ("DISTANCE", "ACC_CONTROL", 0),
     ]
 
     # use steering message to check if panda is connected to frc
