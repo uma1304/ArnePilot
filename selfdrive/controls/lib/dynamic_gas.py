@@ -68,7 +68,7 @@ class DynamicGas:
       y = [0.55, 0.57, 0.43, 0.35, 0.33, 0.33, 0.3529, 0.36784, 0.37765, 0.38, 0.396, 0.309, 0.325, 0.358, 0.32, 0.301, 0.29,0.25]
       self.x_lead_mod_x = [7.1, 10.15, 12.24, 15 , 20 ]
 
-    y = [interp(i, [0.2, (0.2 + 0.45) / 2, 0.45], [1.075 * i, i * 1.05, i]) for i in y]
+    y = [interp(i, [y[0], y[-1]], [1.15, 1.0]) * i for i in y]  # more gas at lower speeds
     self.gasMaxBP, self.gasMaxV = x, y
 
   def handle_passable(self, CS, sm):
