@@ -178,7 +178,7 @@ class Planner():
 
     # we read offset value every 5 seconds
     fixed_offset = 0.0
-    if not travis:
+    #if not travis:
       fixed_offset = op_params.get('speed_offset')
       if self.last_time > 5:
         try:
@@ -190,7 +190,7 @@ class Planner():
         self.last_time = 0
       self.last_time = self.last_time + 1
 
-      
+
     long_control_state = sm['controlsState'].longControlState
     v_cruise_kph = sm['controlsState'].vCruise
     force_slow_decel = sm['controlsState'].forceDecel
