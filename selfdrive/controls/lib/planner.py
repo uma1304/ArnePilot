@@ -17,9 +17,10 @@ from selfdrive.controls.lib.longcontrol import LongCtrlState, MIN_CAN_SPEED
 from selfdrive.controls.lib.fcw import FCWChecker
 from selfdrive.controls.lib.long_mpc import LongitudinalMpc
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX
-
-offset = 4.47
-osm = True
+from common.op_params import opParams
+op_params = opParams()
+osm = op_params.get('osm')
+offset_limit = op_params.get('offset_limit')
 
 MAX_SPEED = 255.0
 NO_CURVATURE_SPEED = 90.0
@@ -121,6 +122,7 @@ class Planner():
     self.a_acc = 0.0
     self.v_cruise = 0.0
     self.a_cruise = 0.0
+    self.osm = True
 
     self.longitudinalPlanSource = 'cruise'
     self.fcw_checker = FCWChecker()
@@ -128,6 +130,7 @@ class Planner():
 
     self.params = Params()
     self.first_loop = True
+    self.offset = 0
 
     # dp
     self.dp_profile = DP_OFF
@@ -173,6 +176,21 @@ class Planner():
     cur_time = sec_since_boot()
     v_ego = sm['carState'].vEgo
 
+    # we read offset value every 5 seconds
+    fixed_offset = 0.0
+    if not travis:
+      fixed_offset = op_params.get('speed_offset')
+      if self.last_time > 5:
+        try:
+          self.offset = int(self.params.get("SpeedLimitOffset", encoding='utf8'))
+        except (TypeError,ValueError):
+          self.params.delete("SpeedLimitOffset")
+          self.offset = 0
+        self.osm = self.params.get("LimitSetSpeed", encoding='utf8') == "1"
+        self.last_time = 0
+      self.last_time = self.last_time + 1
+
+      
     long_control_state = sm['controlsState'].longControlState
     v_cruise_kph = sm['controlsState'].vCruise
     force_slow_decel = sm['controlsState'].forceDecel
