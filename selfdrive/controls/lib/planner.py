@@ -17,7 +17,6 @@ from selfdrive.controls.lib.longcontrol import LongCtrlState, MIN_CAN_SPEED
 from selfdrive.controls.lib.fcw import FCWChecker
 from selfdrive.controls.lib.long_mpc import LongitudinalMpc
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX
-from common.travis_checker import travis
 from common.op_params import opParams
 op_params = opParams()
 osm = op_params.get('osm')
@@ -179,17 +178,16 @@ class Planner():
 
     # we read offset value every 5 seconds
     fixed_offset = 0.0
-    if not travis:
-      fixed_offset = op_params.get('speed_offset')
-      if self.last_time > 5:
-        try:
-          self.offset = int(self.params.get("SpeedLimitOffset", encoding='utf8'))
-        except (TypeError,ValueError):
-          self.params.delete("SpeedLimitOffset")
-          self.offset = 0
-        self.osm = self.params.get("LimitSetSpeed", encoding='utf8') == "1"
-        self.last_time = 0
-      self.last_time = self.last_time + 1
+     fixed_offset = op_params.get('speed_offset')
+     if self.last_time > 5:
+       try:
+         self.offset = int(self.params.get("SpeedLimitOffset", encoding='utf8'))
+       except (TypeError,ValueError):
+         self.params.delete("SpeedLimitOffset")
+         self.offset = 0
+       self.osm = self.params.get("LimitSetSpeed", encoding='utf8') == "1"
+       self.last_time = 0
+     self.last_time = self.last_time + 1
 
 
     long_control_state = sm['controlsState'].longControlState
