@@ -24,6 +24,7 @@ smart_speed = op_params.get('smart_speed')
 smart_speed_max_vego = op_params.get('smart_speed_max_vego')
 offset_limit = op_params.get('offset_limit')
 default_brake_distance = op_params.get('default_brake_distance')
+curvature_factor = opParams().get('curvature_factor')
 
 MAX_SPEED = 255.0
 NO_CURVATURE_SPEED = 90.0
