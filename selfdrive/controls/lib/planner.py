@@ -24,7 +24,6 @@ smart_speed = op_params.get('smart_speed')
 smart_speed_max_vego = op_params.get('smart_speed_max_vego')
 offset_limit = op_params.get('offset_limit')
 default_brake_distance = op_params.get('default_brake_distance')
-eco_mode = op_params.get('eco_mode')
 
 MAX_SPEED = 255.0
 NO_CURVATURE_SPEED = 90.0
@@ -208,6 +207,8 @@ class Planner():
     enabled = (long_control_state == LongCtrlState.pid) or (long_control_state == LongCtrlState.stopping)
     following = lead_1.status and lead_1.dRel < 45.0 and lead_1.vLeadK > v_ego and lead_1.aLeadK > 0.0
 
+    speed_ahead_distance = default_brake_distance
+
     v_speedlimit = NO_CURVATURE_SPEED
     v_curvature_map = NO_CURVATURE_SPEED
     v_speedlimit_ahead = NO_CURVATURE_SPEED
@@ -265,8 +266,6 @@ class Planner():
       pass
 
     decel_for_turn = bool(v_curvature_map < min([v_cruise_setpoint, v_speedlimit, v_ego + 1.]))
-
-    speed_ahead_distance = 250
 
     # dp
     self.dp_profile = sm['dragonConf'].dpAccelProfile
