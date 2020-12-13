@@ -20,7 +20,6 @@ from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX
 from common.op_params import opParams
 op_params = opParams()
 osm = op_params.get('osm')
-offset_limit = op_params.get('offset_limit')
 smart_speed = op_params.get('smart_speed')
 smart_speed_max_vego = op_params.get('smart_speed_max_vego')
 offset_limit = op_params.get('offset_limit')
