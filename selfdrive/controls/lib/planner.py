@@ -249,7 +249,7 @@ class Planner():
       if sm['liveMapData'].curvatureValid and sm['liveMapData'].distToTurn < speed_ahead_distance and osm and self.osm and (sm['liveMapData'].lastGps.timestamp -time.mktime(now.timetuple()) * 1000) < 10000:
         curvature = abs(sm['liveMapData'].curvature)
         radius = 1/max(1e-4, curvature) * curvature_factor
-          radius = radius * 1.5
+        radius = radius * 1.5
         if radius > 500:
           c=0.9 # 0.9 at 1000m = 108 kph
         elif radius > 250:
