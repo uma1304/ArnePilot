@@ -123,6 +123,7 @@ class Planner():
     self.v_cruise = 0.0
     self.a_cruise = 0.0
     self.osm = True
+    self.last_time = 0
 
     self.longitudinalPlanSource = 'cruise'
     self.fcw_checker = FCWChecker()
@@ -178,16 +179,16 @@ class Planner():
 
     # we read offset value every 5 seconds
     fixed_offset = 0.0
-     fixed_offset = op_params.get('speed_offset')
-     if self.last_time > 5:
-       try:
-         self.offset = int(self.params.get("SpeedLimitOffset", encoding='utf8'))
-       except (TypeError,ValueError):
-         self.params.delete("SpeedLimitOffset")
-         self.offset = 0
-       self.osm = self.params.get("LimitSetSpeed", encoding='utf8') == "1"
-       self.last_time = 0
-     self.last_time = self.last_time + 1
+    fixed_offset = op_params.get('speed_offset')
+    if self.last_time > 5:
+      try:
+        self.offset = int(self.params.get("SpeedLimitOffset", encoding='utf8'))
+      except (TypeError,ValueError):
+        self.params.delete("SpeedLimitOffset")
+        self.offset = 0
+      self.osm = self.params.get("LimitSetSpeed", encoding='utf8') == "1"
+      self.last_time = 0
+    self.last_time = self.last_time + 1
 
 
     long_control_state = sm['controlsState'].longControlState
