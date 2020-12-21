@@ -8,9 +8,10 @@ from selfdrive.controls.lib.events import Events
 _LON_MPC_STEP = 0.2  # Time stemp of longitudinal control (5 Hz)
 _WAIT_TIME_LIMIT_RISE = 2.0  # Waiting time before raising the speed limit.
 
-_MIN_ADAPTING_BRAKE_ACC = -2.0  # Minimum acceleration allowed when adapting to lower speed limit.
-_SPEED_OFFSET_TH = -5.0  # Maximum offset between speed limit and current speed for adapting state.
-_LIMIT_ADAPT_TIME = 4.0  # Ideal time (s) to adapt to lower speed limit. i.e. braking.
+_MIN_ADAPTING_BRAKE_ACC = -1.5  # Minimum acceleration allowed when adapting to lower speed limit.
+_MIN_ADAPTING_BRAKE_JERK = -1.0  # Minimum jerk allowed when adapting to lower speed limit.
+_SPEED_OFFSET_TH = -10.0  # Maximum offset between speed limit and current speed for adapting state.
+_LIMIT_ADAPT_TIME = 5.0  # Ideal time (s) to adapt to lower speed limit. i.e. braking.
 
 _MAX_SPEED_OFFSET_DELTA = 1.0  # m/s Maximum delta for speed limit changes.
 
@@ -40,7 +41,7 @@ class SpeedLimitController():
     self._op_enabled = False
     self._active_jerk_limits = [0.0, 0.0]
     self._active_accel_limits = [0.0, 0.0]
-    self._adapting_jerk_limits = [_MIN_ADAPTING_BRAKE_ACC, 1.0]
+    self._adapting_jerk_limits = [_MIN_ADAPTING_BRAKE_JERK, 1.0]
     self._v_ego = 0.0
     self._a_ego = 0.0
     self._v_offset = 0.0
