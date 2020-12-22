@@ -148,7 +148,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate == CAR.LEXUS_RX_TSS2:
       stop_and_go = True
-      ret.safetyParam = 55
+      ret.safetyParam = 53
       ret.wheelbase = 2.79
       ret.steerRatio = 14.8
       tire_stiffness_factor = 0.5533  # not optimized yet
@@ -168,7 +168,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate in [CAR.CHR, CAR.CHRH]:
       stop_and_go = True
-      ret.safetyParam = 73
+      ret.safetyParam = 53
       ret.wheelbase = 2.63906
       ret.steerRatio = 13.6
       tire_stiffness_factor = 0.7933
@@ -178,7 +178,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate in [CAR.CAMRY, CAR.CAMRYH]:
       stop_and_go = True
-      ret.safetyParam = 73
+      ret.safetyParam = 53
       ret.wheelbase = 2.82448
       ret.steerRatio = 13.7
       tire_stiffness_factor = 0.7933
@@ -188,7 +188,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate in [CAR.HIGHLANDER_TSS2, CAR.HIGHLANDERH_TSS2]:
       stop_and_go = True
-      ret.safetyParam = 55
+      ret.safetyParam = 53
       ret.wheelbase = 2.84988  # 112.2 in = 2.84988 m
       ret.steerRatio = 16.0
       tire_stiffness_factor = 0.8
@@ -218,7 +218,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate == CAR.RAV4_TSS2:
       stop_and_go = True
-      ret.safetyParam = 55
+      ret.safetyParam = 53
       ret.wheelbase = 2.68986
       ret.steerRatio = 14.3
       tire_stiffness_factor = 0.7933
@@ -312,7 +312,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate in [CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2]:
       stop_and_go = True
-      ret.safetyParam = 55
+      ret.safetyParam = 53
       ret.wheelbase = 2.8702
       ret.steerRatio = 16.0  # not optimized
       tire_stiffness_factor = 0.444  # not optimized yet
