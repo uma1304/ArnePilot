@@ -62,7 +62,8 @@ class CarInterface(CarInterfaceBase):
 
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGain = 4.0
-      ret.lateralTuning.indi.outerLoopGain = 3.0
+      ret.lateralTuning.indi.outerLoopGainBP = [0.]	
+      ret.lateralTuning.indi.outerLoopGainV = [3.]
       ret.lateralTuning.indi.timeConstant = 1.0
       ret.lateralTuning.indi.actuatorEffectiveness = 1.0
       ret.steerActuatorDelay = 0.5
@@ -254,7 +255,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate == CAR.COROLLA_TSS2:
       stop_and_go = True
-      ret.safetyParam = 55
+      ret.safetyParam = 53
       ret.wheelbase = 2.63906
       ret.steerRatio = 13.9
       tire_stiffness_factor = 0.444  # not optimized yet
@@ -266,14 +267,12 @@ class CarInterface(CarInterfaceBase):
         ret.steerRatio = 15.33
         ret.steerLimitTimer = 5.0
         tire_stiffness_factor = 0.996  # not optimized yet
-        #ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kpV = [[0.0, 15.5, 21.0, 29.0], [0.13, 0.39, 0.39, 0.6]]
-        #ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kiV = [[0.0, 15.5, 21.0, 29.0], [0.005, 0.015, 0.015, 0.1]]
-        #ret.lateralTuning.pid.kfBP, ret.lateralTuning.pid.kfV = [[0.0, 15.5, 21.0, 29.0], [0.00009, 0.00015, 0.00015, 0.00007818594]]
-        ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGain = 6
-        ret.lateralTuning.indi.outerLoopGain = 6.0
-        ret.lateralTuning.indi.timeConstant = 5.5
-        ret.lateralTuning.indi.actuatorEffectiveness = 6.0
+        ret.lateralTuning.init('indi')	
+        ret.lateralTuning.indi.innerLoopGain = 15.0	
+        ret.lateralTuning.indi.outerLoopGainBP = [20, 21, 25, 26]	
+        ret.lateralTuning.indi.outerLoopGainV = [4.0, 8.5, 9.0, 14.99]	
+        ret.lateralTuning.indi.timeConstant = 5.5	
+        ret.lateralTuning.indi.actuatorEffectiveness = 15.0
       else:
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.5], [0.1]]
         ret.lateralTuning.pid.kfV = [0.00007818594]
