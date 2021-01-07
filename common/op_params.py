@@ -18,7 +18,7 @@ class ValueTypes:
 
 
 class Param:
-  def __init__(self, default=None, allowed_types=[], description=None, live=False, hidden=False):
+  def __init__(self, default=None, allowed_types=[], description=None, live=False, hidden=False, depends_on=None):  # pylint: disable=dangerous-default-value
     self.default = default
     if not isinstance(allowed_types, list):
       allowed_types = [allowed_types]
@@ -26,21 +26,32 @@ class Param:
     self.description = description
     self.hidden = hidden
     self.live = live
+    self.depends_on = depends_on
+    self.children = []
     self._create_attrs()
 
   def is_valid(self, value):
     if not self.has_allowed_types:
       return True
-    return type(value) in self.allowed_types
+    if self.is_list and isinstance(value, list):
+      for v in value:
+        if type(v) not in self.allowed_types:
+          return False
+      return True
+    else:
+      return type(value) in self.allowed_types or value in self.allowed_types
 
   def _create_attrs(self):  # Create attributes and check Param is valid
     self.has_allowed_types = isinstance(self.allowed_types, list) and len(self.allowed_types) > 0
     self.has_description = self.description is not None
     self.is_list = list in self.allowed_types
+    self.is_bool = bool in self.allowed_types
     if self.has_allowed_types:
-      assert type(self.default) in self.allowed_types, 'Default value type must be in specified allowed_types!'
-    if self.is_list:
-      self.allowed_types.remove(list)
+      assert type(self.default) in self.allowed_types or self.default in self.allowed_types, 'Default value type must be in specified allowed_types!'
+
+      if self.is_list and self.default:
+        for v in self.default:
+          assert type(v) in self.allowed_types, 'Default value type must be in specified allowed_types!'
 
 
 class opParams:
@@ -90,7 +101,7 @@ class opParams:
                         'offset_limit': Param(0, VT.number, 'Speed at which apk percent offset will work in m/s'),
                         'osm': Param(True, bool, 'Whether to use OSM for drives'),
                         'prius_pid': Param(False, bool, 'This enables the PID lateral controller with new a experimental derivative tune\nFalse: stock INDI, True: TSS2-tuned PID'),
-                        #'rolling_stop': Param(False, bool, 'If you do not want stop signs to go down to 0 kph enable this for 9kph slow down'),
+                        'rolling_stop': Param(False, bool, 'If you do not want stop signs to go down to 0 kph enable this for 9kph slow down'),
                         #'rsa_max_speed': Param(24.5, VT.number, 'Speed limit to ignore RSA in m/s'),
                         'smart_speed': Param(True, bool, 'Whether to use Smart Speed for drives above smart_speed_max_vego'),
                         'smart_speed_max_vego': Param(26.8, VT.number, 'Speed limit to ignore Smartspeed in m/s'),
@@ -99,13 +110,23 @@ class opParams:
                         'steer_actuator_delay': Param(0.5, VT.number, 'The steer actuator delay', live=True),
                         #'steer_up_15': Param(False, bool, 'Increase rate of steering up to 15, may fault on some cars'),
                         #'traffic_light_alerts': Param(False, bool, "Switch off the traffic light alerts"),
-                        #'traffic_lights': Param(False, bool, "Should Openpilot stop for traffic lights"),
-                        #'traffic_lights_without_direction': Param(False, bool, "Should Openpilot stop for traffic lights without a direction specified"),
+                        'traffic_lights': Param(False, bool, "Should Openpilot stop for traffic lights"),
+                        'traffic_lights_without_direction': Param(False, bool, "Should Openpilot stop for traffic lights without a direction specified"),
                         #'use_car_caching': Param(True, bool, 'Whether to use fingerprint caching'),
                         #'min_TR': Param(None, VT.none_or_number, 'The minimum allowed following distance in seconds. Default is 0.9 seconds.\n'
                                                                  #'The range is limited from 0.85 to 1.3. Set to None to disable', live=True),
                         #'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left.'),
-                        'uniqueID': Param(None, [type(None), str], 'User\'s unique ID')
+                        'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
+                        'enable_indi_live': Param(False, bool, live=True),
+                        'indi_inner_gain_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_inner_gain_v': Param([6.0, 6.0, 6.0], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_outer_gain_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_outer_gain_v': Param([15, 15, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_time_constant_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_time_constant_v': Param([5.5, 5.5, 5.5], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_actuator_effectiveness_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_actuator_effectiveness_v': Param([6, 6, 6], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live')
                        }
 
     self._params_file = '/data/op_params.json'
@@ -113,6 +134,7 @@ class opParams:
     self._last_read_time = sec_since_boot()
     self.read_frequency = 2.5  # max frequency to read with self.get(...) (sec)
     self._to_delete = ['reset_integral', 'log_data']  # a list of params you want to delete (unused)
+    self._last_mod_time = 0.
     self._run_init()  # restores, reads, and updates params
 
   def _run_init(self):  # does first time initializing of default params
@@ -120,6 +142,14 @@ class opParams:
     self.fork_params['username'] = Param(None, [type(None), str, bool], 'Your identifier provided with any crash logs sent to Sentry.\nHelps the developer reach out to you if anything goes wrong')
     self.fork_params['op_edit_live_mode'] = Param(False, bool, 'This parameter controls which mode opEdit starts in', hidden=True)
     self.params = self._get_all_params(default=True)  # in case file is corrupted
+
+    for k, p in self.fork_params.items():
+      d = p.depends_on
+      while d:
+        fp = self.fork_params[d]
+        fp.children.append(k)
+        d = fp.depends_on
+
     if travis:
       return
 
@@ -208,13 +238,19 @@ class opParams:
           self._last_read_time = sec_since_boot()
 
   def _read(self):
-    try:
-      with open(self._params_file, "r") as f:
-        self.params = json.loads(f.read())
-      return True
-    except Exception as e:
-      error(e)
-      return False
+    if os.path.isfile(self._params_file):
+      try:
+        mod_time = os.path.getmtime(self._params_file)
+        if mod_time > self._last_mod_time:
+          with open(self._params_file, "r") as f:
+            self.params = json.loads(f.read())
+          self._last_mod_time = mod_time
+          return True
+        else:
+          return False
+      except Exception as e:
+        print("Unable to read file: " + str(e))
+        return False
 
   def _write(self):
     if not travis:

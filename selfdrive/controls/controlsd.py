@@ -60,7 +60,7 @@ class Controls:
     if self.sm is None:
       socks = ['thermal', 'health', 'model', 'liveCalibration', 'radarState', 'frontFrame',
                                      'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman', 'dragonConf']
-      ignore_alive = None if params.get('dp_driver_monitor') == b'1' else ['dMonitoringState']
+      ignore_alive = ['dragonConf'] if params.get('dp_driver_monitor') == b'1' else ['dMonitoringState', 'dragonConf']
       self.sm = messaging.SubMaster(socks, ignore_alive=ignore_alive)
 
     self.can_sock = can_sock
@@ -143,16 +143,16 @@ class Controls:
 
     self.startup_event = get_startup_event(car_recognized, controller_available)
 
-    # if not sounds_available:
-    #   self.events.add(EventName.soundsUnavailable, static=True)
-    # if internet_needed:
-    #   self.events.add(EventName.internetConnectivityNeeded, static=True)
+    if not sounds_available:
+      self.events.add(EventName.soundsUnavailable, static=True)
+    if internet_needed:
+      self.events.add(EventName.internetConnectivityNeeded, static=True)
     if community_feature_disallowed:
       self.events.add(EventName.communityFeatureDisallowed, static=True)
     if not car_recognized:
       self.events.add(EventName.carUnrecognized, static=True)
-    # if hw_type == HwType.whitePanda:
-    #   self.events.add(EventName.whitePandaUnsupportedDEPRECATED, static=True)
+    if hw_type == HwType.whitePanda:
+      self.events.add(EventName.whitePandaUnsupported, static=True)
 
     # controlsd is driven by can recv, expected at 100Hz
     self.rk = Ratekeeper(100, print_delay_threshold=None)
@@ -235,6 +235,7 @@ class Controls:
       # only plan not being received: radar not communicating
       self.events.add(EventName.radarCommIssue)
     elif not self.sm.all_alive_and_valid():
+      self.sm.print_dead_and_not_valid()
       self.events.add(EventName.commIssue)
     if not self.sm['pathPlan'].mpcSolutionValid:
       self.events.add(EventName.steerTempUnavailable if self.sm['dragonConf'].dpAtl else EventName.plannerError)

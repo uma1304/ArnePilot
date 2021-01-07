@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.7
+#pylint: skip-file
 '''
 GPS cord converter: https://gist.github.com/jp1017/71bd0976287ce163c11a7cb963b04dd8
 '''
@@ -157,7 +158,7 @@ def to_gpx(logs, timestamp):
       zf = zipfile.ZipFile('%s%sZ.zip' % (GPX_LOG_PATH, filename), mode='w')
       zf.writestr(zi, str)
       zf.close()
-    except:
+    except Exception:
       pass
 
 if __name__ == "__main__":

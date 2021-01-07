@@ -52,6 +52,7 @@ def create_mqb_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
     "GRA_Typ468": CS.graTyp468,
     "GRA_ButtonTypeInfo": CS.graButtonTypeInfo
   }
+
   return packer.make_can_msg("GRA_ACC_01", bus, values, idx)
 
 # ----------------------------------------------------------------------- #
@@ -90,8 +91,6 @@ def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert,
     "Kombi_Lamp_Green": 1 if hca_enabled and not steering_pressed else 0,
   }
   return packer.make_can_msg("LDW_1", bus, values)
-
-pass
 
 def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
   pass
