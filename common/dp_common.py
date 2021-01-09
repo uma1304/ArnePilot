@@ -4,11 +4,11 @@ from cereal import car
 from common.params import Params
 from common.realtime import sec_since_boot
 import os
-import time
-from math import floor
+#import time
+#from math import floor
 params = Params()
 from common.travis_checker import travis
-from common.dp_conf import init_params_vals
+#from common.dp_conf import init_params_vals
 
 if travis:
   PARAM_PATH = str(os.environ.get('HOME')) + "/.comma/params/d/"
