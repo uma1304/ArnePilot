@@ -220,8 +220,3 @@ def get_car(logcan, sendcan, has_relay=False):
   car_params.fingerprintSource = source
 
   return CarInterface(car_params, CarController, CarState), car_params
-
-def log_fingerprinted(candidate):
-  while True:
-    crash.capture_warning("fingerprinted %s" % candidate)
-    break
