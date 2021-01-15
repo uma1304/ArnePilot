@@ -80,8 +80,8 @@ class opParams:
                         'cloak': Param(True, bool, "make comma believe you are on their fork"),
                         #'corolla_tss2_d_tuning': Param(False, bool, 'lateral tuning using PID w/ true derivative'),
                         'default_brake_distance': Param(250.0, VT.number, 'Distance in m to start braking for mapped speeds.'),
-                        'enable_long_derivative': Param(False, bool, 'If you have longitudinal overshooting, enable this! This enables derivative-based\n'
-                                                                     'integral wind-down to help reduce overshooting within the long PID loop'),
+                        #'enable_long_derivative': Param(False, bool, 'If you have longitudinal overshooting, enable this! This enables derivative-based\n'
+                                                                    # 'integral wind-down to help reduce overshooting within the long PID loop'),
                         #'dynamic_follow': Param('normal', str, "Can be: ('close', 'normal', 'far'): Left to right increases in following distance.\n"
                                                                #"All profiles support dynamic follow so you'll get your preferred distance while\n"
                                                                #"retaining the smoothness and safety of dynamic follow!", live=True),
@@ -117,15 +117,18 @@ class opParams:
                                                                  #'The range is limited from 0.85 to 1.3. Set to None to disable', live=True),
                         #'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left.'),
                         'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
+                        'update_behavior': Param('auto', str, 'Can be: (\'off\', \'alert\', \'auto\') without quotes\n'
+                                                              'off will never update, alert shows an alert on-screen\n'
+                                                              'auto will reboot the device when an update is seen'),
                         'enable_indi_live': Param(False, bool, live=True),
-                        'indi_inner_gain_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_inner_gain_v': Param([6.0, 6.0, 6.0], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_outer_gain_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_outer_gain_v': Param([15, 15, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_time_constant_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_time_constant_v': Param([5.5, 5.5, 5.5], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_actuator_effectiveness_bp': Param([0, 255, 255], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'indi_actuator_effectiveness_v': Param([6, 6, 6], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_inner_gain_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_inner_gain_v': Param([5, 10, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_outer_gain_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_outer_gain_v': Param([4, 9, 14.99], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_time_constant_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_time_constant_v': Param([2, 4, 5.5], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_actuator_effectiveness_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
+                        'indi_actuator_effectiveness_v': Param([5, 10, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live')
                        }
 
