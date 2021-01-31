@@ -66,11 +66,13 @@ class CarInterface(CarInterfaceBase):
       #ret.longitudinalTuning.kiV = [0.195, 0.10]
       ret.longitudinalTuning.deadzoneBP = [0., 8.05]
       ret.longitudinalTuning.deadzoneV = [.0, .14]
+      ret.longitudinalTuning.kpBP = [0., 5., 20.]
       ret.longitudinalTuning.kpV = [0.5, 0.3, 0.1]
       ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.]
       ret.longitudinalTuning.kiV = [.4, .35, .3, .2, .1]
-      ret.stoppingBrakeRate = 0.135 # reach stopping target smoothly
-      ret.startingBrakeRate = 1.1 # release brakes fast
+      ret.stoppingBrakeRate = 0.16 # reach stopping target smoothly
+      ret.startingBrakeRate = 0.9 # release brakes fast
+      ret.startAccel = 1.60 # Accelerate from 0 faster
       stop_and_go = True
       ret.safetyParam = 55
       ret.wheelbase = 2.70002
@@ -78,19 +80,19 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
       ret.steerActuatorDelay = 0.575
-      ret.steerLimitTimer = 0.4 #5.0
-      ret.steerRateCost = 0.5 #0.45
-      ret.lateralTuning.init('indi')
+      ret.steerLimitTimer = 0.1 #5.0
+      ret.steerRateCost = 0.25 #0.45
       if prius_pid:
         ret.lateralTuning.init('pid')
         ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.21], [0.008]]
         ret.lateralTuning.pid.kfV = [0.00009531750004645412]
       else:
+        ret.lateralTuning.init('indi')
         ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
         ret.lateralTuning.indi.innerLoopGainV = [15, 15]
-        ret.lateralTuning.indi.outerLoopGainBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.6, 33.3, 36.1, 36.11]
-        ret.lateralTuning.indi.outerLoopGainV = [4.7, 6.1, 8.35, 10.3, 11.1, 11.8, 12.6, 13.4, 14.0, 14.5, 14.99]
+        ret.lateralTuning.indi.outerLoopGainBP = [8.3, 25, 27.7, 36.1]
+        ret.lateralTuning.indi.outerLoopGainV = [4.6, 14.99, 14.99, 19]
         ret.lateralTuning.indi.timeConstantBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.1, 33.3, 36.1]
         ret.lateralTuning.indi.timeConstantV = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.0, 4.0, 4.0]
         ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 25]
