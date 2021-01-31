@@ -21,6 +21,8 @@ from selfdrive.controls.lib.alertmanager import AlertManager
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
+from common.travis_checker import travis
+import threading
 
 LDW_MIN_SPEED = 12.5
 LANE_DEPARTURE_THRESHOLD = 0.1
