@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+#pylint: skip-file
+# flake8: noqa
 import os
 import time
 import math
@@ -121,4 +123,3 @@ def signal_handler(sig, frame):
 if __name__ == "__main__":
   signal.signal(signal.SIGINT, signal_handler)
   main()
-
