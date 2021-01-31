@@ -22,7 +22,7 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
 
-LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
+LDW_MIN_SPEED = 12.5
 LANE_DEPARTURE_THRESHOLD = 0.1
 STEER_ANGLE_SATURATION_TIMEOUT = 1.0 / DT_CTRL
 STEER_ANGLE_SATURATION_THRESHOLD = 2.5  # Degrees
@@ -130,6 +130,17 @@ class Controls:
     self.can_error_counter = 0
     self.last_blinker_frame = 0
     self.saturated_count = 0
+    self.distance_traveled_now = 0
+    if not travis:
+      self.distance_traveled = float(params.get("DistanceTraveled", encoding='utf8'))
+      self.distance_traveled_engaged = float(params.get("DistanceTraveledEngaged", encoding='utf8'))
+      self.distance_traveled_override = float(params.get("DistanceTraveledOverride", encoding='utf8'))
+    else:
+      self.distance_traveled = 0
+      self.distance_traveled_engaged = 0
+      self.distance_traveled_override = 0
+
+    self.distance_traveled_frame = 0
     self.distance_traveled = 0
     self.last_functional_fan_frame = 0
     self.events_prev = []
@@ -239,13 +250,13 @@ class Controls:
       self.events.add(EventName.commIssue)
     if not self.sm['pathPlan'].mpcSolutionValid:
       self.events.add(EventName.steerTempUnavailable if self.sm['dragonConf'].dpAtl else EventName.plannerError)
-    # if not self.sm['liveLocationKalman'].sensorsOK and not NOSENSOR:
-    #   if self.sm.frame > 5 / DT_CTRL:  # Give locationd some time to receive all the inputs
-    #     self.events.add(EventName.sensorDataInvalid)
-    # if not self.sm['liveLocationKalman'].gpsOK and (self.distance_traveled > 1000):
-    #   # Not show in first 1 km to allow for driving out of garage. This event shows after 5 minutes
-    #   if not (SIMULATION or NOSENSOR):  # TODO: send GPS in carla
-    #     self.events.add(EventName.noGps)
+    if not self.sm['liveLocationKalman'].sensorsOK and not NOSENSOR:
+      if self.sm.frame > 5 / DT_CTRL:  # Give locationd some time to receive all the inputs
+        self.events.add(EventName.sensorDataInvalid)
+    if not self.sm['liveLocationKalman'].gpsOK and (self.distance_traveled > 1000):
+      # Not show in first 1 km to allow for driving out of garage. This event shows after 5 minutes
+      if not (SIMULATION or NOSENSOR):  # TODO: send GPS in carla
+        self.events.add(EventName.noGps)
     if not self.sm['pathPlan'].paramsValid:
       self.events.add(EventName.vehicleModelInvalid)
     if not self.sm['liveLocationKalman'].posenetOK:
@@ -332,7 +343,16 @@ class Controls:
     if not self.sm['dragonConf'].dpAtl and not self.sm['health'].controlsAllowed and self.enabled:
       self.mismatch_counter += 1
 
+    self.distance_traveled_now += CS.vEgo * DT_CTRL
     self.distance_traveled += CS.vEgo * DT_CTRL
+    if self.enabled:
+      self.distance_traveled_engaged += CS.vEgo * DT_CTRL
+      if CS.steeringPressed:
+        self.distance_traveled_override += CS.vEgo * DT_CTRL
+    if (self.sm.frame - self.distance_traveled_frame) * DT_CTRL > 10.0 and not travis:
+      y = threading.Thread(target=send_params, args=(str(self.distance_traveled),str(self.distance_traveled_engaged),str(self.distance_traveled_override),))
+      y.start()
+      self.distance_traveled_frame = self.sm.frame
 
     return CS
 
@@ -547,6 +567,7 @@ class Controls:
     controlsState.vEgoRaw = CS.vEgoRaw
     controlsState.angleSteers = CS.steeringAngle
     controlsState.curvature = self.VM.calc_curvature(steer_angle_rad, CS.vEgo)
+    controlsState.decelForTurn = self.sm['plan'].decelForTurn
     controlsState.steerOverride = CS.steeringPressed
     controlsState.state = self.state
     controlsState.engageable = not self.events.any(ET.NO_ENTRY)
@@ -636,6 +657,11 @@ class Controls:
       self.step()
       self.rk.monitor_time()
       self.prof.display()
+def send_params(a, b, c):
+  params = Params()
+  params.put("DistanceTraveled", a)
+  params.put("DistanceTraveledEngaged", b)
+  params.put("DistanceTraveledOverride", c)
 
 def main(sm=None, pm=None, logcan=None):
   controls = Controls(sm, pm, logcan)
