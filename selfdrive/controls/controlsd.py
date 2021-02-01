@@ -352,7 +352,7 @@ class Controls:
       if CS.steeringPressed:
         self.distance_traveled_override += CS.vEgo * DT_CTRL
     if (self.sm.frame - self.distance_traveled_frame) * DT_CTRL > 10.0 and not travis:
-      y = threading.Thread(target=send_params, args=(str(self.distance_traveled),str(self.distance_traveled_engaged),str(self.distance_traveled_override),))
+      y = threading.Thread(target=send_params, args=(str(round(self.distance_traveled,2)),str(round(self.distance_traveled_engaged,2)),str(round(self.distance_traveled_override,2)),))
       y.start()
       self.distance_traveled_frame = self.sm.frame
 
