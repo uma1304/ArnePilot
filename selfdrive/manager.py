@@ -25,6 +25,7 @@ os.environ['BASEDIR'] = BASEDIR
 TOTAL_SCONS_NODES = 1040
 prebuilt = os.path.exists(os.path.join(BASEDIR, 'prebuilt'))
 kill_updated = opParams().get('update_behavior').lower().strip() == 'off' or os.path.exists('/data/no_ota_updates')
+interbridged = opParams().get('interbridged')
 
 # Create folders needed for msgq
 try:
@@ -208,6 +209,8 @@ managed_processes = {
   "systemd": "selfdrive.dragonpilot.systemd",
   "appd": "selfdrive.dragonpilot.appd",
   "gpxd": "selfdrive.dragonpilot.gpxd",
+  "interbridged": "selfdrive.interbridge.interbridged",
+  "livedashserved": "selfdrive.livedash.served",
 }
 
 daemon_processes = {
@@ -236,6 +239,12 @@ persistent_processes = [
   'systemd',
   'appd',
 ]
+
+if interbridged:
+  persistent_processes += [
+    'interbridged',
+    "livedashserved",
+  ]
 
 if not PC:
   persistent_processes += [

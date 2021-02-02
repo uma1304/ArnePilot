@@ -95,6 +95,7 @@ class opParams:
                         'keep_openpilot_engaged': Param(True, bool, 'True is stock behavior in this fork. False lets you use the brake and cruise control stalk to disengage as usual'),
                         #'lat_d': Param(9.0, VT.number, 'The lateral derivative gain, default is 9.0 for TSS2 Corolla. This is active at all speeds', live=True),
                         'limit_rsa': Param(False, bool, "Switch off RSA above rsa_max_speed"),
+                        'interbridged': Param(False, bool, "ONLY USE IT FOR TESTING PURPOSE. You are responsible for your own action. we do not recommend using it if you don't know what youre doing"),
                         #'ludicrous_mode': Param(False, bool, 'Double overall acceleration!'),
                         'mpc_offset': Param(0.0, VT.number, 'Offset model braking by how many m/s. Lower numbers equals more model braking', live=True),
                         #'NoctuaMode': Param(False, bool, 'Noctua Fan are super quite and they run at full speed at all time.'),

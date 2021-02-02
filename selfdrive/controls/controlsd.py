@@ -23,6 +23,7 @@ from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
 from common.travis_checker import travis
 import threading
+from selfdrive.interceptor import Interceptor
 
 LDW_MIN_SPEED = 12.5
 LANE_DEPARTURE_THRESHOLD = 0.1
@@ -61,9 +62,11 @@ class Controls:
     self.sm = sm
     if self.sm is None:
       socks = ['thermal', 'health', 'model', 'liveCalibration', 'radarState', 'frontFrame',
-                                     'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman', 'dragonConf']
+                                     'dMonitoringState', 'plan', 'pathPlan', 'liveLocationKalman', 'dragonConf', 'testJoystick']
       ignore_alive = ['dragonConf'] if params.get('dp_driver_monitor') == b'1' else ['dMonitoringState', 'dragonConf']
       self.sm = messaging.SubMaster(socks, ignore_alive=ignore_alive)
+
+    self.interceptor = Interceptor()
 
     self.can_sock = can_sock
     if can_sock is None:
@@ -328,6 +331,9 @@ class Controls:
 
     self.sm.update(0)
 
+    # Update Interceptor
+    self.interceptor.update(self.sm['testJoystick'], self.sm.logMonoTime['testJoystick'], sec_since_boot()*1e9)
+
     # Check for CAN timeout
     if not can_strs:
       self.can_error_counter += 1
@@ -483,6 +489,12 @@ class Controls:
 
         if left_deviation or right_deviation:
           self.events.add(EventName.steerSaturated)
+
+    # Interceptor; (signal, index, part, scale=1.0)
+    actuators.gas = self.interceptor.override_axis(actuators.gas, 1, 'negative', .5)  # Rescale for Toyota to maxgas=0.5
+    actuators.brake = self.interceptor.override_axis(actuators.brake, 1, 'positive', 1.)
+    actuators.steer = self.interceptor.override_axis(actuators.steer, 2, 'full', -1.)  # For torque based steering
+    actuators.steerAngle = self.interceptor.override_axis(actuators.steer, 2, 'full', -45.)  # For angle based steering, limit 45 deg
 
     return actuators, v_acc_sol, a_acc_sol, lac_log
 
