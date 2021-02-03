@@ -67,11 +67,11 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.deadzoneBP = [0., 8.05]
       ret.longitudinalTuning.deadzoneV = [.0, .14]
       ret.longitudinalTuning.kpBP = [0., 5., 20.]
-      ret.longitudinalTuning.kpV = [0.5, 0.3, 0.1]
-      ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.]
-      ret.longitudinalTuning.kiV = [.4, .35, .3, .2, .1]
-      ret.stoppingBrakeRate = 0.16 # reach stopping target smoothly
-      ret.startingBrakeRate = 0.9 # release brakes fast
+      ret.longitudinalTuning.kpV = [1.3, 1.0, 0.7]
+      ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.] # 0, 11, 27, 45, 60
+      ret.longitudinalTuning.kiV = [.35, .23, .20, .17, .1]
+      #ret.stoppingBrakeRate = 0.16 # reach stopping target smoothly
+      #ret.startingBrakeRate = 0.9 # release brakes fast
       #ret.startAccel = 1.60 # Accelerate from 0 faster
       stop_and_go = True
       ret.safetyParam = 55
@@ -82,7 +82,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerActuatorDelay = 0.575
       #ret.steerLimitTimer = 0.1 #5.0
       #ret.steerRateCost = 0.25 #0.45
-      ret.steerLimitTimer = 5.0
+      #ret.steerLimitTimer = 5.0
       if prius_pid:
         ret.lateralTuning.init('pid')
         ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
@@ -90,14 +90,14 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.kfV = [0.00009531750004645412]
       else:
         ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGainBP = [18, 22, 26]
-        ret.lateralTuning.indi.innerLoopGainV = [9, 12, 15]
-        ret.lateralTuning.indi.outerLoopGainBP = [18, 22, 26]
-        ret.lateralTuning.indi.outerLoopGainV = [8, 11, 14.99]
-        ret.lateralTuning.indi.timeConstantBP = [18, 22, 26]
-        ret.lateralTuning.indi.timeConstantV = [1, 3 , 4.5]
-        ret.lateralTuning.indi.actuatorEffectivenessBP = [18, 22, 26]
-        ret.lateralTuning.indi.actuatorEffectivenessV = [9, 12, 15]
+        ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25, 30]
+        ret.lateralTuning.indi.innerLoopGainV = [4.0, 4.04, 4.1]
+        ret.lateralTuning.indi.outerLoopGainBP = [16.7, 25, 30]
+        ret.lateralTuning.indi.outerLoopGainV = [3.0, 3.04, 3.1]
+        ret.lateralTuning.indi.timeConstantBP = [0]
+        ret.lateralTuning.indi.timeConstantV = [0.1]
+        ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 30]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [1.0, 1.1]
         #ret.lateralTuning.init('indi') #really good tune from cgw.
         #ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25, 36.1]
         #ret.lateralTuning.indi.innerLoopGainV = [9.5, 15, 15]
