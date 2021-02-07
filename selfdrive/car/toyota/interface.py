@@ -81,7 +81,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
       ret.steerActuatorDelay = 0.5
       #ret.steerLimitTimer = 0.1 #5.0
-      #ret.steerRateCost = 0.25 #0.45
+      ret.steerRateCost = 1.0 #0.45
       #ret.steerLimitTimer = 5.0
       if prius_pid:
         ret.lateralTuning.init('pid')
@@ -93,7 +93,7 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25, 30]
         ret.lateralTuning.indi.innerLoopGainV = [4.0, 4.06, 4.1]
         ret.lateralTuning.indi.outerLoopGainBP = [16.7, 25, 30]
-        ret.lateralTuning.indi.outerLoopGainV = [3.0, 3.02, 3.06]
+        ret.lateralTuning.indi.outerLoopGainV = [3.0, 3.02, 3.04]
         ret.lateralTuning.indi.timeConstantBP = [0]
         ret.lateralTuning.indi.timeConstantV = [0.1]
         ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 30]
