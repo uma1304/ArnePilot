@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.7
-import subprocess
+#import subprocess
 from cereal import car
 from common.params import Params
 from common.realtime import sec_since_boot
