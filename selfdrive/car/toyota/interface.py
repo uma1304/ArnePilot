@@ -72,7 +72,7 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kiV = [.35, .23, .20, .17, .1]
       #ret.stoppingBrakeRate = 0.16 # reach stopping target smoothly
       #ret.startingBrakeRate = 0.9 # release brakes fast
-      ret.startAccel = 1.2 # Accelerate from 0 faster
+      ret.startAccel = 1.4 # Accelerate from 0 faster
       stop_and_go = True
       ret.safetyParam = 55
       ret.wheelbase = 2.70002
@@ -80,8 +80,8 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
       ret.steerActuatorDelay = 0.58
-      ret.steerLimitTimer = 0.8 #5.0
-      #ret.steerRateCost = 0.45 #0.45
+      ret.steerLimitTimer = 0.1 #5.0
+      ret.steerRateCost = 0.3 #0.45
       #ret.steerLimitTimer = 5.0
       if prius_pid:
         ret.lateralTuning.init('pid')
@@ -91,14 +91,14 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.newKfTuned = True
       else:
         ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25, 30]
-        ret.lateralTuning.indi.innerLoopGainV = [4.0, 4.06, 4.14]
-        ret.lateralTuning.indi.outerLoopGainBP = [16.7, 25, 30]
-        ret.lateralTuning.indi.outerLoopGainV = [3.0, 3.02, 3.04]
-        ret.lateralTuning.indi.timeConstantBP = [0]
-        ret.lateralTuning.indi.timeConstantV = [0.1]
-        ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 30]
-        ret.lateralTuning.indi.actuatorEffectivenessV = [1.0, 1.1]
+        ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
+        ret.lateralTuning.indi.innerLoopGainV = [15, 15]
+        ret.lateralTuning.indi.outerLoopGainBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2,  25, 30.1, 33.3, 36.1]
+        ret.lateralTuning.indi.outerLoopGainV = [4.6, 6.2, 8.3, 10.4, 12.8, 14.99, 16, 17, 18, 19]
+        ret.lateralTuning.indi.timeConstantBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.1, 33.3, 36.1]
+        ret.lateralTuning.indi.timeConstantV = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.0, 4.0, 4.0]
+        ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 25]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [15, 15]
         #ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
         #ret.lateralTuning.indi.innerLoopGainV = [15, 15]
         #ret.lateralTuning.indi.outerLoopGainBP = [8.3, 25, 27.7, 36.1]
