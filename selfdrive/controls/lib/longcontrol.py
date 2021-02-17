@@ -107,7 +107,7 @@ class LongControl():
 
     if self.long_control_state == LongCtrlState.off or CS.gasPressed or CS.brakePressed:
       self.v_pid = v_ego_pid
-      self.pid.reset()
+      self.reset(v_ego_pid)
       output_gb = 0.
 
     # tracking objects and driving
