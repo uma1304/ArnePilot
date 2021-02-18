@@ -135,17 +135,6 @@ class Controls:
     self.can_error_counter = 0
     self.last_blinker_frame = 0
     self.saturated_count = 0
-    self.distance_traveled_now = 0
-    if not travis:
-      self.distance_traveled = float(params.get("DistanceTraveled", encoding='utf8'))
-      self.distance_traveled_engaged = float(params.get("DistanceTraveledEngaged", encoding='utf8'))
-      self.distance_traveled_override = float(params.get("DistanceTraveledOverride", encoding='utf8'))
-    else:
-      self.distance_traveled = 0
-      self.distance_traveled_engaged = 0
-      self.distance_traveled_override = 0
-
-    self.distance_traveled_frame = 0
     self.distance_traveled = 0
     self.last_functional_fan_frame = 0
     self.events_prev = []
@@ -351,16 +340,7 @@ class Controls:
     if not self.sm['dragonConf'].dpAtl and not self.sm['health'].controlsAllowed and self.enabled:
       self.mismatch_counter += 1
 
-    self.distance_traveled_now += CS.vEgo * DT_CTRL
     self.distance_traveled += CS.vEgo * DT_CTRL
-    if self.enabled:
-      self.distance_traveled_engaged += CS.vEgo * DT_CTRL
-      if CS.steeringPressed:
-        self.distance_traveled_override += CS.vEgo * DT_CTRL
-    if (self.sm.frame - self.distance_traveled_frame) * DT_CTRL > 10.0 and not travis:
-      y = threading.Thread(target=send_params, args=(str(round(self.distance_traveled,2)),str(round(self.distance_traveled_engaged,2)),str(round(self.distance_traveled_override,2)),))
-      y.start()
-      self.distance_traveled_frame = self.sm.frame
 
     return CS
 
@@ -671,11 +651,6 @@ class Controls:
       self.step()
       self.rk.monitor_time()
       self.prof.display()
-def send_params(a, b, c):
-  params = Params()
-  params.put("DistanceTraveled", a)
-  params.put("DistanceTraveledEngaged", b)
-  params.put("DistanceTraveledOverride", c)
 
 def main(sm=None, pm=None, logcan=None):
   controls = Controls(sm, pm, logcan)
