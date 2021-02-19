@@ -22,7 +22,7 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
 #from common.travis_checker import travis
-import threading
+#import threading
 from selfdrive.interceptor import Interceptor
 
 LDW_MIN_SPEED = 12.5
