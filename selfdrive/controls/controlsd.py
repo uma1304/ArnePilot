@@ -25,7 +25,7 @@ from selfdrive.locationd.calibrationd import Calibration
 #import threading
 from selfdrive.interceptor import Interceptor
 
-LDW_MIN_SPEED = 12.5
+LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
 LANE_DEPARTURE_THRESHOLD = 0.1
 STEER_ANGLE_SATURATION_TIMEOUT = 1.0 / DT_CTRL
 STEER_ANGLE_SATURATION_THRESHOLD = 2.5  # Degrees
