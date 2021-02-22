@@ -202,6 +202,7 @@ struct CarState {
   # dp
   lkMode @37 :Bool;
   stopSteering @38 :Bool; # timebomb - stopSteering
+  engineRPM @39 :Float32;
 
   struct WheelSpeeds {
     # optional wheel speeds
