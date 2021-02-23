@@ -74,7 +74,7 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kiV = [.35, .23, .20, .17, .1]
       #ret.stoppingBrakeRate = 0.16 # reach stopping target smoothly
       #ret.startingBrakeRate = 0.9 # release brakes fast
-      ret.startAccel = 1.3 # Accelerate from 0 faster
+      #ret.startAccel = 1.3 # Accelerate from 0 faster
       stop_and_go = True
       ret.safetyParam = 55
       ret.wheelbase = 2.70002
@@ -82,15 +82,16 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
       ret.steerActuatorDelay = 0.58
-      ret.steerRateCost = 0.45 #0.45
-      ret.steerLimitTimer = 5.0
       if prius_pid:
         ret.lateralTuning.init('pid')
         ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
-        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.21], [0.008]]
+        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.06], [0.01]]
+        ret.lateralTuning.pid.kdV = [0.0]
         ret.lateralTuning.pid.kfV = [0.00009531750004645412]
         ret.lateralTuning.pid.newKfTuned = True
       else:
+        ret.steerRateCost = 0.45 #0.45
+        ret.steerLimitTimer = 5.0
         ret.lateralTuning.init('indi')
         #ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
         #ret.lateralTuning.indi.innerLoopGainV = [15, 15]
