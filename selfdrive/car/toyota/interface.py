@@ -88,7 +88,7 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.35, 0.18], [0.03, 0.1]]
         ret.lateralTuning.pid.kdV = [2.2]
         ret.lateralTuning.pid.kfV = [0.00007818594]
-        ret.lateralTuning.pid.newKfTuned = True
+        ret.lateralTuning.pid.newKfTuned = False
       else:
         ret.steerRateCost = 0.45 #0.45
         ret.steerLimitTimer = 5.0
