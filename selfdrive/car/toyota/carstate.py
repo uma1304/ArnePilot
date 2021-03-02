@@ -111,12 +111,11 @@ class CarState(CarStateBase):
     ret.steeringRate = cp.vl["STEER_ANGLE_SENSOR"]['STEER_RATE']
     can_gear = int(cp.vl["GEAR_PACKET"]['GEAR'])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
-    
+    dp_profile = 0
     if not travis:
       self.sm.update(0)
       self.smartspeed = self.sm['liveMapData'].speedLimit
-      
-    dp_profile = self.sm['dragonConf'].dpAccelProfile
+      dp_profile = self.sm['dragonConf'].dpAccelProfile
     
     econ_on = 0
     sport_on = 0
