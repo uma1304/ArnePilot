@@ -484,12 +484,14 @@ class CarInterface(CarInterfaceBase):
 
     longControlDisabled = False
     if not self.CS.out.cruiseState.enabled:
+      self.waiting = False
       ret.cruiseState.enabled = self.CS.pcm_acc_active
     else:
       if self.keep_openpilot_engaged:
         ret.cruiseState.enabled = bool(self.CS.main_on)
       if not self.CS.pcm_acc_active:
         longControlDisabled = True
+        self.waiting = False
         ret.brakePressed = True
         self.disengage_due_to_slow_speed = False
     if ret.vEgo < 1 or not self.keep_openpilot_engaged:
@@ -508,6 +510,15 @@ class CarInterface(CarInterfaceBase):
 
     # if self.cp_cam.can_invalid_cnt >= 200 and self.CP.enableCamera and not self.CP.isPandaBlack:
     #   events.add(EventName.invalidGiraffeToyotaDEPRECATED)
+    
+    if not self.waiting and ret.vEgo < 0.3 and not ret.gasPressed and self.CP.carFingerprint == CAR.RAV4H:
+      self.waiting = True
+    if self.waiting:
+      if ret.gasPressed:
+        self.waiting = False
+      else:
+        events.add(EventName.waitingMode)
+    
     if self.CS.low_speed_lockout and self.CP.openpilotLongitudinalControl:
       events.add(EventName.lowSpeedLockout)
     if ret.vEgo < self.CP.minEnableSpeed and self.CP.openpilotLongitudinalControl:
