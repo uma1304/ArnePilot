@@ -2,7 +2,7 @@ import numpy as np
 from common.numpy_fast import interp
 import math
 import time
-form math import floor
+from math import floor
 from cereal import car
 from common.numpy_fast import mean
 from opendbc.can.can_define import CANDefine
