@@ -1,3 +1,8 @@
+import numpy as np
+from common.numpy_fast import interp
+import math
+import time
+form math import floor
 from cereal import car
 from common.numpy_fast import mean
 from opendbc.can.can_define import CANDefine
@@ -5,7 +10,7 @@ from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_STOP_TIMER_CAR
-from common.params import Params
+from common.params import Params, put_nonblocking
 import cereal.messaging as messaging
 from common.travis_checker import travis
 from common.op_params import opParams
@@ -17,7 +22,7 @@ limit_rsa = op_params.get('limit_rsa')
 # dp
 #DP_OFF = 0
 DP_ECO = 1
-#DP_NORMAL = 2
+DP_NORMAL = 2
 DP_SPORT = 3
 
 class CarState(CarStateBase):
@@ -106,14 +111,43 @@ class CarState(CarStateBase):
     ret.steeringRate = cp.vl["STEER_ANGLE_SENSOR"]['STEER_RATE']
     can_gear = int(cp.vl["GEAR_PACKET"]['GEAR'])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
-
+    
+    if not travis:
+      self.sm.update(0)
+      self.smartspeed = self.sm['liveMapData'].speedLimit
+      
+    dp_profile = self.sm['dragonConf'].dpAccelProfile
+    try:
+      econ_on = cp.vl["GEAR_PACKET"]['ECON_ON']
+    except:
+      econ_on = 0
+    try:
+      if self.CP.carFingerprint == CAR.RAV4_TSS2:
+        sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON_2']
+      else:
+        sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']
+    except:
+      sport_on = 0
+    if self.CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2, CAR.AVALONH_2021]:
+      sport_on = cp.vl["GEAR_PACKET2"]['SPORT_ON']
+      econ_on = cp.vl["GEAR_PACKET2"]['ECON_ON']
+    if econ_on == 1 and dp_profile !=  DP_ECO:
+      if int(Params().get('dpAccelProfile')) != DP_ECO:
+        put_nonblocking('dpAccelProfile',str(DP_ECO))
+        put_nonblocking('dp_last_modified',str(floor(time.time())))
+    if sport_on == 1 and dp_profile !=  DP_SPORT:
+      if int(Params().get('dpAccelProfile')) != DP_SPORT:
+        put_nonblocking('dpAccelProfile',str(DP_SPORT))
+        put_nonblocking('dp_last_modified',str(floor(time.time())))
+    if sport_on == 0 and econ_on == 0 and dp_profile !=  DP_NORMAL:
+      if int(Params().get('dpAccelProfile')) != DP_NORMAL:
+        put_nonblocking('dpAccelProfile',str(DP_NORMAL))
+        put_nonblocking('dp_last_modified',str(floor(time.time())))
     #if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
       #self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
       #Params().put('dp_dynamic_follow', str(int(max(self.read_distance_lines - 1, 0))))
 
-    if not travis:
-      self.sm.update(0)
-      self.smartspeed = self.sm['liveMapData'].speedLimit
+
 
     ret.leftBlinker = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 1
     ret.rightBlinker = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 2
@@ -185,7 +219,7 @@ class CarState(CarStateBase):
     #  angle_later = self.arne_sm['latControl'].anglelater
     #else:
     #  angle_later = 0
-    if not self.left_blinker_on and not self.right_blinker_on:
+    if not ret.leftBlinker and not ret.rightBlinker:
       self.Angles[self.Angle_counter] = abs(ret.steeringAngle)
       #self.Angles_later[self.Angle_counter] = abs(angle_later)
     else:
@@ -194,7 +228,7 @@ class CarState(CarStateBase):
       #  self.Angles_later[self.Angle_counter] = abs(angle_later) * 0.8
       #else:
       #  self.Angles_later[self.Angle_counter] = 0.0
-    dp_profile = sm['dragonConf'].dpAccelProfile
+    
     if dp_profile == DP_ECO:
       factor = 1.0
     elif dp_profile == DP_SPORT:
@@ -329,7 +363,13 @@ class CarState(CarStateBase):
       ("STEER_TORQUE_SENSOR", 50),
       ("EPS_STATUS", 25),
     ]
-
+    if CP.carFingerprint == CAR.RAV4_TSS2:
+      signals.append(("SPORT_ON_2", "GEAR_PACKET", 0))
+      
+    if CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_UXH_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2, CAR.AVALONH_2021]:
+      signals.append(("SPORT_ON", "GEAR_PACKET2", 0))
+      signals.append(("ECON_ON", "GEAR_PACKET2", 0))
+      
     if CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
       signals.append(("GAS_PEDAL", "GAS_PEDAL_ALT", 0))
       signals.append(("MAIN_ON", "PCM_CRUISE_ALT", 0))
