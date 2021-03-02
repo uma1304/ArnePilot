@@ -489,7 +489,7 @@ static void ui_draw_vision_event(UIState *s) {
     const int bg_wheel_y = viz_event_y + (bg_wheel_size/2);
     const int img_wheel_size = bg_wheel_size*1.5;
     const int img_wheel_x = bg_wheel_x-(img_wheel_size/2);
-    const int img_wheel_y = bg_wheel_y-25;
+    const int img_wheel_y = bg_wheel_y-55;
     const float img_rotation = s->scene.controls_state.getAngleSteers()/180*3.141592;
     float img_wheel_alpha = 0.1f;
     nvgBeginPath(s->vg);
