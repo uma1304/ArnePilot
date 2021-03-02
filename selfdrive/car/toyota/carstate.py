@@ -116,18 +116,22 @@ class CarState(CarStateBase):
       self.sm.update(0)
       self.smartspeed = self.sm['liveMapData'].speedLimit
       dp_profile = self.sm['dragonConf'].dpAccelProfile
-    
-    econ_on = 0
-    sport_on = 0
+
     if self.CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2]:
       sport_on = cp.vl["GEAR_PACKET2"]['SPORT_ON']
       econ_on = cp.vl["GEAR_PACKET2"]['ECON_ON']
     else:
-      econ_on = cp.vl["GEAR_PACKET"]['ECON_ON']
+      try:
+        econ_on = cp.vl["GEAR_PACKET"]['ECON_ON']
+      except KeyError:
+        econ_on = 0
       if self.CP.carFingerprint == CAR.RAV4_TSS2:
         sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON_2']
       else:
-        sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']      
+        try:
+          sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']      
+        except KeyError:
+          sport_on = 0
     if econ_on == 1 and dp_profile !=  DP_ECO:
       if int(Params().get('dp_accel_profile')) != DP_ECO:
         put_nonblocking('dp_accel_profile',str(DP_ECO))
