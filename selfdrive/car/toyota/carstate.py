@@ -14,6 +14,11 @@ op_params = opParams()
 rsa_max_speed = op_params.get('rsa_max_speed')
 limit_rsa = op_params.get('limit_rsa')
 
+# dp
+#DP_OFF = 0
+DP_ECO = 1
+#DP_NORMAL = 2
+DP_SPORT = 3
 
 class CarState(CarStateBase):
   def __init__(self, CP):
@@ -31,13 +36,21 @@ class CarState(CarStateBase):
     self.main_on = False
     self.gas_pressed = False
     self.smartspeed = 0
+    self.Angles = np.zeros(250)
+    self.Angles_later = np.zeros(250)
+    self.Angle_counter = 0
+    self.Angle = [0, 5, 10, 15,20,25,30,35,60,100,180,270,500]
+    self.Angle_Speed = [255,160,100,80,70,60,55,50,40,33,27,17,12]
+    self.v_cruise_pcmlast = 0.0
+    self.setspeedoffset = 34.0
+    self.setspeedcounter = 0
     self.spdval1 = 0
     self.distance = 0
     self.engineRPM = 0
     #self.read_distance_lines = 0
     if not travis:
       self.pm = messaging.PubMaster(['liveTrafficData'])
-      self.sm = messaging.SubMaster(['liveMapData'])#',latControl',])
+      self.sm = messaging.SubMaster(['liveMapData','dragonConf'])#',latControl',])
     # On NO_DSU cars but not TSS2 cars the cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
     # is zeroed to where the steering angle is at start.
     # Need to apply an offset as soon as the steering angle measurements are both received
@@ -125,6 +138,71 @@ class CarState(CarStateBase):
       ret.cruiseState.speed = cp.vl["PCM_CRUISE_2"]['SET_SPEED'] * CV.KPH_TO_MS
       self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == 2
       ret.cruiseState.available = self.main_on
+    
+    if self.CP.carFingerprint in TSS2_CAR:
+      minimum_set_speed = 27.0
+    elif self.CP.carFingerprint == CAR.RAV4:
+      minimum_set_speed = 44.0
+    else:
+      minimum_set_speed = 41.0
+    maximum_set_speed = 169.0
+    if self.CP.carFingerprint == CAR.LEXUS_RXH:
+      maximum_set_speed = 177.0
+    v_cruise_pcm_max = ret.cruiseState.speed
+    if v_cruise_pcm_max < minimum_set_speed:
+      minimum_set_speed = v_cruise_pcm_max
+    if v_cruise_pcm_max > maximum_set_speed:
+      maximum_set_speed = v_cruise_pcm_max
+    speed_range = maximum_set_speed-minimum_set_speed
+    if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != ret.cruiseState.speed:
+      if ret.vEgo < minimum_set_speed/3.6:
+        self.setspeedoffset = max(min(int(minimum_set_speed-ret.vEgo*3.6),(minimum_set_speed-7.0)),0.0)
+        self.v_cruise_pcmlast = ret.cruiseState.speed
+    if ret.cruiseState.speed < self.v_cruise_pcmlast:
+      if self.setspeedcounter > 0 and ret.cruiseState.speed > minimum_set_speed:
+        self.setspeedoffset = self.setspeedoffset + 4
+      else:
+        if math.floor((int((-ret.cruiseState.speed)*(minimum_set_speed-7.0)/speed_range  + maximum_set_speed*(minimum_set_speed-7.0)/speed_range)-self.setspeedoffset)/(ret.cruiseState.speed-(minimum_set_speed-1.0))) > 0:
+          self.setspeedoffset = self.setspeedoffset + math.floor((int((-ret.cruiseState.speed)*(minimum_set_speed-7.0)/speed_range  + maximum_set_speed*(minimum_set_speed-7.0)/speed_range)-self.setspeedoffset)/(ret.cruiseState.speed-(minimum_set_speed-1.0)))
+      self.setspeedcounter = 50
+    if self.v_cruise_pcmlast < ret.cruiseState.speed:
+      if self.setspeedcounter > 0 and (self.setspeedoffset - 4) > 0:
+        self.setspeedoffset = self.setspeedoffset - 4
+      else:
+        self.setspeedoffset = self.setspeedoffset + math.floor((int((-ret.cruiseState.speed)*(minimum_set_speed-7.0)/speed_range  + maximum_set_speed*(minimum_set_speed-7.0)/speed_range)-self.setspeedoffset)/(maximum_set_speed+1.0-ret.cruiseState.speed))
+      self.setspeedcounter = 50
+    if self.setspeedcounter > 0:
+      self.setspeedcounter = self.setspeedcounter - 1
+    self.v_cruise_pcmlast = ret.cruiseState.speed
+    if int(ret.cruiseState.speed) - self.setspeedoffset < 7:
+      self.setspeedoffset = int(ret.cruiseState.speed) - 7
+    if int(ret.cruiseState.speed) - self.setspeedoffset > maximum_set_speed:
+      self.setspeedoffset = int(ret.cruiseState.speed) - maximum_set_speed
+
+
+    ret.cruiseState.speed = min(max(7, int(ret.cruiseState.speed) - self.setspeedoffset),v_cruise_pcm_max)
+    #if not travis and self.arne_sm.updated['latControl'] and ret.vEgo > 11:
+    #  angle_later = self.arne_sm['latControl'].anglelater
+    #else:
+    #  angle_later = 0
+    if not self.left_blinker_on and not self.right_blinker_on:
+      self.Angles[self.Angle_counter] = abs(ret.steeringAngle)
+      #self.Angles_later[self.Angle_counter] = abs(angle_later)
+    else:
+      self.Angles[self.Angle_counter] = abs(ret.steeringAngle) * 0.8
+      #if ret.vEgo > 11:
+      #  self.Angles_later[self.Angle_counter] = abs(angle_later) * 0.8
+      #else:
+      #  self.Angles_later[self.Angle_counter] = 0.0
+    dp_profile = sm['dragonConf'].dpAccelProfile
+    if dp_profile == DP_ECO:
+      factor = 1.0
+    elif dp_profile == DP_SPORT:
+      factor = 1.6
+    else:
+      factor = 1.3
+    ret.cruiseState.speed = int(min(ret.cruiseState.speed, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed)))
+    self.Angle_counter = (self.Angle_counter + 1 ) % 250
     if self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
       # Lexus ISH does not have CRUISE_STATUS value (always 0), so we use CRUISE_ACTIVE value instead
       self.pcm_acc_status = cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']
