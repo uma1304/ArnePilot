@@ -185,14 +185,17 @@ class CarState(CarStateBase):
     if self.CP.carFingerprint == CAR.LEXUS_RXH:
       maximum_set_speed = 177.0
     v_cruise_pcm_max = ret.cruiseState.speed
-    if v_cruise_pcm_max < minimum_set_speed:
+    if v_cruise_pcm_max < minimum_set_speed/3.6:
       minimum_set_speed = v_cruise_pcm_max
-    if v_cruise_pcm_max > maximum_set_speed:
-      maximum_set_speed = v_cruise_pcm_max
+    if v_cruise_pcm_max > maximum_set_speed/3.6:
+      maximum_set_speed = v_cruise_pcm_max*3.6
     speed_range = maximum_set_speed-minimum_set_speed
     if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != ret.cruiseState.speed:
       if ret.vEgo < minimum_set_speed/3.6:
         self.setspeedoffset = max(min(int(minimum_set_speed-ret.vEgo*3.6),(minimum_set_speed-7.0)),0.0)
+        self.v_cruise_pcmlast = ret.cruiseState.speed
+      else:
+        self.setspeedoffset = 0.0
         self.v_cruise_pcmlast = ret.cruiseState.speed
     if ret.cruiseState.speed < self.v_cruise_pcmlast:
       if self.setspeedcounter > 0 and ret.cruiseState.speed > minimum_set_speed:
