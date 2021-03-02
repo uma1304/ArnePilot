@@ -130,16 +130,16 @@ class CarState(CarStateBase):
       else:
         sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']      
     if econ_on == 1 and dp_profile !=  DP_ECO:
-      if int(Params().get('dpAccelProfile')) != DP_ECO:
-        put_nonblocking('dpAccelProfile',str(DP_ECO))
+      if int(Params().get('dp_accel_profile')) != DP_ECO:
+        put_nonblocking('dp_accel_profile',str(DP_ECO))
         put_nonblocking('dp_last_modified',str(floor(time.time())))
     if sport_on == 1 and dp_profile !=  DP_SPORT:
-      if int(Params().get('dpAccelProfile')) != DP_SPORT:
-        put_nonblocking('dpAccelProfile',str(DP_SPORT))
+      if int(Params().get('dp_accel_profile')) != DP_SPORT:
+        put_nonblocking('dp_accel_profile',str(DP_SPORT))
         put_nonblocking('dp_last_modified',str(floor(time.time())))
     if sport_on == 0 and econ_on == 0 and dp_profile !=  DP_NORMAL:
-      if int(Params().get('dpAccelProfile')) != DP_NORMAL:
-        put_nonblocking('dpAccelProfile',str(DP_NORMAL))
+      if int(Params().get('dp_accel_profile')) != DP_NORMAL:
+        put_nonblocking('dp_accel_profile',str(DP_NORMAL))
         put_nonblocking('dp_last_modified',str(floor(time.time())))
     #if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
       #self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
