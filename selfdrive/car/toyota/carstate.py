@@ -132,18 +132,19 @@ class CarState(CarStateBase):
           sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']      
         except KeyError:
           sport_on = 0
-    if econ_on == 1 and dp_profile !=  DP_ECO:
-      if int(Params().get('dp_accel_profile')) != DP_ECO:
-        put_nonblocking('dp_accel_profile',str(DP_ECO))
-        put_nonblocking('dp_last_modified',str(floor(time.time())))
-    if sport_on == 1 and dp_profile !=  DP_SPORT:
-      if int(Params().get('dp_accel_profile')) != DP_SPORT:
-        put_nonblocking('dp_accel_profile',str(DP_SPORT))
-        put_nonblocking('dp_last_modified',str(floor(time.time())))
-    if sport_on == 0 and econ_on == 0 and dp_profile !=  DP_NORMAL:
-      if int(Params().get('dp_accel_profile')) != DP_NORMAL:
-        put_nonblocking('dp_accel_profile',str(DP_NORMAL))
-        put_nonblocking('dp_last_modified',str(floor(time.time())))
+    if not travis:
+      if econ_on == 1 and dp_profile !=  DP_ECO:
+        if int(Params().get('dp_accel_profile')) != DP_ECO:
+          put_nonblocking('dp_accel_profile',str(DP_ECO))
+          put_nonblocking('dp_last_modified',str(floor(time.time())))
+      if sport_on == 1 and dp_profile !=  DP_SPORT:
+        if int(Params().get('dp_accel_profile')) != DP_SPORT:
+          put_nonblocking('dp_accel_profile',str(DP_SPORT))
+          put_nonblocking('dp_last_modified',str(floor(time.time())))
+      if sport_on == 0 and econ_on == 0 and dp_profile !=  DP_NORMAL:
+        if int(Params().get('dp_accel_profile')) != DP_NORMAL:
+          put_nonblocking('dp_accel_profile',str(DP_NORMAL))
+          put_nonblocking('dp_last_modified',str(floor(time.time())))
     #if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
       #self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
       #Params().put('dp_dynamic_follow', str(int(max(self.read_distance_lines - 1, 0))))
