@@ -410,10 +410,6 @@ class CarState(CarStateBase):
       ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
       ("SPORT_ON", "GEAR_PACKET", 0),
       ("ECON_ON", "GEAR_PACKET", 0),
-      ("BLINDSPOT","DEBUG", 0),
-      ("BLINDSPOTSIDE","DEBUG",65),
-      ("BLINDSPOTD1","DEBUG", 0),
-      ("BLINDSPOTD2","DEBUG", 0),
       ("DISTANCE_LINES", "PCM_CRUISE_SM", 0),
     ]
 
@@ -464,10 +460,14 @@ class CarState(CarStateBase):
       checks.append(("PCM_CRUISE_2", 33))
 
     if CP.carFingerprint == CAR.PRIUS:
-      signals += [("STATE", "AUTOPARK_STATUS", 0)]
+      signals.append(("STATE", "AUTOPARK_STATUS", 0))
 
     if CP.carFingerprint == CAR.RAV4H:
-      signals += [("FD_BUTTON", "SDSU", 0)]
+      signals.append(("FD_BUTTON", "SDSU", 0))
+      signals.append(("BLINDSPOT","DEBUG", 0))
+      signals.append(("BLINDSPOTSIDE","DEBUG",65))
+      signals.append(("BLINDSPOTD1","DEBUG", 0))
+      signals.append(("BLINDSPOTD2","DEBUG", 0))
 
     # add gas interceptor reading if we are using it
     if CP.enableGasInterceptor:
