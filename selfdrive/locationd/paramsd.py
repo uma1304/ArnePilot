@@ -87,9 +87,10 @@ def main(sm=None, pm=None):
     if params.get('carFingerprint', None) != CP.carFingerprint:
       cloudlog.info("Parameter learner found parameters for wrong car.")
       params = None
-  if not 'angleOffsetAverage' in params and 'angleOffsetAverageDeg' in params:
-    params['angleOffsetAverage'] = params['angleOffsetAverageDeg']
-    params.pop('angleOffsetAverageDeg')
+  if 'angleOffsetAverage' not in params:
+    if 'angleOffsetAverageDeg' in params
+      params['angleOffsetAverage'] = params['angleOffsetAverageDeg']
+      params.pop('angleOffsetAverageDeg')
   if (params is not None) and not all((
       abs(params['angleOffsetAverage']) < 10.0,
       min_sr <= params['steerRatio'] <= max_sr)):
