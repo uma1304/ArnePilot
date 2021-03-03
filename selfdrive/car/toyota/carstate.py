@@ -52,7 +52,7 @@ class CarState(CarStateBase):
     self.spdval1 = 0
     self.distance = 0
     self.engineRPM = 0
-    #self.read_distance_lines = 0
+    self.read_distance_lines = 0
     if not travis:
       self.pm = messaging.PubMaster(['liveTrafficData'])
       self.sm = messaging.SubMaster(['liveMapData','dragonConf'])#',latControl',])
@@ -145,10 +145,10 @@ class CarState(CarStateBase):
         if int(Params().get('dp_accel_profile')) != DP_NORMAL:
           put_nonblocking('dp_accel_profile',str(DP_NORMAL))
           put_nonblocking('dp_last_modified',str(floor(time.time())))
-    #if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
-      #self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
-      #Params().put('dp_dynamic_follow', str(int(max(self.read_distance_lines - 1, 0))))
-
+    if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
+      self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
+      put_nonblocking('dp_dynamic_follow', str(int(max(self.read_distance_lines - 1, 0))))
+      #put_nonblocking('dp_last_modified',str(floor(time.time())))
 
 
     ret.leftBlinker = cp.vl["STEERING_LEVERS"]['TURN_SIGNALS'] == 1
@@ -269,7 +269,8 @@ class CarState(CarStateBase):
     self.steer_state = cp.vl["EPS_STATUS"]['LKA_STATE']
 
     self.distance = cp_cam.vl["ACC_CONTROL"]['DISTANCE']
-
+    if self.CP.carFingerprint == CAR.RAV4H:
+      self.distance = cp.vl["SDSU"]['FD_BUTTON']
     if self.CP.carFingerprint in TSS2_CAR:
       ret.leftBlindspot = (cp.vl["BSM"]['L_ADJACENT'] == 1) or (cp.vl["BSM"]['L_APPROACHING'] == 1)
       ret.rightBlindspot = (cp.vl["BSM"]['R_ADJACENT'] == 1) or (cp.vl["BSM"]['R_APPROACHING'] == 1)
@@ -409,6 +410,9 @@ class CarState(CarStateBase):
 
     if CP.carFingerprint == CAR.PRIUS:
       signals += [("STATE", "AUTOPARK_STATUS", 0)]
+      
+    if CP.carFingerprint == CAR.RAV4H:
+      signals += [("FD_BUTTON", "SDSU", 0)]
 
     # add gas interceptor reading if we are using it
     if CP.enableGasInterceptor:
