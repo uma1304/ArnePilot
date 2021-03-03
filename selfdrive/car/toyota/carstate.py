@@ -18,7 +18,7 @@ from common.op_params import opParams
 op_params = opParams()
 rsa_max_speed = op_params.get('rsa_max_speed')
 limit_rsa = op_params.get('limit_rsa')
-
+set_speed_offset = op_params.get('set_speed_offset')
 # dp
 #DP_OFF = 0
 DP_ECO = 1
@@ -220,8 +220,9 @@ class CarState(CarStateBase):
     if int(ret.cruiseState.speed* 3.6) - self.setspeedoffset > maximum_set_speed:
       self.setspeedoffset = int(ret.cruiseState.speed* 3.6) - maximum_set_speed
 
-
-    ret.cruiseState.speed = min(max(7, int(ret.cruiseState.speed* 3.6) - self.setspeedoffset),v_cruise_pcm_max)/3.6
+    if not set_speed_offset:
+      self.setspeedoffset = 0.0
+    ret.cruiseState.speed = min(max(7/3.6, int(ret.cruiseState.speed* 3.6) - self.setspeedoffset),v_cruise_pcm_max)/3.6
     #if not travis and self.arne_sm.updated['latControl'] and ret.vEgo > 11:
     #  angle_later = self.arne_sm['latControl'].anglelater
     #else:
