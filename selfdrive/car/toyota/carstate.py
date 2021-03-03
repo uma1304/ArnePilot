@@ -154,7 +154,7 @@ class CarState(CarStateBase):
           put_nonblocking('dp_accel_profile',str(DP_NORMAL))
           put_nonblocking('dp_last_modified',str(floor(time.time())))
     #Arne Blindspot code.
-    if frame > 999 and not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH):
+    if frame > 999 and self.CP.carFingerprint == CAR.RAV4H:#not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH):
       if cp.vl["DEBUG"]['BLINDSPOTSIDE']==65: #Left
         if cp.vl["DEBUG"]['BLINDSPOTD1'] != self.leftblindspotD1:
           self.leftblindspotD1 = cp.vl["DEBUG"]['BLINDSPOTD1']
@@ -293,7 +293,7 @@ class CarState(CarStateBase):
       factor = 1.6
     else:
       factor = 1.3
-    ret.cruiseState.speed = int(min(ret.cruiseState.speed, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed)))
+    ret.cruiseState.speed = int(min(ret.cruiseState.speed*3.6, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed)))
     self.Angle_counter = (self.Angle_counter + 1 ) % 250
     if self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
       # Lexus ISH does not have CRUISE_STATUS value (always 0), so we use CRUISE_ACTIVE value instead
