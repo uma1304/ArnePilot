@@ -333,7 +333,7 @@ class CarState(CarStateBase):
     else:
       self.v_cruise_pcmactivated = False
     self.pcm_acc_active = bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE'])
-    ret.cruiseState.enabled = self.pcm_acc_active
+    ret.cruiseState.enabled = self.pcm_acc_active and ret.cruiseState.speed > 0.0
 
     if self.CP.carFingerprint == CAR.PRIUS:
       ret.genericToggle = cp.vl["AUTOPARK_STATUS"]['STATE'] != 0
