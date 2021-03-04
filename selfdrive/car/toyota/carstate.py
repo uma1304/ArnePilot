@@ -293,8 +293,8 @@ class CarState(CarStateBase):
     print("self.setspeedoffset = " + str (self.setspeedoffset))
     #print("ret.cruiseState.speed before = " + str (ret.cruiseState.speed))
     ret.cruiseState.speed = min(max(7.0, round(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset),v_cruise_pcm_max) * CV.KPH_TO_MS
-    print("ret.cruiseState.speed after = " + str(ret.cruiseState.speed) + " m/s or " + min(max(7.0, round(ret.cruiseState.speed 
-                                                                                                         * CV.MS_TO_KPH) - self.setspeedoffset),v_cruise_pcm_max) + " kph")
+    print("ret.cruiseState.speed after = " + str(ret.cruiseState.speed) + " m/s or " + str(min(max(7.0, round(ret.cruiseState.speed 
+                                                                                                         * CV.MS_TO_KPH) - self.setspeedoffset),v_cruise_pcm_max)) + " kph")
     #if not travis and self.arne_sm.updated['latControl'] and ret.vEgo > 11:
     #  angle_later = self.arne_sm['latControl'].anglelater
     #else:
