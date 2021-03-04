@@ -124,8 +124,6 @@ class CarState(CarStateBase):
       self.sm.update(0)
       self.smartspeed = self.sm['liveMapData'].speedLimit
       dp_profile = self.sm['dragonConf'].dpAccelProfile
-    else:
-      dp_profile = 0
 
     if self.CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2]:
       sport_on = cp.vl["GEAR_PACKET2"]['SPORT_ON']
@@ -288,7 +286,7 @@ class CarState(CarStateBase):
     if round(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset > maximum_set_speed:
       self.setspeedoffset = round(ret.cruiseState.speed * CV.MS_TO_KPH) - maximum_set_speed
 
-    if set_speed_offset:
+    if set_speed_offset or travis::
       self.setspeedoffset = 0.0
     print("self.setspeedoffset = " + str (self.setspeedoffset))
     #print("ret.cruiseState.speed before = " + str (ret.cruiseState.speed))
@@ -315,10 +313,8 @@ class CarState(CarStateBase):
       factor = 1.6
     else:
       factor = 1.3
-    try:
+    if not travis:
       ret.cruiseState.speed = min(ret.cruiseState.speed * CV.MS_TO_KPH, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed))* CV.KPH_TO_MS
-    except AttributeError:
-      pass
     self.Angle_counter = (self.Angle_counter + 1 ) % 250
     if self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
       # Lexus ISH does not have CRUISE_STATUS value (always 0), so we use CRUISE_ACTIVE value instead
