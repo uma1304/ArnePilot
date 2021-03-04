@@ -286,7 +286,7 @@ class CarState(CarStateBase):
     if round(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset > maximum_set_speed:
       self.setspeedoffset = round(ret.cruiseState.speed * CV.MS_TO_KPH) - maximum_set_speed
 
-    if set_speed_offset or travis::
+    if set_speed_offset or travis:
       self.setspeedoffset = 0.0
     print("self.setspeedoffset = " + str (self.setspeedoffset))
     #print("ret.cruiseState.speed before = " + str (ret.cruiseState.speed))
