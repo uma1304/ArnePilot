@@ -54,6 +54,7 @@ class CarState(CarStateBase):
     self.Angle_counter = 0
     self.Angle = [0, 5, 10, 15,20,25,30,35,60,100,180,270,500]
     self.Angle_Speed = [255,160,100,80,70,60,55,50,40,33,27,17,12]
+    self.v_cruise_pcmactivated = False
     self.v_cruise_pcmlast = 0.0
     self.setspeedoffset = 34.0
     self.setspeedcounter = 0
@@ -244,10 +245,7 @@ class CarState(CarStateBase):
     speed_range = maximum_set_speed - minimum_set_speed
     #print("self.pcm_acc_active = " + str(self.pcm_acc_active))
     #print("PCM_CRUISE CRUISE_ACTIVE " + str(bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE'])))
-    if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active:
-      print("self.v_cruise_pcmlast = " + str(self.v_cruise_pcmlast))
-      print("round(ret.cruiseState.speed * CV.MS_TO_KPH) = " + str(round(ret.cruiseState.speed * CV.MS_TO_KPH)))
-    if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != round(ret.cruiseState.speed * CV.MS_TO_KPH):
+    if self.v_cruise_pcmactivated and self.v_cruise_pcmlast != round(ret.cruiseState.speed * CV.MS_TO_KPH):
       #print("Engage with different speed than before")
       if ret.vEgo * CV.MS_TO_KPH < minimum_set_speed:
         #print("speed lower than min_set_speed")
@@ -330,6 +328,10 @@ class CarState(CarStateBase):
       ret.cruiseState.standstill = False
     else:
       ret.cruiseState.standstill = self.pcm_acc_status == 7
+    if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active:
+      self.v_cruise_pcmactivated = True
+    else:
+      self.v_cruise_pcmactivated = False
     self.pcm_acc_active = bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE'])
     ret.cruiseState.enabled = self.pcm_acc_active
 
