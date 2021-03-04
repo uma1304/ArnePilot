@@ -242,7 +242,7 @@ class CarState(CarStateBase):
     speed_range = maximum_set_speed-minimum_set_speed
     if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != ret.cruiseState.speed * CV.MS_TO_KPH:
       if ret.vEgo * CV.MS_TO_KPH < minimum_set_speed:
-        self.setspeedoffset = max(min(int(minimum_set_speed-ret.vEgo * CV.MS_TO_KPH),(minimum_set_speed-7.0)),0.0)
+        self.setspeedoffset = max(min(int(minimum_set_speed - ret.vEgo * CV.MS_TO_KPH),(minimum_set_speed-7.0)),0.0)
         self.v_cruise_pcmlast = ret.cruiseState.speed * CV.MS_TO_KPH
       else:
         self.setspeedoffset = 0.0
@@ -258,7 +258,7 @@ class CarState(CarStateBase):
                                                                       + maximum_set_speed * (minimum_set_speed - 7.0)/speed_range) 
                                                                   - self.setspeedoffset)/(ret.cruiseState.speed * CV.MS_TO_KPH - (minimum_set_speed - 1.0)))
       self.setspeedcounter = 50
-    if self.v_cruise_pcmlast < ret.cruiseState.speed:
+    if self.v_cruise_pcmlast < ret.cruiseState.speed * CV.MS_TO_KPH:
       if self.setspeedcounter > 0 and (self.setspeedoffset - 4) > 0:
         self.setspeedoffset = self.setspeedoffset - 4
       else:
