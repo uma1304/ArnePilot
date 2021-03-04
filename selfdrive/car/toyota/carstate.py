@@ -197,7 +197,7 @@ class CarState(CarStateBase):
     #Arne Distance button read and write code.
     if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
       self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
-      put_nonblocking('dp_dynamic_follow', str(int(max(self.read_distance_lines - 1, 0))))
+      put_nonblocking('dp_dynamic_follow', str(int(max(self.read_distance_lines, 0))))
       put_nonblocking('dp_last_modified',str(floor(time.time())))
 
     ret.leftBlindspot = self.leftblindspot
