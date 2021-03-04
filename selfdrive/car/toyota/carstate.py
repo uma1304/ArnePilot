@@ -196,7 +196,7 @@ class CarState(CarStateBase):
     if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
       self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
       put_nonblocking('dp_dynamic_follow', str(int(max(self.read_distance_lines - 1, 0))))
-      #put_nonblocking('dp_last_modified',str(floor(time.time())))
+      put_nonblocking('dp_last_modified',str(floor(time.time())))
 
     ret.leftBlindspot = self.leftblindspot
     ret.rightBlindspot = self.rightblindspot
@@ -234,45 +234,49 @@ class CarState(CarStateBase):
     maximum_set_speed = 169.0
     if self.CP.carFingerprint == CAR.LEXUS_RXH:
       maximum_set_speed = 177.0
-    v_cruise_pcm_max = ret.cruiseState.speed * 3.6
+    v_cruise_pcm_max = ret.cruiseState.speed * CV.MS_TO_KPH
     if v_cruise_pcm_max < minimum_set_speed:
       minimum_set_speed = v_cruise_pcm_max
     if v_cruise_pcm_max > maximum_set_speed:
       maximum_set_speed = v_cruise_pcm_max
     speed_range = maximum_set_speed-minimum_set_speed
-    if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != ret.cruiseState.speed:
-      if ret.vEgo * 3.6 < minimum_set_speed:
-        self.setspeedoffset = max(min(int(minimum_set_speed-ret.vEgo * 3.6),(minimum_set_speed-7.0)),0.0)
-        self.v_cruise_pcmlast = ret.cruiseState.speed
+    if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != ret.cruiseState.speed * CV.MS_TO_KPH:
+      if ret.vEgo * CV.MS_TO_KPH < minimum_set_speed:
+        self.setspeedoffset = max(min(int(minimum_set_speed-ret.vEgo * CV.MS_TO_KPH),(minimum_set_speed-7.0)),0.0)
+        self.v_cruise_pcmlast = ret.cruiseState.speed * CV.MS_TO_KPH
       else:
         self.setspeedoffset = 0.0
-        self.v_cruise_pcmlast = ret.cruiseState.speed
-    if ret.cruiseState.speed < self.v_cruise_pcmlast:
-      if self.setspeedcounter > 0 and ret.cruiseState.speed > minimum_set_speed:
+        self.v_cruise_pcmlast = ret.cruiseState.speed * CV.MS_TO_KPH
+    if ret.cruiseState.speed * CV.MS_TO_KPH < self.v_cruise_pcmlast:
+      if self.setspeedcounter > 0 and ret.cruiseState.speed * CV.MS_TO_KPH > minimum_set_speed:
         self.setspeedoffset = self.setspeedoffset + 4
       else:
-        if math.floor((int((-ret.cruiseState.speed*3.6)*(minimum_set_speed-7.0)/speed_range  + maximum_set_speed*(minimum_set_speed-7.0)/speed_range)-self.setspeedoffset)/(ret.cruiseState.speed*3.6-(minimum_set_speed-1.0))) > 0:
-          self.setspeedoffset = self.setspeedoffset + math.floor((int((-ret.cruiseState.speed*3.6)*(minimum_set_speed-7.0)/speed_range
-                                                                      + maximum_set_speed*(minimum_set_speed-7.0)/speed_range)-self.setspeedoffset)/(ret.cruiseState.speed*3.6-(minimum_set_speed-1.0)))
+        if math.floor((int((-ret.cruiseState.speed * CV.MS_TO_KPH)*(minimum_set_speed-7.0)/speed_range 
+                           + maximum_set_speed * (minimum_set_speed - 7.0)/speed_range)
+                       - self.setspeedoffset)/(ret.cruiseState.speed * CV.MS_TO_KPH-(minimum_set_speed-1.0))) > 0:
+          self.setspeedoffset = self.setspeedoffset + math.floor((int((-ret.cruiseState.speed * CV.MS_TO_KPH)*(minimum_set_speed - 7.0)/speed_range
+                                                                      + maximum_set_speed * (minimum_set_speed - 7.0)/speed_range) 
+                                                                  - self.setspeedoffset)/(ret.cruiseState.speed * CV.MS_TO_KPH - (minimum_set_speed - 1.0)))
       self.setspeedcounter = 50
     if self.v_cruise_pcmlast < ret.cruiseState.speed:
       if self.setspeedcounter > 0 and (self.setspeedoffset - 4) > 0:
         self.setspeedoffset = self.setspeedoffset - 4
       else:
-        self.setspeedoffset = self.setspeedoffset + math.floor((int((-ret.cruiseState.speed*3.6)*(minimum_set_speed-7.0)/speed_range
-                                                                    + maximum_set_speed*(minimum_set_speed-7.0)/speed_range)-self.setspeedoffset)/(maximum_set_speed+1.0-ret.cruiseState.speed*3.6))
+        self.setspeedoffset = self.setspeedoffset + math.floor((int((-ret.cruiseState.speed * CV.MS_TO_KPH) * (minimum_set_speed - 7.0)/speed_range
+                                                                    + maximum_set_speed * (minimum_set_speed - 7.0)/speed_range) 
+                                                                - self.setspeedoffset)/(maximum_set_speed + 1.0 - ret.cruiseState.speed * CV.MS_TO_KPH))
       self.setspeedcounter = 50
     if self.setspeedcounter > 0:
       self.setspeedcounter = self.setspeedcounter - 1
-    self.v_cruise_pcmlast = ret.cruiseState.speed * 3.6
-    if int(ret.cruiseState.speed * 3.6) - self.setspeedoffset < 7:
-      self.setspeedoffset = ret.cruiseState.speed - 7
-    if int(ret.cruiseState.speed * 3.6) - self.setspeedoffset > maximum_set_speed:
-      self.setspeedoffset = ret.cruiseState.speed * 3.6 - maximum_set_speed
+    self.v_cruise_pcmlast = ret.cruiseState.speed * CV.MS_TO_KPH
+    if int(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset < 7:
+      self.setspeedoffset = ret.cruiseState.speed * CV.MS_TO_KPH - 7.0
+    if int(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset > maximum_set_speed:
+      self.setspeedoffset = ret.cruiseState.speed * CV.MS_TO_KPH - maximum_set_speed
 
     if set_speed_offset:
       self.setspeedoffset = 0.0
-    ret.cruiseState.speed = min(max(7, ret.cruiseState.speed * 3.6 - self.setspeedoffset),v_cruise_pcm_max)/3.6
+    ret.cruiseState.speed = min(max(7.0, ret.cruiseState.speed * CV.MS_TO_KPH - self.setspeedoffset),v_cruise_pcm_max) * CV.KPH_TO_MS
     #if not travis and self.arne_sm.updated['latControl'] and ret.vEgo > 11:
     #  angle_later = self.arne_sm['latControl'].anglelater
     #else:
@@ -293,7 +297,7 @@ class CarState(CarStateBase):
       factor = 1.6
     else:
       factor = 1.3
-    ret.cruiseState.speed = int(min(ret.cruiseState.speed*3.6, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed)))
+    ret.cruiseState.speed = int(min(ret.cruiseState.speed * CV.MS_TO_KPH, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed))* CV.KPH_TO_MS) 
     self.Angle_counter = (self.Angle_counter + 1 ) % 250
     if self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
       # Lexus ISH does not have CRUISE_STATUS value (always 0), so we use CRUISE_ACTIVE value instead
