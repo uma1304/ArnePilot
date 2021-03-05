@@ -289,8 +289,9 @@ class Planner():
     decel_for_turn = bool(v_curvature_map < min([v_cruise_setpoint, v_speedlimit, v_ego + 1.]))
 
     # dp
+    if self.dp_profile != sm['dragonConf'].dpAccelProfile:
+      print("self.dp_profile = " + str(self.dp_profile))
     self.dp_profile = sm['dragonConf'].dpAccelProfile
-    print("self.dp_profile = " + str(self.dp_profile))
     self.dp_slow_on_curve = sm['dragonConf'].dpSlowOnCurve
 
     # dp - slow on curve from 0.7.6.1
