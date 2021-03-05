@@ -232,8 +232,13 @@ class Planner():
     enabled = (long_control_state == LongCtrlState.pid) or (long_control_state == LongCtrlState.stopping)
 
     following = (lead_1.status and lead_1.dRel < 45.0 and lead_1.vRel < 0.0) or (lead_2.status and lead_2.dRel < 45.0 and lead_2.vRel < 0.0) #lead_1.status and lead_1.dRel < 45.0 and lead_1.vLeadK > v_ego and lead_1.aLeadK > 0.0
-
-    speed_ahead_distance = default_brake_distance
+    
+    if self.dp_profile == DP_SPORT:
+      speed_ahead_distance = 150
+    elif self.dp_profile == DP_ECO:
+      speed_ahead_distance = 350
+    else:
+      speed_ahead_distance = default_brake_distance
 
     v_speedlimit = NO_CURVATURE_SPEED
     v_curvature_map = NO_CURVATURE_SPEED
