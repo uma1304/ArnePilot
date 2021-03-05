@@ -246,7 +246,8 @@ class CarState(CarStateBase):
     if self.v_cruise_pcmactivated:
       print("self.v_cruise_pcmlast after activated = " + str(self.v_cruise_pcmlast)) 
       print("round(ret.cruiseState.speed * CV.MS_TO_KPH)  after activated = " + str(round(ret.cruiseState.speed * CV.MS_TO_KPH)))
-    if self.v_cruise_pcmactivated and self.v_cruise_pcmlast != round(ret.cruiseState.speed * CV.MS_TO_KPH):
+    if (self.v_cruise_pcmactivated or (bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not 
+                                       self.pcm_acc_active)) and self.v_cruise_pcmlast != round(ret.cruiseState.speed * CV.MS_TO_KPH):
       print("Engage with different speed than before")
       if ret.vEgo * CV.MS_TO_KPH < minimum_set_speed:
         print("speed lower than min_set_speed")
@@ -256,7 +257,7 @@ class CarState(CarStateBase):
         print("speed is higher than min_set_speed")
         self.setspeedoffset = 0.0
         self.v_cruise_pcmlast = round(ret.cruiseState.speed * CV.MS_TO_KPH)
-    if round(ret.cruiseState.speed * CV.MS_TO_KPH) < self.v_cruise_pcmlast:
+    if round(ret.cruiseState.speed * CV.MS_TO_KPH) < self.v_cruise_pcmlast and (bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and self.pcm_acc_active):
       print("Speed lowered")
       if self.setspeedcounter > 0 and round(ret.cruiseState.speed * CV.MS_TO_KPH) > minimum_set_speed:
         self.setspeedoffset = self.setspeedoffset + 4
@@ -272,7 +273,7 @@ class CarState(CarStateBase):
           print("Speed lowered, self.setspeedoffset is now " + str(self.setspeedoffset))
         print("ret.cruiseState.speed = " + str(ret.cruiseState.speed) + " m/s or " +  str(round(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset) + " kph")
       self.setspeedcounter = 50
-    if self.v_cruise_pcmlast < round(ret.cruiseState.speed * CV.MS_TO_KPH):
+    if self.v_cruise_pcmlast < round(ret.cruiseState.speed * CV.MS_TO_KPH) and (bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and self.pcm_acc_active):
       print("Speed raised")
       if self.setspeedcounter > 0 and (self.setspeedoffset - 4) > 0:
         print("Speed raised by 5")
