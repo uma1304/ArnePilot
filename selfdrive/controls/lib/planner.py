@@ -319,7 +319,7 @@ class Planner():
       if self.dp_profile == DP_OFF:
         accel_limits = [float(x) for x in calc_cruise_accel_limits(v_ego, following)]
       else:
-        accel_limits = [float(x) for x in dp_calc_cruise_accel_limits(v_ego, following, self.dp_profile and (self.longitudinalPlanSource == 'mpc1' or self.longitudinalPlanSource == 'mpc2'))]
+        accel_limits = [float(x) for x in dp_calc_cruise_accel_limits(v_ego, following and (self.longitudinalPlanSource == 'mpc1' or self.longitudinalPlanSource == 'mpc2'), self.dp_profile)]
       jerk_limits = [min(-0.1, accel_limits[0]), max(0.1, accel_limits[1])]  # TODO: make a separate lookup for jerk tuning
       accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngle, accel_limits, self.CP)
 
