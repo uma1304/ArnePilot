@@ -261,7 +261,7 @@ class CarState(CarStateBase):
       if self.setspeedcounter > 0 and round(ret.cruiseState.speed * CV.MS_TO_KPH) > minimum_set_speed:
         self.setspeedoffset = self.setspeedoffset + 4
         print("Speed lowered by 5")
-        print("ret.cruiseState.speed = " + str(ret.cruiseState.speed) + " m/s or " +  str(round(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset)) + " kph")
+        print("ret.cruiseState.speed = " + str(ret.cruiseState.speed) + " m/s or " +  str(round(ret.cruiseState.speed * CV.MS_TO_KPH) - self.setspeedoffset) + " kph")
       else:
         if math.floor((int(round(-ret.cruiseState.speed * CV.MS_TO_KPH)*(minimum_set_speed-7.0)/speed_range 
                            + maximum_set_speed * (minimum_set_speed - 7.0)/speed_range)
