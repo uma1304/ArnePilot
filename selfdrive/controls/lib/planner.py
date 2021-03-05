@@ -290,6 +290,7 @@ class Planner():
 
     # dp
     self.dp_profile = sm['dragonConf'].dpAccelProfile
+    print("self.dp_profile = " + str(self.dp_profile))
     self.dp_slow_on_curve = sm['dragonConf'].dpSlowOnCurve
 
     # dp - slow on curve from 0.7.6.1
