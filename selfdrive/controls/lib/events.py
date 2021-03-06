@@ -777,6 +777,14 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 2., 0.2),
   },
   
+  EventName.latControlDisabled: {
+    ET.WARNING: Alert(
+      _("Steer Assist Deactivated"),
+      _("Brake Pressed Acceleration Disabled"),
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 2., 0.2),
+  },
+  
   EventName.waitingMode: {
     ET.WARNING: Alert(
       "WAITING...",
