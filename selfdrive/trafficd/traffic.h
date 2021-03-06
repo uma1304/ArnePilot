@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <signal.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
@@ -26,6 +26,7 @@
 #include "common/visionipc.h"
 #include "common/timing.h"
 #include "messaging.hpp"
+
 //#include "cereal/gen/cpp/log.capnp.h"
 
 //#include <capnp/message.h>
