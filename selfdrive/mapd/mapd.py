@@ -517,9 +517,9 @@ class MessagedArneThread(LoggerThread):
                 start = time.time()
             self.logger.debug("starting new cycle in endless loop")
             self.sm.update(0)
-            if self.arne_sm.updated['trafficModelEvent']:
-              traffic_status = self.arne_sm['trafficModelEvent'].status
-              traffic_confidence = round(self.arne_sm['trafficModelEvent'].confidence * 100, 2)
+            if self.sm.updated['trafficModelEvent']:
+              traffic_status = self.sm['trafficModelEvent'].status
+              traffic_confidence = round(self.sm['trafficModelEvent'].confidence * 100, 2)
               if traffic_confidence >= 50 and (traffic_status == 'GREEN' or traffic_status == 'SLOW'):
                 last_not_none_signal = traffic_status
                 last_not_none_signal_counter = 0
