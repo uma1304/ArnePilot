@@ -21,6 +21,7 @@ limit_rsa = op_params.get('limit_rsa')
 set_speed_offset = op_params.get('set_speed_offset')
 physical_buttons_AP = op_params.get('physical_buttons_AP')
 physical_buttons_DF = op_params.get('physical_buttons_DF')
+physical_buttons_LKAS = op_params.get('physical_buttons_LKAS')
 
 # dp
 #DP_OFF = 0
@@ -41,6 +42,7 @@ class CarState(CarStateBase):
     self.accurate_steer_angle_seen = CP.carFingerprint in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH] or self.dp_toyota_zss
     self.setspeedcounter = 0
     self.pcm_acc_active = False
+    self.lkas = 1
     self.main_on = False
     self.gas_pressed = False
     self.smartspeed = 0
@@ -145,6 +147,8 @@ class CarState(CarStateBase):
           sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']
         except KeyError:
           sport_on = 0
+    if physical_buttons_LKAS:
+      self.lkas = cp_cam.vl["LKAS_HUD"]['SET_ME_X01']
     if not travis and physical_buttons_AP:
       if econ_on == 1 and dp_profile !=  DP_ECO:
         if int(Params().get('dp_accel_profile')) != DP_ECO:
@@ -542,6 +546,7 @@ class CarState(CarStateBase):
       ("TSGN4", "RSA2", 0),
       ("SPLSGN4", "RSA2", 0),
       ("DISTANCE", "ACC_CONTROL", 0),
+      ("SET_ME_X01", "LKAS_HUD", 0),
     ]
 
     # use steering message to check if panda is connected to frc
