@@ -37,7 +37,7 @@ class CarInterfaceBase():
       self.CC = CarController(self.cp.dbc_name, CP, self.VM)
 
     self.dragonconf = None
-    self.lkas = None
+    self.lkas = 1
 
   @staticmethod
   def calc_accel_override(a_ego, a_target, v_ego, v_target):
