@@ -511,6 +511,9 @@ class CarInterface(CarInterfaceBase):
 
     if longControlDisabled:
       events.add(EventName.longControlDisabled)
+      
+    if self.lkas == 0:
+      events.add(EventName.latControlDisabled)
 
     # if self.cp_cam.can_invalid_cnt >= 200 and self.CP.enableCamera and not self.CP.isPandaBlack:
     #   events.add(EventName.invalidGiraffeToyotaDEPRECATED)
