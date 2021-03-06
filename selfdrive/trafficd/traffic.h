@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <unistd.h>
+#include <assert.h>
 
 #include "common/visionbuf.h"
 #include "common/visionipc.h"
