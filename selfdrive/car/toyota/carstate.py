@@ -362,7 +362,7 @@ class CarState(CarStateBase):
     self.steer_state = cp.vl["EPS_STATUS"]['LKA_STATE']
 
     self.distance = cp_cam.vl["ACC_CONTROL"]['DISTANCE']
-    if self.CP.carFingerprint in in [CAR.RAV4H, CAR.HIGHLANDER]:
+    if self.CP.carFingerprint in [CAR.RAV4H, CAR.HIGHLANDER]:
       self.distance = cp.vl["SDSU"]['FD_BUTTON']
     if self.CP.carFingerprint in TSS2_CAR:
       ret.leftBlindspot = (cp.vl["BSM"]['L_ADJACENT'] == 1) or (cp.vl["BSM"]['L_APPROACHING'] == 1)
