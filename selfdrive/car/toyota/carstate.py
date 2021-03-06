@@ -19,6 +19,9 @@ op_params = opParams()
 rsa_max_speed = op_params.get('rsa_max_speed')
 limit_rsa = op_params.get('limit_rsa')
 set_speed_offset = op_params.get('set_speed_offset')
+physical_buttons_AP = op_params.get('physical_buttons_AP')
+physical_buttons_DF = op_params.get('physical_buttons_DF')
+
 # dp
 #DP_OFF = 0
 DP_ECO = 1
@@ -142,7 +145,7 @@ class CarState(CarStateBase):
           sport_on = cp.vl["GEAR_PACKET"]['SPORT_ON']
         except KeyError:
           sport_on = 0
-    if not travis:
+    if not travis and physical_buttons_AP:
       if econ_on == 1 and dp_profile !=  DP_ECO:
         if int(Params().get('dp_accel_profile')) != DP_ECO:
           put_nonblocking('dp_accel_profile',str(DP_ECO))
@@ -195,7 +198,7 @@ class CarState(CarStateBase):
       self.rightblindspotD1 = 10.1
       self.rightblindspotD2 = 10.1
     #Arne Distance button read and write code.
-    if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']:
+    if self.read_distance_lines != cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES'] and physical_buttons_DF:
       self.read_distance_lines = cp.vl["PCM_CRUISE_SM"]['DISTANCE_LINES']
       put_nonblocking('dp_dynamic_follow', str(int(max(self.read_distance_lines, 0))))
       put_nonblocking('dp_last_modified',str(floor(time.time())))
