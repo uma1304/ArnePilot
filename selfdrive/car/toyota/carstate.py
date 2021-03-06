@@ -159,7 +159,7 @@ class CarState(CarStateBase):
           put_nonblocking('dp_accel_profile',str(DP_NORMAL))
           put_nonblocking('dp_last_modified',str(floor(time.time())))
     #Arne Blindspot code.
-    if frame > 999 and self.CP.carFingerprint == CAR.RAV4H:#not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH):
+    if frame > 999 and self.CP.carFingerprint in [CAR.RAV4H, CAR.HIGHLANDER]:#not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH):
       if cp.vl["DEBUG"]['BLINDSPOTSIDE']==65: #Left
         if cp.vl["DEBUG"]['BLINDSPOTD1'] != self.leftblindspotD1:
           self.leftblindspotD1 = cp.vl["DEBUG"]['BLINDSPOTD1']
@@ -358,7 +358,7 @@ class CarState(CarStateBase):
     self.steer_state = cp.vl["EPS_STATUS"]['LKA_STATE']
 
     self.distance = cp_cam.vl["ACC_CONTROL"]['DISTANCE']
-    if self.CP.carFingerprint == CAR.RAV4H:
+    if self.CP.carFingerprint in in [CAR.RAV4H, CAR.HIGHLANDER]:
       self.distance = cp.vl["SDSU"]['FD_BUTTON']
     if self.CP.carFingerprint in TSS2_CAR:
       ret.leftBlindspot = (cp.vl["BSM"]['L_ADJACENT'] == 1) or (cp.vl["BSM"]['L_APPROACHING'] == 1)
@@ -500,7 +500,7 @@ class CarState(CarStateBase):
     if CP.carFingerprint == CAR.PRIUS:
       signals.append(("STATE", "AUTOPARK_STATUS", 0))
 
-    if CP.carFingerprint == CAR.RAV4H:
+    if CP.carFingerprint in [CAR.RAV4H, CAR.HIGHLANDER]:
       signals.append(("FD_BUTTON", "SDSU", 0))
       signals.append(("BLINDSPOT","DEBUG", 0))
       signals.append(("BLINDSPOTSIDE","DEBUG",65))
