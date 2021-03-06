@@ -782,7 +782,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       _("Steer Assist Deactivated"),
       _("Brake Pressed Acceleration Disabled"),
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 2., 0.2),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .4, 2., 0.2),
   },
   
   EventName.waitingMode: {
