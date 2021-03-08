@@ -16,6 +16,7 @@ import logging.handlers
 from scipy import spatial
 import selfdrive.crash as crash
 from common.params import Params
+from common.basedir import BASEDIR
 from collections import defaultdict
 from multiprocessing import Process
 import cereal.messaging as messaging
