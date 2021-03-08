@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #pylint: skip-file
 # flake8: noqa
-import os
 import time
 import math
 import overpy
@@ -10,7 +9,6 @@ import requests
 import threading
 import numpy as np
 # setup logging
-import subprocess
 import logging
 import logging.handlers
 from scipy import spatial
@@ -18,12 +16,12 @@ import selfdrive.crash as crash
 from common.params import Params
 from common.basedir import BASEDIR
 from collections import defaultdict
-from multiprocessing import Process
 import cereal.messaging as messaging
 #import cereal.messaging_arne as messaging_arne
 from selfdrive.version import version, dirty
 from common.transformations.coordinates import geodetic2ecef
 from selfdrive.mapd.mapd_helpers import MAPS_LOOKAHEAD_DISTANCE, Way, circle_through_points, rate_curvature_points
+from selfdrive.trafficd.traffic_manager import TrafficdThread
 
 #DEFAULT_SPEEDS_BY_REGION_JSON_FILE = BASEDIR + "/selfdrive/mapd/default_speeds_by_region.json"
 #from selfdrive.mapd import default_speeds_generator
@@ -60,7 +58,6 @@ class QueryThread(LoggerThread):
         # invoke parent constructor https://stackoverflow.com/questions/2399307/how-to-invoke-the-super-constructor-in-python
         LoggerThread.__init__(self, threadID, name)
         self.sharedParams = sharedParams
-        self.trafficd = True
         # memorize some parameters
         self.OVERPASS_API_LOCAL = "http://192.168.43.1:12345/api/interpreter"
         socket.setdefaulttimeout(15)
@@ -72,9 +69,7 @@ class QueryThread(LoggerThread):
             'Accept-Encoding': 'gzip'
         }
         self.prev_ecef = None
-    def launcher(pargs, cwd):
-        os.chdir(cwd)
-        os.execvp(pargs[0], pargs)
+        self.trafficd_thread = TrafficdThread()
         
     def is_connected_to_local(self, timeout=3.0):
         try:
@@ -239,13 +234,11 @@ class QueryThread(LoggerThread):
                             if n.tags['railway'] == 'level_crossing':
                                 traffic_light_in_range = True
                                 break
-                    if self.trafficd and not traffic_light_in_range:
-                        subprocess.call(['pkill','-f','_trafficd'])
-                        self.trafficd = False
-                    if traffic_light_in_range and not self.trafficd:
-                        running = Process(name='trafficd', target=launcher, args=(["./trafficd"], os.path.join(BASEDIR, 'selfdrive/trafficd')))
-                        self.trafficd = True
-                    
+                    if self.trafficd_thread.running and not traffic_light_in_range:
+                        self.trafficd_thread.stop()
+                    if traffic_light_in_range and not self.trafficd_thread.running:
+                        self.trafficd_thread.start()
+
                 except Exception as e:
                     self.logger.error("ERROR :" + str(e))
                     print(str(e))

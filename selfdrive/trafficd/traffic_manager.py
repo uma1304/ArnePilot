@@ -15,21 +15,21 @@ class TrafficdThread:
   def __init__(self):
     self.proc_path = 'selfdrive/trafficd/trafficd'
     self.proc = None
-    self.started = False
+    self.running = False
 
   def start(self):
-    if not self.started:
+    if not self.running:
       self.proc = subprocess.Popen(os.path.join(BASEDIR, self.proc_path), cwd=os.path.join(BASEDIR, os.path.dirname(self.proc_path)))
-      self.started = True
+      self.running = True
     else:
-      print('trafficd already started')
+      print('trafficd already running')
 
   def stop(self):
-    if self.proc is not None and self.started:
+    if self.proc is not None and self.running:
       self.proc.send_signal(signal.SIGINT)
-      self.started = False
+      self.running = False
     else:
-      print('trafficd not started, can\'t stop')
+      print('trafficd not running, can\'t stop')
 
 
 
