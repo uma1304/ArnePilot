@@ -184,7 +184,6 @@ ThermalStatus = cereal.log.ThermalData.ThermalStatus
 # comment out anything you don't want to run
 managed_processes = {
   "thermald": "selfdrive.thermald.thermald",
-  "trafficd": ("selfdrive/trafficd", ["./trafficd"]),
   "traffic_manager": "selfdrive.trafficd.traffic_manager",
   "uploader": "selfdrive.loggerd.uploader",
   "deleter": "selfdrive.loggerd.deleter",
@@ -286,7 +285,6 @@ driver_view_processes = [
 
 if traffic_lights:
   car_started_processes += [
-    'trafficd',
     'traffic_manager',
   ]
   
