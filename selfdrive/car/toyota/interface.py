@@ -478,7 +478,7 @@ class CarInterface(CarInterfaceBase):
         ret.cruiseState.speed = dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS
     else:
       self.dp_cruise_speed = 0.
-
+    print("interface speed = " + str(ret.cruiseState.speed * 3.6))
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
     ret.engineRPM = self.CS.engineRPM
