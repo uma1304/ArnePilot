@@ -346,18 +346,18 @@ class Controls:
 
   def state_transition(self, CS):
     """Compute conditional state transitions and execute actions on state transitions"""
-    if self.v_cruise_kph_last != self.v_cruise_kph:
-      print("v_cruise_kph_last = " + str(self.v_cruise_kph_last) + " v_cruise_kph = " + str(self.v_cruise_kph))
+    #if self.v_cruise_kph_last != self.v_cruise_kph:
+    #  print("v_cruise_kph_last = " + str(self.v_cruise_kph_last) + " v_cruise_kph = " + str(self.v_cruise_kph))
     self.v_cruise_kph_last = self.v_cruise_kph
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if not self.CP.enableCruise:
-      print("here")
+      #print("here")
       self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled)
     elif self.CP.enableCruise and CS.cruiseState.enabled:
-      print("there")
+      #print("there")
       self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
-      print(" v_cruise_kph = " + str(self.v_cruise_kph))
+      #print(" v_cruise_kph = " + str(self.v_cruise_kph))
     
 
     # decrease the soft disable timer at every step, as it's reset on
@@ -416,9 +416,9 @@ class Controls:
           else:
             self.state = State.enabled
           self.current_alert_types.append(ET.ENABLE)
-          print("somewhere")
+          #print("somewhere")
           self.v_cruise_kph = initialize_v_cruise(CS.vEgo, CS.buttonEvents, self.v_cruise_kph_last)
-          print("self.v_cruise_kph = " + str(self.v_cruise_kph))
+          #print("self.v_cruise_kph = " + str(self.v_cruise_kph))
 
     # Check if actuators are enabled
     self.active = self.state == State.enabled or self.state == State.softDisabling
