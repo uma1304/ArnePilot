@@ -352,9 +352,13 @@ class Controls:
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if not self.CP.enableCruise:
+      print("here")
       self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled)
     elif self.CP.enableCruise and CS.cruiseState.enabled:
+      print("there")
       self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
+      print(" v_cruise_kph = " + str(self.v_cruise_kph))
+    
 
     # decrease the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
