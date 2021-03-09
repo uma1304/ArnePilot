@@ -129,8 +129,8 @@ class Controls:
     self.active = False
     self.can_rcv_error = False
     self.soft_disable_timer = 0
-    self.v_cruise_kph = 255
-    self.v_cruise_kph_last = 0
+    self.v_cruise_kph = 255.0
+    self.v_cruise_kph_last = 0.0
     self.mismatch_counter = 0
     self.can_error_counter = 0
     self.last_blinker_frame = 0
@@ -346,7 +346,8 @@ class Controls:
 
   def state_transition(self, CS):
     """Compute conditional state transitions and execute actions on state transitions"""
-
+    if self.v_cruise_kph_last != self.v_cruise_kph:
+      print("v_cruise_kph_last = " + str(v_cruise_kph_last) + " v_cruise_kph = " + str(v_cruise_kph))
     self.v_cruise_kph_last = self.v_cruise_kph
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
