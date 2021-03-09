@@ -345,7 +345,7 @@ class CarController():
         can_sends.append(create_rsa1_command(self.packer,1,self.rsa_sync,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,self.rsa_sync,1,1,3,1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,2,5,10))
-        print self.rsa_sync
+        #print (str(self.rsa_sync))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
         if self.rsa_sync_counter == 0:
           self.rsa_sync += 1
