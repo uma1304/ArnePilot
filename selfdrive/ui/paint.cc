@@ -317,7 +317,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   int speedlim_calc = speedlimit * 2.2369363;
   if (s->is_metric) {
     maxspeed_calc = maxspeed;
-    speedlim_calc = speedlimit * 3.6;
+    speedlim_calc = speedlimit * 3.6 + 0.5;
   }
   int speed_lim_off = speedlim_calc * (1 + s->speed_lim_off / 100.0);
   bool is_cruise_set = (maxspeed != 0 && maxspeed != SET_SPEED_NA);
@@ -362,7 +362,7 @@ static void ui_draw_vision_speedlimit(UIState *s) {
   float speedlimit = s->scene.speedlimit;
   int speedlim_calc = speedlimit * 2.2369363;
   if (s->is_metric) {
-    speedlim_calc = speedlimit * 3.6;
+    speedlim_calc = speedlimit * 3.6 + 0.5;
   }
 
   bool is_speedlim_valid = s->scene.speedlimit_valid;
