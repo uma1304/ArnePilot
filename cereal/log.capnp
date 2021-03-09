@@ -2077,6 +2077,10 @@ struct TrafficModelEvent {
   confidence @1 :Float32;
 }
 
+struct LatControl {
+  anglelater @0 :Float32;
+}
+
 struct Event {
   # in nanoseconds?
   logMonoTime @0 :UInt64;
@@ -2163,6 +2167,7 @@ struct Event {
     liveTrafficData @79 :LiveTrafficData;
     trafficModelRaw @80 :TrafficModelRaw;
     trafficModelEvent @81 :TrafficModelEvent;
+    latControl @82:LatControl;
   }
 }
 
