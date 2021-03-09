@@ -313,12 +313,12 @@ static void ui_draw_world(UIState *s) {
 static void ui_draw_vision_maxspeed(UIState *s) {
   char maxspeed_str[32];
   float maxspeed = s->scene.controls_state.getVCruise();
-  int maxspeed_calc = maxspeed * 0.6225 + 0.5;
+  int maxspeed_calc = maxspeed * 0.6225;
   float speedlimit = s->scene.speedlimit;
-  int speedlim_calc = speedlimit * 2.2369363 + 0.5;
+  int speedlim_calc = speedlimit * 2.2369363;
   if (s->is_metric) {
-    maxspeed_calc = maxspeed + 0.5;
-    speedlim_calc = speedlimit * 3.6 + 0.5;
+    maxspeed_calc = maxspeed;
+    speedlim_calc = speedlimit * 3.6;
   }
   int speed_lim_off = speedlim_calc * (1 + s->speed_lim_off / 100.0);
   bool is_cruise_set = (maxspeed != 0 && maxspeed != SET_SPEED_NA);
@@ -352,8 +352,8 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   ui_draw_text(s->vg, text_x, 148-border_shifter, "MAX", 26 * 2.5, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), s->font_sans_regular);
 
   if (is_cruise_set) {
-    snprintf(maxspeed_str, sizeof(maxspeed_str), "%d", maxspeed_calc);
-    ui_draw_text(s->vg, text_x, 242-border_shifter, maxspeed_str, 48 * 2.5, COLOR_WHITE, s->font_sans_bold);
+    const std::string maxspeed_str = std::to_string((int)std::nearbyint(maxspeed));
+    ui_draw_text(s->vg, text_x, 242-border_shifter, maxspeed_str.c_str(), 48 * 2.5, COLOR_WHITE, s->font_sans_bold);
   } else {
     ui_draw_text(s->vg, text_x, 242-border_shifter, "-", 42 * 2.5, COLOR_WHITE_ALPHA(100), s->font_sans_semibold);
   }
@@ -362,9 +362,9 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 static void ui_draw_vision_speedlimit(UIState *s) {
   char speedlim_str[32];
   float speedlimit = s->scene.speedlimit;
-  int speedlim_calc = speedlimit * 2.2369363 + 0.5;
+  int speedlim_calc = speedlimit * 2.2369363;
   if (s->is_metric) {
-    speedlim_calc = speedlimit * 3.6 + 0.5;
+    speedlim_calc = speedlimit * 3.6;
   }
 
   bool is_speedlim_valid = s->scene.speedlimit_valid;
@@ -409,8 +409,8 @@ static void ui_draw_vision_speedlimit(UIState *s) {
   // Draw Speed Text
   color = s->is_ego_over_limit ? COLOR_WHITE : COLOR_BLACK;
   if (is_speedlim_valid) {
-    snprintf(speedlim_str, sizeof(speedlim_str), "%d", speedlim_calc);
-    ui_draw_text(s->vg, text_x, viz_speedlim_y + (is_speedlim_valid ? 170 : 165), speedlim_str, 48*2.5, color, s->font_sans_bold);
+    const std::string speedlim_calc_str = std::to_string((int)std::nearbyint(speedlim_calc));
+    ui_draw_text(s->vg, text_x, viz_speedlim_y + (is_speedlim_valid ? 170 : 165), speedlim_calc_str.c_str(), 48*2.5, color, s->font_sans_bold);
   } else {
     ui_draw_text(s->vg, text_x, viz_speedlim_y + (is_speedlim_valid ? 170 : 165), "N/A", 42*2.5, color, s->font_sans_semibold);
   }
@@ -419,9 +419,9 @@ static void ui_draw_vision_speedlimit(UIState *s) {
 static void ui_draw_vision_speed(UIState *s) {
   const Rect &viz_rect = s->scene.viz_rect;
   float v_ego = s->scene.controls_state.getVEgo();
-  float speed = v_ego * 2.2369363 + 0.5;
+  float speed = v_ego * 2.2369363;
   if (s->is_metric){
-    speed = v_ego * 3.6 + 0.5;
+    speed = v_ego * 3.6;
   }
   const int viz_speed_w = 280;
   const int viz_speed_x = viz_rect.centerX() - viz_speed_w/2;
@@ -432,8 +432,8 @@ static void ui_draw_vision_speed(UIState *s) {
   nvgRect(s->vg, viz_speed_x, viz_rect.y, viz_speed_w, header_h);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
-  snprintf(speed_str, sizeof(speed_str), "%d", (int)speed);
-  ui_draw_text(s->vg, viz_rect.centerX(), 240, speed_str, 96*2.5, COLOR_WHITE, s->font_sans_bold);
+  const std::string speed_str = std::to_string((int)std::nearbyint(speed));
+  ui_draw_text(s->vg, viz_rect.centerX(), 240, speed_str.c_str(), 96*2.5, COLOR_WHITE, s->font_sans_bold);
   ui_draw_text(s->vg, viz_rect.centerX(), 320, s->is_metric?"km/h":"mph", 36*2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
   }
   // dp blinker, from kegman
