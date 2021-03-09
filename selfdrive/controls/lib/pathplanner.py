@@ -51,7 +51,6 @@ def calc_states_after_delay(states, v_ego, steer_angle, curvature_factor, steer_
 class PathPlanner():
   def __init__(self, CP):
     self.LP = LanePlanner()
-
     self.last_cloudlog_t = 0
     self.steer_rate_cost = CP.steerRateCost
 
@@ -280,3 +279,7 @@ class PathPlanner():
       dat.liveMpc.delta = list(self.mpc_solution[0].delta)
       dat.liveMpc.cost = self.mpc_solution[0].cost
       pm.send('liveMpc', dat)
+      
+    msg = messaging.new_message('latControl')
+    msg.latControl.anglelater = math.degrees(list(self.mpc_solution[0].delta)[-1])
+    pm.send('latControl', msg)
