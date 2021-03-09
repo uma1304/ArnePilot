@@ -311,7 +311,6 @@ static void ui_draw_world(UIState *s) {
 }
 
 static void ui_draw_vision_maxspeed(UIState *s) {
-  char maxspeed_str[32];
   float maxspeed = s->scene.controls_state.getVCruise();
   int maxspeed_calc = maxspeed * 0.6225;
   float speedlimit = s->scene.speedlimit;
@@ -360,7 +359,6 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 }
 
 static void ui_draw_vision_speedlimit(UIState *s) {
-  char speedlim_str[32];
   float speedlimit = s->scene.speedlimit;
   int speedlim_calc = speedlimit * 2.2369363;
   if (s->is_metric) {
@@ -426,7 +424,6 @@ static void ui_draw_vision_speed(UIState *s) {
   const int viz_speed_w = 280;
   const int viz_speed_x = viz_rect.centerX() - viz_speed_w/2;
   if (s->scene.dpUiSpeed) {
-  char speed_str[32];
 
   nvgBeginPath(s->vg);
   nvgRect(s->vg, viz_speed_x, viz_rect.y, viz_speed_w, header_h);
