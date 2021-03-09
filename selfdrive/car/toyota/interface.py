@@ -465,7 +465,7 @@ class CarInterface(CarInterfaceBase):
     else:
       self.cp.update_strings(can_strings)
       ret = self.CS.update(self.cp, self.cp_cam, self.frame)
-    print("interface before speed = " + str(ret.cruiseState.speed * 3.6))
+    #print("interface before speed = " + str(ret.cruiseState.speed * 3.6))
     # dp
     self.dragonconf = dragonconf
     ret.cruiseState.enabled = common_interface_atl(ret, dragonconf.dpAtl)
@@ -479,7 +479,7 @@ class CarInterface(CarInterfaceBase):
         ret.cruiseState.speed = dragonconf.dpToyotaLowestCruiseOverrideSpeed * CV.KPH_TO_MS
     else:
       self.dp_cruise_speed = 0.
-    print("interface speed = " + str(ret.cruiseState.speed * 3.6))
+    #print("interface speed = " + str(ret.cruiseState.speed * 3.6))
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
     ret.engineRPM = self.CS.engineRPM
