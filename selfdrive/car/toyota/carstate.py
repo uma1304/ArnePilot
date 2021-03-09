@@ -69,7 +69,7 @@ class CarState(CarStateBase):
     self.read_distance_lines = 0
     if not travis:
       self.pm = messaging.PubMaster(['liveTrafficData'])
-      self.sm = messaging.SubMaster(['liveMapData','dragonConf'])#',latControl',])
+      self.sm = messaging.SubMaster(['liveMapData','dragonConf','latControl'])#',latControl',])
     # On NO_DSU cars but not TSS2 cars the cp.vl["STEER_TORQUE_SENSOR"]['STEER_ANGLE']
     # is zeroed to where the steering angle is at start.
     # Need to apply an offset as soon as the steering angle measurements are both received
@@ -131,7 +131,10 @@ class CarState(CarStateBase):
       self.sm.update(0)
       self.smartspeed = self.sm['liveMapData'].speedLimit
       dp_profile = self.sm['dragonConf'].dpAccelProfile
-
+    if not travis and self.sm.updated['latControl'] and ret.vEgo > 11.0:
+      angle_later = self.sm['latControl'].anglelater
+    else:
+      angle_later = 0
     if self.CP.carFingerprint in [CAR.COROLLAH_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.CHRH, CAR.PRIUS_TSS2, CAR.HIGHLANDERH_TSS2]:
       sport_on = cp.vl["GEAR_PACKET2"]['SPORT_ON']
       econ_on = cp.vl["GEAR_PACKET2"]['ECON_ON']
@@ -322,19 +325,15 @@ class CarState(CarStateBase):
     #print("ret.cruiseState.speed before = " + str (ret.cruiseState.speed))
     ret.cruiseState.speed = min(max(7, ret.cruiseState.speed - self.setspeedoffset),v_cruise_pcm_max) * CV.KPH_TO_MS
     #print("ret.cruiseState.speed after = " + str(ret.cruiseState.speed) + " m/s or " +  str(round(ret.cruiseState.speed * CV.MS_TO_KPH)) + " kph")
-    #if not travis and self.arne_sm.updated['latControl'] and ret.vEgo > 11:
-    #  angle_later = self.arne_sm['latControl'].anglelater
-    #else:
-    #  angle_later = 0
     if not ret.leftBlinker and not ret.rightBlinker:
       self.Angles[self.Angle_counter] = abs(ret.steeringAngle)
-      #self.Angles_later[self.Angle_counter] = abs(angle_later)
+      self.Angles_later[self.Angle_counter] = abs(angle_later)
     else:
       self.Angles[self.Angle_counter] = abs(ret.steeringAngle) * 0.8
-      #if ret.vEgo > 11:
-      #  self.Angles_later[self.Angle_counter] = abs(angle_later) * 0.8
-      #else:
-      #  self.Angles_later[self.Angle_counter] = 0.0
+      if ret.vEgo > 11.0:
+        self.Angles_later[self.Angle_counter] = abs(angle_later) * 0.8
+      else:
+        self.Angles_later[self.Angle_counter] = 0.0
 
     if dp_profile == DP_ECO:
       factor = 1.0
@@ -344,6 +343,7 @@ class CarState(CarStateBase):
       factor = 1.3
     if not travis:
       ret.cruiseState.speed = float(min(ret.cruiseState.speed * CV.MS_TO_KPH, factor * interp(np.max(self.Angles), self.Angle, self.Angle_Speed)))* CV.KPH_TO_MS
+      ret.cruiseState.speed = float(min(ret.cruiseState.speed * CV.MS_TO_KPH, factor * interp(np.max(self.Angles_later), self.Angle, self.Angle_Speed)))* CV.KPH_TO_MS
     self.Angle_counter = (self.Angle_counter + 1 ) % 250
     if self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
       # Lexus ISH does not have CRUISE_STATUS value (always 0), so we use CRUISE_ACTIVE value instead
