@@ -120,7 +120,7 @@ class opParams:
                         #'use_car_caching': Param(True, bool, 'Whether to use fingerprint caching'),
                         #'min_TR': Param(None, VT.none_or_number, 'The minimum allowed following distance in seconds. Default is 0.9 seconds.\n'
                                                                  #'The range is limited from 0.85 to 1.3. Set to None to disable', live=True),
-                        #'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left.'),
+                        'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left. European requirement.'),
                         'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
                         'update_behavior': Param('auto', str, 'Can be: (\'off\', \'alert\', \'auto\') without quotes\n'
                                                               'off will never update, alert shows an alert on-screen\n'
@@ -135,7 +135,6 @@ class opParams:
                         'indi_actuator_effectiveness_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'indi_actuator_effectiveness_v': Param([9, 12, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live'),
-                        'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left. European requirement.'),
                        }
 
     self._params_file = '/data/op_params.json'
