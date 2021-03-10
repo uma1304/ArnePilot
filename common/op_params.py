@@ -134,7 +134,8 @@ class opParams:
                         'indi_time_constant_v': Param([1, 3, 4.5], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'indi_actuator_effectiveness_bp': Param([18, 22, 26], [list, float, int], live=True, depends_on='enable_indi_live'),
                         'indi_actuator_effectiveness_v': Param([9, 12, 15], [list, float, int], live=True, depends_on='enable_indi_live'),
-                        'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live')
+                        'steer_limit_timer': Param(0.4, VT.number, live=True, depends_on='enable_indi_live'),
+                        'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left. European requirement.'),
                        }
 
     self._params_file = '/data/op_params.json'
