@@ -353,7 +353,7 @@ class CarController():
     else:
       if frame % 100 == 0:
         can_sends.append(create_rsa1_command(self.packer,0,0,0,0,0,0,self.rsa_sync_counter + 1))
-        can_sends.append(create_rsa2_command(self.packer,0,0,0,0,0,self.rsa_sync_counter + 1))
+        can_sends.append(create_rsa2_command(self.packer,0,0,0,0,0,0,0,0,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,-5,-5,-5))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
 
