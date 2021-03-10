@@ -118,7 +118,6 @@ class CarController():
     self.blindspot_debug_enabled_right = False
     
     self.rsa_sync_counter = 0
-    self.rsa_sync = 0
     
     self.last_fault_frame = -200
     self.steer_rate_limited = False
@@ -347,9 +346,6 @@ class CarController():
         can_sends.append(create_rsa3_command(self.packer,2,5,10))
         #print (str(self.rsa_sync))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
-        self.rsa_sync += 1
-        if self.rsa_sync == 256:
-          self.rsa_sync = 0
     else:
       if frame % 100 == 0:
         can_sends.append(create_rsa1_command(self.packer,0,0,0,0,0,0,self.rsa_sync_counter + 1))
