@@ -110,7 +110,7 @@ class opParams:
                         'set_speed_offset': Param(True, bool, 'Whether to use Set Speed offset from release4, enables low set speed and jump by 5 kph. False is on'),
                         'smart_speed': Param(True, bool, 'Whether to use Smart Speed for drives above smart_speed_max_vego'),
                         'smart_speed_max_vego': Param(26.8, VT.number, 'Speed limit to ignore Smartspeed in m/s'),
-                        #'spairrowtuning': Param(False, bool, 'INDI Tuning for Corolla Tss2, set steer_up_15 param to True and flash panda'),
+                        'spairrowtuning': Param(False, bool, 'INDI Tuning for Corolla Tss2'),
                         'speed_offset': Param(0, VT.number, 'Speed limit offset in m/s', live=True),
                         'steer_actuator_delay': Param(0.5, VT.number, 'The steer actuator delay', live=True),
                         #'steer_up_15': Param(False, bool, 'Increase rate of steering up to 15, may fault on some cars'),
