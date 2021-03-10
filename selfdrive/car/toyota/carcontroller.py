@@ -341,7 +341,7 @@ class CarController():
     if frame > 200:
       if frame % 100 == 0:
         tsgn1 = 1 if CS.smartspeed > 0 else 0
-        can_sends.append(create_rsa1_command(self.packer,tsgn1,CS.smartspeed,0,CS.tsgn1,CS.spdval1,CS.splsgn1,self.rsa_sync_counter + 1))
+        can_sends.append(create_rsa1_command(self.packer,tsgn1,round(CS.smartspeed*3.6),0,CS.tsgn1,CS.spdval1,CS.splsgn1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,CS.tsgn3,CS.splsgn3,CS.tsgn4,CS.splsgn4,1,1,3,1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,2,5,10))
         #print (str(self.rsa_sync))
