@@ -117,7 +117,6 @@ class CarController():
     self.blindspot_debug_enabled_left = False
     self.blindspot_debug_enabled_right = False
     
-    self.rsa_counter = 0
     self.rsa_sync_counter = 0
     self.rsa_sync = 0
     
@@ -340,15 +339,14 @@ class CarController():
         can_sends.append(poll_blindspot_status(RIGHT_BLINDSPOT))
         #print("debug Right blindspot poll")
         
-    if self.rsa_counter > 200:
+    if frame > 200:
       if frame % 100 == 0:
         can_sends.append(create_rsa1_command(self.packer,1,self.rsa_sync,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,self.rsa_sync,1,1,3,1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,2,5,10))
         #print (str(self.rsa_sync))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
-        if self.rsa_sync_counter == 0:
-          self.rsa_sync += 1
+        self.rsa_sync += 1
         if self.rsa_sync == 256:
           self.rsa_sync = 0
     else:
@@ -357,6 +355,5 @@ class CarController():
         can_sends.append(create_rsa2_command(self.packer,0,0,0,0,0,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,-5,-5,-5))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
-    self.rsa_counter += 1
 
     return can_sends
