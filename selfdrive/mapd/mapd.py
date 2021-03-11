@@ -10,6 +10,7 @@ import threading
 import numpy as np
 # setup logging
 import logging
+import subprocess
 import logging.handlers
 from scipy import spatial
 import selfdrive.crash as crash
