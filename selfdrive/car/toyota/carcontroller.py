@@ -7,6 +7,9 @@ from selfdrive.car.toyota.toyotacan import create_steer_command, create_ui_comma
 from selfdrive.car.toyota.values import Ecu, CAR, STATIC_MSGS, NO_STOP_TIMER_CAR, SteerLimitParams, TSS2_CAR
 from opendbc.can.packer import CANPacker
 from common.dp_common import common_controller_ctrl
+from common.op_params import opParams
+
+speed_signs_in_mph = opParams().get('speed_signs_in_mph')
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -340,8 +343,13 @@ class CarController():
         
     if frame > 200:
       if frame % 100 == 0:
-        tsgn1 = 1 if CS.smartspeed > 0 else 0
-        can_sends.append(create_rsa1_command(self.packer,tsgn1,round(CS.smartspeed*3.6),0,CS.tsgn1,CS.spdval1,CS.splsgn1,self.rsa_sync_counter + 1))
+        if speed_signs_in_mph:
+          smartspeed =round(CS.smartspeed*2.23694)
+          tsgn1 = 35 if CS.smartspeed > 0 else 0
+        else:
+          smartspeed = round(CS.smartspeed*3.6)
+          tsgn1 = 1 if CS.smartspeed > 0 else 0
+        can_sends.append(create_rsa1_command(self.packer,tsgn1,smartspeed,0,CS.tsgn1,CS.spdval1,CS.splsgn1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,CS.tsgn3,CS.splsgn3,CS.tsgn4,CS.splsgn4,1,1,3,1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,2,5,10))
         #print (str(self.rsa_sync))
