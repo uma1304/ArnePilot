@@ -239,6 +239,7 @@ class QueryThread(LoggerThread):
                     if self.trafficd_thread.running and not traffic_light_in_range and traffic_lights:
                         self.trafficd_thread.stop()
                     if traffic_light_in_range and not self.trafficd_thread.running and traffic_lights:
+                        subprocess.call(['pkill','-f','_trafficd'])
                         self.trafficd_thread.start()
 
                 except Exception as e:
