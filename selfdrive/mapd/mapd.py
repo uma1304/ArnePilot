@@ -73,6 +73,7 @@ class QueryThread(LoggerThread):
         }
         self.prev_ecef = None
         self.trafficd_thread = TrafficdThread()
+        self.traffic_light_in_range = False
         
     def is_connected_to_local(self, timeout=3.0):
         try:
@@ -123,7 +124,6 @@ class QueryThread(LoggerThread):
 
     def run(self):
         self.logger.debug("run method started for thread %s" % self.name)
-
         # for now we follow old logic, will be optimized later
         start = time.time()
         radius = 3000
@@ -135,7 +135,13 @@ class QueryThread(LoggerThread):
                 continue
             else:
                 start = time.time()
-
+                
+            if self.trafficd_thread.running and not self.traffic_light_in_range and traffic_lights:
+              self.trafficd_thread.stop()
+            if self.traffic_light_in_range and not self.trafficd_thread.running and traffic_lights:
+              subprocess.call(['pkill','-f','_trafficd'])
+              self.trafficd_thread.start()
+                
             self.logger.debug("Starting after sleeping for 1 second ...")
             last_gps = self.sharedParams.get('last_gps', None)
             self.logger.debug("last_gps = %s" % str(last_gps))
@@ -227,21 +233,16 @@ class QueryThread(LoggerThread):
                         query_lock.release()
                     else:
                         self.logger.error("There is not query_lock")
-                    traffic_light_in_range = False
+                    self.traffic_light_in_range = False
                     for n in real_nodes:
                         if 'highway' in n.tags:
                             if n.tags['highway'] == 'traffic_signals':
-                                traffic_light_in_range = True
+                                self.traffic_light_in_range = True
                                 break
                         if 'railway' in n.tags:
                             if n.tags['railway'] == 'level_crossing':
-                                traffic_light_in_range = True
+                                self.traffic_light_in_range = True
                                 break
-                    if self.trafficd_thread.running and not traffic_light_in_range and traffic_lights:
-                        self.trafficd_thread.stop()
-                    if traffic_light_in_range and not self.trafficd_thread.running and traffic_lights:
-                        subprocess.call(['pkill','-f','_trafficd'])
-                        self.trafficd_thread.start()
 
                 except Exception as e:
                     self.logger.error("ERROR :" + str(e))
@@ -250,11 +251,13 @@ class QueryThread(LoggerThread):
                     query_lock.acquire()
                     self.sharedParams['last_query_result'] = None
                     query_lock.release()
+                    self.traffic_light_in_range = False
             else:
                 query_lock = self.sharedParams.get('query_lock', None)
                 query_lock.acquire()
                 self.sharedParams['last_query_result'] = None
                 query_lock.release()
+                self.traffic_light_in_range = False
 
             self.logger.debug("end of one cycle in endless loop ...")
 
