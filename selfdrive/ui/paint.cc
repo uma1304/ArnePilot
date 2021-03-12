@@ -321,7 +321,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   }
   int speed_lim_off = speedlim_calc * (1 + s->speed_lim_off / 100.0);
   bool is_cruise_set = (maxspeed != 0 && maxspeed != SET_SPEED_NA);
-  if (is_cruise_set && !s->scene.is_metric) { maxspeed *= 0.6225; }
+  if (is_cruise_set && !s->is_metric) { maxspeed *= 0.6225; }
   bool is_speedlim_valid = s->scene.speedlimit_valid;
   bool is_set_over_limit = is_speedlim_valid && s->scene.controls_state.getEnabled() &&
                        is_cruise_set && maxspeed_calc > (speedlim_calc + speed_lim_off);
