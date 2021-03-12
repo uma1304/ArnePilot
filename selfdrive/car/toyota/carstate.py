@@ -384,6 +384,7 @@ class CarState(CarStateBase):
     self.spdval1 = cp_cam.vl["RSA1"]['SPDVAL1']
 
     self.splsgn1 = cp_cam.vl["RSA1"]['SPLSGN1']
+    self.tsgnhlt1 = cp_cam.vl["RSA1"]['TSGNHLT1']
     self.tsgn2 = cp_cam.vl["RSA1"]['TSGN2']
     #self.spdval2 = cp_cam.vl["RSA1"]['SPDVAL2']
 
@@ -547,6 +548,7 @@ class CarState(CarStateBase):
       ("TSGN1", "RSA1", 0),
       ("SPDVAL1", "RSA1", 0),
       ("SPLSGN1", "RSA1", 0),
+      ("TSGNHLT1", "RSA1", 0),
       ("TSGN2", "RSA1", 0),
       #("SPDVAL2", "RSA1", 0),
       ("SPLSGN2", "RSA1", 0),
