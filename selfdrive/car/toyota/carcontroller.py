@@ -77,18 +77,18 @@ def create_rsa2_command(packer,TSGN3,SPLSGN3,TSGN4,SPLSGN4,DPSGNREQ,SGNNUMP,SGNN
 
  return packer.make_can_msg("RSA2", 0, values)
 
-def create_rsa3_command(packer,OVSPVALL,OVSPVALM,OVSPVALH):
+def create_rsa3_command(packer,OVSPVALL,OVSPVALM,OVSPVALH,NTLVLSPD,TSRSPU):
  """Creates a CAN message for the Road Sign System."""
  values = {
    "TSREQPD": 1,
    "TSRMSW": 1,
    "OTSGNNTM": 3,
-   "NTLVLSPD": 3,
+   "NTLVLSPD": NTLVLSPD,
    "OVSPNTM": 3,
    "OVSPVALL": OVSPVALL,
    "OVSPVALM": OVSPVALM,
    "OVSPVALH": OVSPVALH,
-   "TSRSPU": 1,
+   "TSRSPU": TSRSPU,
  }
 
  return packer.make_can_msg("RSA3", 0, values)
@@ -341,25 +341,31 @@ class CarController():
         can_sends.append(poll_blindspot_status(RIGHT_BLINDSPOT))
         #print("debug Right blindspot poll")
         
-    if frame > 200 and CS.CP.carFingerprint not in TSS2_CAR:
+    if frame > 200:
       if frame % 100 == 0:
         if speed_signs_in_mph:
           smartspeed =round(CS.smartspeed*2.23694)
-          tsgn1 = 35 if CS.smartspeed > 0 else 0
+          tsgn1 = 36 if CS.smartspeed > 0 else 0
         else:
           smartspeed = round(CS.smartspeed*3.6)
           tsgn1 = 1 if CS.smartspeed > 0 else 0
         TSGNHLT1 = 1 if CS.out.vEgo > CS.smartspeed else 0
         can_sends.append(create_rsa1_command(self.packer,tsgn1,smartspeed,0,TSGNHLT1,CS.tsgn1,CS.spdval1,CS.splsgn1,CS.tsgnhlt1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,CS.tsgn3,CS.splsgn3,CS.tsgn4,CS.splsgn4,1,1,3,1,self.rsa_sync_counter + 1))
-        can_sends.append(create_rsa3_command(self.packer,2,5,10))
+        if CS.CP.carFingerprint in TSS2_CAR:
+          can_sends.append(create_rsa3_command(self.packer,1,3,5,1,2))
+        else:
+          can_sends.append(create_rsa3_command(self.packer,2,5,10,3,1))
         #print (str(self.rsa_sync))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
     else:
       if frame % 100 == 0:
         can_sends.append(create_rsa1_command(self.packer,0,0,0,0,0,0,0,0,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,0,0,0,0,0,0,0,0,self.rsa_sync_counter + 1))
-        can_sends.append(create_rsa3_command(self.packer,-5,-5,-5))
+        if CS.CP.carFingerprint in TSS2_CAR:
+          can_sends.append(create_rsa3_command(self.packer,0,0,0,1,0))
+        else:
+          can_sends.append(create_rsa3_command(self.packer,-5,-5,-5,3,1))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
 
     return can_sends
