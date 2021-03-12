@@ -266,7 +266,7 @@ static int toyota_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
       // in TSS2 the camera does ACC as well, so filter 0x343
       int is_acc_msg = (addr == 0x343);
       if (is_acc_msg) {
-        tss2 = 1
+        tss2 = 1;
       }
       if (tss2) {
         int block_msg = is_lkas_msg || is_acc_msg;
