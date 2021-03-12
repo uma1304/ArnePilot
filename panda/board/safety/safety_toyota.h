@@ -269,7 +269,7 @@ static int toyota_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
         tss2 = 1;
       }
       if (tss2) {
-        int block_msg = is_lkas_msg || is_acc_msg;
+        int block_msg = is_lkas_msg || is_acc_msg|| is_rsa_msg;
         if (!block_msg) {
           bus_fwd = 0;
         }
