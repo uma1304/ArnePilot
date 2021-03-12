@@ -360,7 +360,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
 static void ui_draw_vision_speedlimit(UIState *s) {
   float speedlimit = s->scene.speedlimit;
-  int speedlim_calc = speedlimit * 2.2369363;
+  int speedlim_calc = speedlimit * 2.2369363 + 0.5;
   if (s->is_metric) {
     speedlim_calc = speedlimit * 3.6 + 0.5;
   }
