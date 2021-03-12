@@ -53,7 +53,7 @@ class LatControlLQR():
       factor = -0.4
     else:
       factor = 0.0
-    torque_scale = (1-factor*max(abs(angle_steers)/100,1.0))*(0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed
+    torque_scale = (1-factor*max(abs(CS.steeringAngle)/100,1.0))*(0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed
 
     steering_angle = CS.steeringAngle
 
