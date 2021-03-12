@@ -49,7 +49,7 @@ const int TOYOTA_RX_CHECKS_LEN = sizeof(toyota_rx_checks) / sizeof(toyota_rx_che
 int toyota_dbc_eps_torque_factor = 100;   // conversion factor for STEER_TORQUE_EPS in %: see dbc file
 
 int ego_speed_toyota = 0; // speed
-
+int tss2 = 0
 static uint8_t toyota_compute_checksum(CAN_FIFOMailBox_TypeDef *to_push) {
   int addr = GET_ADDR(to_push);
   int len = GET_LEN(to_push);
@@ -265,7 +265,14 @@ static int toyota_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
       int is_rsa_msg = ((addr == 0x489) || (addr == 0x48A) || (addr == 0x48B));
       // in TSS2 the camera does ACC as well, so filter 0x343
       int is_acc_msg = (addr == 0x343);
-      int block_msg = is_lkas_msg || is_acc_msg || is_rsa_msg;
+      if (is_acc_msg) {
+        tss2 = 1
+      }
+      if (tss2) {
+        int block_msg = is_lkas_msg || is_acc_msg;
+        } else {
+        int block_msg = is_lkas_msg || is_acc_msg || is_rsa_msg;
+        }
       if (!block_msg) {
         bus_fwd = 0;
       }
