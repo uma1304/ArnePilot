@@ -36,13 +36,13 @@ def poll_blindspot_status(lr):
 def create_rsa1_command(packer,TSGN1,SPDVAL1, SYNCID1):
  """Creates a CAN message for the Road Sign System."""
  values = {
-   "TSGN1": TSGN1,
+   "TSGN1": 1,
    "TSGNGRY1": 0,
    "TSGNHLT1": 0,
    "SPDVAL1": SPDVAL1,
    "SPLSGN1": 0,
    "SPLSGN2": SPDVAL1,
-   "TSGN2": TSGN1,
+   "TSGN2": 35,
    "TSGNGRY2": 0,
    "TSGNHLT2": 0,
    "SPDVAL2": SPDVAL1,
