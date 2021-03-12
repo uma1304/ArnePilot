@@ -49,7 +49,7 @@ const int TOYOTA_RX_CHECKS_LEN = sizeof(toyota_rx_checks) / sizeof(toyota_rx_che
 int toyota_dbc_eps_torque_factor = 100;   // conversion factor for STEER_TORQUE_EPS in %: see dbc file
 
 int ego_speed_toyota = 0; // speed
-int tss2 = 0
+int tss2 = 0; // is this tss2
 static uint8_t toyota_compute_checksum(CAN_FIFOMailBox_TypeDef *to_push) {
   int addr = GET_ADDR(to_push);
   int len = GET_LEN(to_push);
