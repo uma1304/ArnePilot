@@ -36,18 +36,18 @@ def poll_blindspot_status(lr):
   m = lr + b'\x02\x21\x69\x00\x00\x00\x00'
   return make_can_msg(0x750, m, 0)
 
-def create_rsa1_command(packer,TSGN1,SPDVAL1,SPLSGN1,TSGN2,SPDVAL2,SPLSGN2, SYNCID1):
+def create_rsa1_command(packer,TSGN1,SPDVAL1,SPLSGN1,TSGNHLT1,TSGN2,SPDVAL2,SPLSGN2,TSGNHLT2,SYNCID1):
  """Creates a CAN message for the Road Sign System."""
  values = {
    "TSGN1": TSGN1,
    "TSGNGRY1": 0,
-   "TSGNHLT1": 0,
+   "TSGNHLT1": TSGNHLT1,
    "SPDVAL1": SPDVAL1,
    "SPLSGN1": SPLSGN1,
    "SPLSGN2": SPLSGN2,
    "TSGN2": TSGN2,
    "TSGNGRY2": 0,
-   "TSGNHLT2": 0,
+   "TSGNHLT2": TSGNHLT2,
    "SPDVAL2": SPDVAL2,
    "BZRRQ_P": 0,
    "BZRRQ_A": 0,
@@ -349,14 +349,15 @@ class CarController():
         else:
           smartspeed = round(CS.smartspeed*3.6)
           tsgn1 = 1 if CS.smartspeed > 0 else 0
-        can_sends.append(create_rsa1_command(self.packer,tsgn1,smartspeed,0,CS.tsgn1,CS.spdval1,CS.splsgn1,self.rsa_sync_counter + 1))
+        TSGNHLT1 = 1 if CS.out.vEgo > CS.smartspeed else 0
+        can_sends.append(create_rsa1_command(self.packer,tsgn1,smartspeed,0,TSGNHLT1,CS.tsgn1,CS.spdval1,CS.splsgn1,CS.tsgnhlt1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,CS.tsgn3,CS.splsgn3,CS.tsgn4,CS.splsgn4,1,1,3,1,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,2,5,10))
         #print (str(self.rsa_sync))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
     else:
       if frame % 100 == 0:
-        can_sends.append(create_rsa1_command(self.packer,0,0,0,0,0,0,self.rsa_sync_counter + 1))
+        can_sends.append(create_rsa1_command(self.packer,0,0,0,0,0,0,0,0,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,0,0,0,0,0,0,0,0,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa3_command(self.packer,-5,-5,-5))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
