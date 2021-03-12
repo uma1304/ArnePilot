@@ -74,18 +74,18 @@ def create_rsa2_command(packer,TSGN3,DPSGNREQ,SGNNUMP,SGNNUMA,SPDUNT,SYNCID2):
 
  return packer.make_can_msg("RSA2", 0, values)
 
-def create_rsa3_command(packer,OVSPVALL,OVSPVALM,OVSPVALH):
+def create_rsa3_command(packer,OVSPVALL,OVSPVALM,OVSPVALH,NTLVLSPD,TSRSPU):
  """Creates a CAN message for the Road Sign System."""
  values = {
    "TSREQPD": 1,
    "TSRMSW": 1,
    "OTSGNNTM": 3,
-   "NTLVLSPD": 3,
+   "NTLVLSPD": NTLVLSPD,
    "OVSPNTM": 3,
    "OVSPVALL": OVSPVALL,
    "OVSPVALM": OVSPVALM,
    "OVSPVALH": OVSPVALH,
-   "TSRSPU": 1,
+   "TSRSPU": TSRSPU,
  }
 
  return packer.make_can_msg("RSA3", 0, values)
@@ -343,7 +343,10 @@ class CarController():
       if frame % 100 == 0:
         can_sends.append(create_rsa1_command(self.packer,self.rsa_sync,self.rsa_sync,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,self.rsa_sync,1,1,3,1,self.rsa_sync_counter + 1))
-        can_sends.append(create_rsa3_command(self.packer,2,5,10))
+        if CS.CP.carFingerprint in TSS2_CAR:
+          can_sends.append(create_rsa3_command(self.packer,0,0,0,1,0))
+        else:
+          can_sends.append(create_rsa3_command(self.packer,2,5,10,3,1))
         #print (str(self.rsa_sync))
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
         self.rsa_sync += 1
@@ -353,7 +356,11 @@ class CarController():
       if frame % 100 == 0:
         can_sends.append(create_rsa1_command(self.packer,0,0,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,0,0,0,0,0,self.rsa_sync_counter + 1))
-        can_sends.append(create_rsa3_command(self.packer,-5,-5,-5))
+        if CS.CP.carFingerprint in TSS2_CAR:
+          can_sends.append(create_rsa3_command(self.packer,0,0,0,1,0))
+        else:
+          can_sends.append(create_rsa3_command(self.packer,-5,-5,-5,3,1))
+        
         self.rsa_sync_counter = (self.rsa_sync_counter + 1 ) % 15
 
     return can_sends
