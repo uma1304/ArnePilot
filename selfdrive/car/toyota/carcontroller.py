@@ -344,7 +344,7 @@ class CarController():
         can_sends.append(create_rsa1_command(self.packer,self.rsa_sync,self.rsa_sync,self.rsa_sync_counter + 1))
         can_sends.append(create_rsa2_command(self.packer,self.rsa_sync,1,1,3,1,self.rsa_sync_counter + 1))
         if CS.CP.carFingerprint in TSS2_CAR:
-          can_sends.append(create_rsa3_command(self.packer,0,0,0,1,0))
+          can_sends.append(create_rsa3_command(self.packer,1,3,5,1,2))
         else:
           can_sends.append(create_rsa3_command(self.packer,2,5,10,3,1))
         #print (str(self.rsa_sync))
