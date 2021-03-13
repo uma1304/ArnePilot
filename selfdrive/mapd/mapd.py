@@ -544,6 +544,7 @@ class MessagedArneThread(LoggerThread):
             self.sm.update(0)
             if self.sm.updated['trafficModelEvent']:
               traffic_status = self.sm['trafficModelEvent'].status
+              print(traffic_status)
               traffic_confidence = round(self.sm['trafficModelEvent'].confidence * 100, 2)
               if traffic_confidence >= 50 and (traffic_status == 'GREEN' or traffic_status == 'SLOW'):
                 last_not_none_signal = traffic_status
