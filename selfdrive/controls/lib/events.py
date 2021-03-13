@@ -728,6 +728,14 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.NO_ENTRY: NoEntryAlert("Reverse Gear"),
   },
   
+  EventName.wrongGearArne: {
+    ET.WARNING: Alert(
+      "TAKE CONTROL IMMEDIATELY",
+      "Gear not yet in D",
+      AlertStatus.critical, AlertSize.full,
+      Priority.HIGH, VisualAlert.steerRequired, AudibleAlert.none, .1, 2., 2.),
+  },
+  
   EventName.cruiseDisabled: {
     ET.IMMEDIATE_DISABLE: ImmediateDisableAlert(_("Cruise Is Off")),
   },
