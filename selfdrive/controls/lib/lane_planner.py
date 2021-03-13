@@ -126,7 +126,7 @@ class LanePlanner:
     path_from_left_lane = self.l_poly.copy()
     path_from_right_lane = self.r_poly.copy()
     if use_virtual_middle_line and v_ego < 14.15:
-      if current_lane_width > 4.0
+      if current_lane_width > 4.0:
         print(current_lane_width)
         clipped_lane_width = min(4.0, self.lane_width)
         path_from_left_lane[3] -= clipped_lane_width
