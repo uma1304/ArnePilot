@@ -47,8 +47,7 @@ This is done automatically otherwise run `pkill -f boardd; cd /data/openpilot/pa
 this for the 0.8.0 version
 - [ ] Once QT drops add OSM and Speed offset apk toggles
 - [ ] bring back feature op_edit from 0.7
-- [ ] e2e UI button
-- [ ] Hands on wheel support
+- [ ] e2e UI button (most liekly will not happen.)
 - [ ] Virtual lane lines and Lane center
 
 ## Supported Cars
@@ -86,7 +85,8 @@ Since openpilot v0.8.0 Arne has decide to base his fork on [DragonPilot](https:/
 - Cruise set speed available down to 7 kph
 - Virtual lane lines and Lane center. This feature is for European roads and is recommended for used in Europe only.
 - Always on Dashcam recording ( it will save video's to the `/sdcard/media/dashcam`)
-- Change cruise speed by +- 5MPH 
+- Change cruise speed by +- 5MPH
+- Hands on wheel support for EU regulations.
 
 ### OpEdit features
 all OpEdit features can be manged by running the command `python /data/openpilot/op_edit.py`
@@ -104,7 +104,7 @@ This aims to provide a smoother driving experience in stop and go traffic (under
 - cloak mode: which will make comma think you are using their fork. Avoid bans.
 - Auto update when their is new commits pushed.
 
-### Control Modifications 
+### Control Modifications
 - No disengage for gas, only longitudinal disengage for brake, tire slip or cancel
 - Only disengage on main off and on brake at low speed
 - No disengage for seat belt remove and door opened. Practical for when stopping and then someone opens a door so that the car does not drive into the lead

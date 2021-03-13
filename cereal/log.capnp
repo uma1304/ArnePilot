@@ -2000,6 +2000,16 @@ struct DMonitoringState {
   isPreview @15 :Bool;
 
   rhdCheckedDEPRECATED @5 :Bool;
+  handsOnWheelState @16 :HandsOnWheelState;
+
+  enum HandsOnWheelState {
+    none @0;          # hand on wheel monitoring inactive
+    ok @1;            # driver has hands on steering wheel
+    minor @2;         # hands off steering wheel for acceptable period
+    warning @3;       # hands off steering wheel for warning period
+    critical @4;      # # hands off steering wheel for critical period
+    terminal @5;      # # hands off steering wheel for terminal period
+  }
 }
 
 struct Boot {

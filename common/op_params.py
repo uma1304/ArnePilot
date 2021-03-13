@@ -71,12 +71,12 @@ class opParams:
     """
 
     VT = ValueTypes()
-    self.fork_params = {'awareness_factor': Param(10., VT.number, 'Multiplier for the awareness times'),
+    self.fork_params = {'awareness_factor': Param(6., VT.number, 'Multiplier for the awareness times'),
                         #'alca_min_speed': Param(20, VT.number, 'Speed limit to start ALC in MPH'),
                         #'alca_nudge_required': Param(False, bool, "Require nudge to start ALC"),
                         #'autoUpdate': Param(True, bool, 'Whether to auto-update'),
                         #'camera_offset': Param(0.06, VT.number, 'Your camera offset to use in lane_planner.py', live=True),
-                        'curvature_factor': Param(1.2, VT.number, 'Multiplier for the curvature slowdown. Increase for less braking.'),
+                        'curvature_factor': Param(1.4, VT.number, 'Multiplier for the curvature slowdown. Increase for less braking.'),
                         'cloak': Param(True, bool, "make comma believe you are on their fork"),
                         #'corolla_tss2_d_tuning': Param(False, bool, 'lateral tuning using PID w/ true derivative'),
                         'default_brake_distance': Param(250.0, VT.number, 'Distance in m to start braking for mapped speeds.'),

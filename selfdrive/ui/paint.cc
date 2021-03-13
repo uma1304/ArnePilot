@@ -492,7 +492,7 @@ static void ui_draw_vision_event(UIState *s) {
     float img_wheel_alpha = 0.1f;
     nvgBeginPath(s->vg);
     nvgCircle(s->vg, bg_wheel_x, (bg_wheel_y + (bdr_s*1.5)), bg_wheel_size);
-    nvgFillColor(s->vg,bg_colors[s->status]);    
+    nvgFillColor(s->vg,bg_colors[s->status]);
     nvgFill(s->vg);
     img_wheel_alpha = 1.0f;
     nvgSave(s->vg);
@@ -506,6 +506,19 @@ static void ui_draw_vision_event(UIState *s) {
     nvgFill(s->vg);
     nvgRestore(s->vg);
     // ui_draw_circle_image(s->vg, bg_wheel_x, bg_wheel_y, bg_wheel_size, s->img_wheel, color, 1.0f, bg_wheel_y - 25);
+    // draw hands on wheel pictogram under wheel pictogram.
+    auto handsOnWheelState = s->scene.dmonitoring_state.getHandsOnWheelState();
+    if (handsOnWheelState >= cereal::DMonitoringState::HandsOnWheelState::WARNING) {
+      if (handsOnWheelState == cereal::DMonitoringState::HandsOnWheelState::WARNING) {
+        color = COLOR_YELLOW;
+      } else {
+        color = COLOR_RED;
+      }
+      const int wheel_size = 96;
+      const int wheel_x = viz_event_x + viz_event_w - wheel_size;
+      const int wheel_y = bg_wheel_y + bdr_s + bg_wheel_size + wheel_size;
+      ui_draw_circle_image(s->vg, wheel_x, wheel_y, wheel_size, s->img_hands_on_wheel, color, 1.0f, wheel_y - 25);
+    }
   }
 }
 
@@ -830,6 +843,8 @@ void ui_nvg_init(UIState *s) {
   assert(s->img_map != 0);
   s->img_speed = nvgCreateImage(s->vg, "../assets/img_trafficSign_speedahead.png", 1);
   assert(s->img_speed != 0);
+  s->img_hands_on_wheel = nvgCreateImage(s->vg, "../assets/img_hands_on_wheel.png", 1);
+  assert(s->img_hands_on_wheel != 0);
   s->img_turn = nvgCreateImage(s->vg, "../assets/img_trafficSign_turn.png", 1);
   assert(s->img_turn != 0);
   s->img_face = nvgCreateImage(s->vg, "../assets/img_driver_face.png", 1);
