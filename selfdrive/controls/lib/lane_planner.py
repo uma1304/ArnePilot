@@ -128,8 +128,11 @@ class LanePlanner:
     if use_virtual_middle_line and v_ego < 14.15:
       if current_lane_width > 4.0:
         print(current_lane_width)
+        factor = min(current_lane_width - 4.0, 1.0)
         clipped_lane_width = min(4.0, self.lane_width)
-        path_from_right_lane[3] += clipped_lane_width
+        path_from_left_lane[3] -= current_lane_width/2 * factor
+        l_prob = 1
+        r_prob = 1
       else:
         clipped_lane_width = min(4.0, self.lane_width)
         path_from_left_lane[3] -= clipped_lane_width / 2.0
