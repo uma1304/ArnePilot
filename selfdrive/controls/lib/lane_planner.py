@@ -129,7 +129,7 @@ class LanePlanner:
       if current_lane_width > 4.0:
         print(current_lane_width)
         clipped_lane_width = min(4.0, self.lane_width)
-        path_from_left_lane[3] -= clipped_lane_width
+        path_from_right_lane[3] += clipped_lane_width
       else:
         clipped_lane_width = min(4.0, self.lane_width)
         path_from_left_lane[3] -= clipped_lane_width / 2.0
