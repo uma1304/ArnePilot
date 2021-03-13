@@ -389,7 +389,7 @@ BO_ 304 GAS_PEDAL_2: 8 PCM
  SG_ CAR_GAS : 39|8@0+ (1,0) [0|255] "" EON
  SG_ COUNTER : 61|2@0+ (1,0) [0|3] "" EON
  SG_ CHECKSUM : 59|4@0+ (1,0) [0|15] "" EON
-
+ 
 BO_ 419 GEARBOX: 8 PCM
  SG_ COUNTER : 61|2@0+ (1,0) [0|3] "" EON
  SG_ CHECKSUM : 59|4@0+ (1,0) [0|3] "" EON
@@ -413,9 +413,6 @@ BO_ 927 RADAR_HUD: 8 RADAR
  SG_ APPLY_BRAKES_FOR_CANC : 23|1@0+ (1,0) [0|1] "" XXX
  SG_ ACC_ALERTS : 20|5@0+ (1,0) [0|1] "" BDY
  SG_ SET_TO_0 : 22|1@0+ (1,0) [0|1] "" XXX
- SG_ LEAD_DISTANCE : 39|8@0+ (1,0) [0|255] "" XXX
- SG_ BOH : 40|1@0+ (1,0) [0|1] "" XXX
- SG_ BOH_2 : 30|1@0+ (1,0) [0|1] "" XXX
  SG_ COUNTER : 61|2@0+ (1,0) [0|3] "" XXX
  SG_ CHECKSUM : 59|4@0+ (1,0) [0|15] "" XXX
 
