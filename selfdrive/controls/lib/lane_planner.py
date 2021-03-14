@@ -131,8 +131,8 @@ class LanePlanner:
         factor = min(current_lane_width - 4.0, 1.0)
         clipped_lane_width = min(4.0, self.lane_width)
         path_from_left_lane[3] -= current_lane_width/2 * factor
-        l_prob = 1
-        r_prob = 1
+        l_prob = max(factor, l_prob)
+        r_prob = max(factor, r_prob)
       else:
         clipped_lane_width = min(4.0, self.lane_width)
         path_from_left_lane[3] -= clipped_lane_width / 2.0
