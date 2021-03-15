@@ -27,13 +27,10 @@ def upload_data():
         pass
 
       params = Params()
-      try:
-        car = params.get('CachedFingerprint')
-        if car is not None:
-          car = json.loads(car)
-          username+="-{}".format(car[0])
-      except:
-        pass
+      car = params.get('CachedFingerprint')
+      if car is not None:
+        car = json.loads(car)
+        username+="-{}".format(car[0])
       filename = "gps-data.{}".format(random.randint(1,99999))
       fp = open(filepath,"rb")
       data = fp.read()
