@@ -17,7 +17,7 @@ if not travis:
     import selfdrive.crash as crash
 
 EventName = car.CarEvent.EventName
-use_car_caching = op_params.get('use_car_caching')
+use_car_caching = opParams().get('use_car_caching')
 
 def get_startup_event(car_recognized, controller_available):
   if comma_remote and tested_branch:
