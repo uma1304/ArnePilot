@@ -121,6 +121,7 @@ class opParams:
                         #'use_car_caching': Param(True, bool, 'Whether to use fingerprint caching'),
                         #'min_TR': Param(None, VT.none_or_number, 'The minimum allowed following distance in seconds. Default is 0.9 seconds.\n'
                                                                  #'The range is limited from 0.85 to 1.3. Set to None to disable', live=True),
+                        'use_car_caching': Param(True, bool, 'Cache car fingerprint if panda not disconnected.'),
                         'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left. European requirement.'),
                         'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
                         'update_behavior': Param('auto', str, 'Can be: (\'off\', \'alert\', \'auto\') without quotes\n'
