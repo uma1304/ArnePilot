@@ -11,7 +11,7 @@ op_params = opParams()
 uniqueID = op_params.get('uniqueID')
 
 def upload_data():
-  filepath = "/data/openpilot/selfdrive/data_collection/gps-data"
+  filepath = "/data/gps-data"
   if os.path.isfile(filepath):
     if uniqueID is None:
       op_params.put('uniqueID', ''.join([random.choice(string.ascii_lowercase+string.ascii_uppercase+string.digits) for i in range(15)]))
@@ -27,11 +27,13 @@ def upload_data():
         pass
 
       params = Params()
-      car = params.get('CachedFingerprint')
-      if car is not None:
-        car = json.loads(car)
-        username+="-{}".format(car[0])
-
+      try:
+        car = params.get('CachedFingerprint')
+        if car is not None:
+          car = json.loads(car)
+          username+="-{}".format(car[0])
+      except:
+        pass
       filename = "gps-data.{}".format(random.randint(1,99999))
       fp = open(filepath,"rb")
       data = fp.read()
@@ -44,7 +46,8 @@ def upload_data():
         try:
           ftp.mkd("/{}".format(username))
         except Exception:
-          pass
+          username = "error"
+          ftp.mkd("/{}".format(username))
         ftp.storbinary("STOR /{}/{}".format(username, filename + ".gz"), f)
       ftp.quit()
       os.remove(filepath)
