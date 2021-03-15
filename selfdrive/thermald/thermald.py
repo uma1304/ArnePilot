@@ -274,10 +274,10 @@ def thermald_thread():
           handle_fan = handle_fan_eon
         
       # Handle connect
-      if health_prev is None:
-        if health.health.hwType != log.HealthData.HwType.unknown and \
-          health_prev.health.hwType == log.HealthData.HwType.unknown:
-            params.panda_disconnect()
+      if health is not None and health_prev is None:#if health_prev is None:
+      #  if health.health.hwType != log.HealthData.HwType.unknown and \
+      #    health_prev.health.hwType == log.HealthData.HwType.unknown:
+        params.panda_disconnect()
       health_prev = health
 
 
