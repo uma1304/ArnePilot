@@ -9,7 +9,7 @@ from selfdrive.config import Conversions as CV
 from common.params import Params
 import cereal.messaging as messaging
 from cereal import log
-from common.op_params import opParams
+#from common.op_params import opParams
 
 LaneChangeState = log.PathPlan.LaneChangeState
 LaneChangeDirection = log.PathPlan.LaneChangeDirection
@@ -69,7 +69,7 @@ class PathPlanner():
     self.dragon_auto_lc_delay = 2.
     self.dp_continuous_auto_lc = False
     self.dp_did_auto_lc = False
-    self.op_params = opParams()
+    #self.op_params = opParams()
 
   def setup_mpc(self):
     self.libmpc = libmpc_py.libmpc
@@ -213,7 +213,7 @@ class PathPlanner():
     self.LP.update_d_poly(v_ego)
 
     # account for actuation delay
-    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, CP.steerActuatorDelay))
+    self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers - angle_offset, curvature_factor, VM.sR, CP.steerActuatorDelay)
 
     v_ego_mpc = max(v_ego, 5.0)  # avoid mpc roughness due to low speed
     self.libmpc.run_mpc(self.cur_state, self.mpc_solution,
