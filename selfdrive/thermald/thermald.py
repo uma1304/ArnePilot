@@ -272,12 +272,12 @@ def thermald_thread():
           cloudlog.info("Setting up EON fan handler")
           setup_eon_fan()
           handle_fan = handle_fan_eon
-      if health is not None and health_prev is None:
-        params.panda_disconnect()
-      # Handle disconnect
-      if health_prev is not None:
-        if health.health.hwType == log.HealthData.HwType.unknown and \
-          health_prev.health.hwType != log.HealthData.HwType.unknown:
+        
+      # Handle connect
+      if health_prev is None:
+        if health.health.hwType != log.HealthData.HwType.unknown and \
+          health_prev.health.hwType == log.HealthData.HwType.unknown:
+            params.panda_disconnect()
       health_prev = health
 
 
