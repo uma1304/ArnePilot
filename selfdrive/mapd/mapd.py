@@ -48,7 +48,7 @@ class LoggerThread(threading.Thread):
     def save_gps_data(self, gps, osm_way_id):
         try:
             location = [gps.speed, gps.bearing, gps.latitude, gps.longitude, gps.altitude, gps.accuracy, time.time(), osm_way_id]
-            with open("/data/openpilot/selfdrive/data_collection/gps-data", "a") as f:
+            with open("/data/gps-data", "a") as f:
                 f.write("{}\n".format(location))
         except:
             self.logger.error("Unable to write gps data to external file")
