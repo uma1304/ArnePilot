@@ -122,17 +122,27 @@ class CarInterface(CarInterfaceBase):
       if ret.enableGasInterceptor:
         ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # arne's tune.
         ret.longitudinalTuning.kiV = [0.195, 0.10]
-      ret.lateralTuning.init('lqr')
-
-      ret.lateralTuning.lqr.scale = 1500.0
-      ret.lateralTuning.lqr.ki = 0.05
-
-      ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
-      ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
-      ret.lateralTuning.lqr.c = [1., 0.]
-      ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
-      ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
-      ret.lateralTuning.lqr.dcGain = 0.002237852961363602
+      if spairrowtuning:
+        ret.lateralTuning.init('indi')
+        ret.lateralTuning.indi.innerLoopGainBP = [18, 22, 26]
+        ret.lateralTuning.indi.innerLoopGainV = [9, 12, 15]
+        ret.lateralTuning.indi.outerLoopGainBP = [18, 22, 26]
+        ret.lateralTuning.indi.outerLoopGainV = [8, 11, 14.99]
+        ret.lateralTuning.indi.timeConstantBP = [18, 22, 26]
+        ret.lateralTuning.indi.timeConstantV = [1, 3, 4.5]
+        ret.lateralTuning.indi.actuatorEffectivenessBP = [18, 22, 26]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [9, 12, 15]
+        ret.steerActuatorDelay = 0.4
+      else:
+        ret.lateralTuning.init('lqr')
+        ret.lateralTuning.lqr.scale = 1500.0
+        ret.lateralTuning.lqr.ki = 0.05
+        ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
+        ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
+        ret.lateralTuning.lqr.c = [1., 0.]
+        ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
+        ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
+        ret.lateralTuning.lqr.dcGain = 0.002237852961363602
 
     elif candidate == CAR.COROLLA:
       stop_and_go = False
@@ -152,10 +162,9 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 14.8
       tire_stiffness_factor = 0.5533
       ret.mass = 4387. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.steerActuatorDelay = 0.5
+      #ret.steerActuatorDelay = 0.5
       #ret.steerLimitTimer = 0.70
       if prius_pid:
-        ret.steerLimitTimer = 0.70
         ret.lateralTuning.init('pid')
         ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
         ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.07], [0.04]]
@@ -163,26 +172,17 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.kfV = [0.00009531750004645412]
         ret.lateralTuning.pid.newKfTuned = True
       else:
-        ret.steerRateCost = 0.45 #0.45
-        ret.steerLimitTimer = 5.0
+        ret.steerActuatorDelay = 0
+        ret.steerLimitTimer = 0.1
         ret.lateralTuning.init('indi')
-        #ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
-        #ret.lateralTuning.indi.innerLoopGainV = [15, 15]
-        #ret.lateralTuning.indi.outerLoopGainBP = [8.3, 25, 27.7, 36.1]
-        #ret.lateralTuning.indi.outerLoopGainV = [4.6, 14.99, 14.99, 19]
-        #ret.lateralTuning.indi.timeConstantBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.1, 33.3, 36.1]
-        #ret.lateralTuning.indi.timeConstantV = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.0, 4.0, 4.0]
-        #ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 25]
-        #ret.lateralTuning.indi.actuatorEffectivenessV = [15, 15]
-        #ret.lateralTuning.init('indi') #really good tune from cgw.
-        ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25, 36.1]
-        ret.lateralTuning.indi.innerLoopGainV = [9.5, 15, 15]
-        ret.lateralTuning.indi.outerLoopGainBP = [16.7, 25, 36.1]
-        ret.lateralTuning.indi.outerLoopGainV = [9.5, 14.99, 14.99]
-        ret.lateralTuning.indi.timeConstantBP = [16.7, 16.71, 22, 22.01, 26, 26.01, 36, 36.01]
-        ret.lateralTuning.indi.timeConstantV = [0.5, 1, 1, 2, 2, 4, 4, 5]
-        ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 25, 36.1]
-        ret.lateralTuning.indi.actuatorEffectivenessV = [9.5, 15, 15]
+        ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
+        ret.lateralTuning.indi.innerLoopGainV = [15, 15]
+        ret.lateralTuning.indi.outerLoopGainBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2,  25, 30.6, 33.3, 36.1]
+        ret.lateralTuning.indi.outerLoopGainV = [4.6, 6.4, 8.2, 10, 11.8, 13.6, 14.99, 14.99, 14.99, 14.99]
+        ret.lateralTuning.indi.timeConstantBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.6, 33.3, 36.1]
+        ret.lateralTuning.indi.timeConstantV = [1.0, 1.3, 1.6, 1.9, 2.2, 2.5, 2.8, 3.4, 3.7, 4.0]
+        ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 25]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [15, 15]
 
     elif candidate == CAR.LEXUS_RXH:
       stop_and_go = True
