@@ -204,6 +204,7 @@ managed_processes = {
   "calibrationd": "selfdrive.locationd.calibrationd",
   "paramsd": "selfdrive.locationd.paramsd",
   "camerad": ("selfdrive/camerad", ["./camerad"]),
+  "trafficd": ("selfdrive/trafficd", ["./trafficd"]),
   "sensord": ("selfdrive/sensord", ["./sensord"]),
   "clocksd": ("selfdrive/clocksd", ["./clocksd"]),
   "gpsd": ("selfdrive/sensord", ["./gpsd"]),
@@ -286,6 +287,7 @@ driver_view_processes = [
 if traffic_lights:
   car_started_processes += [
     'traffic_manager',
+    'trafficd',
   ]
   
 if WEBCAM:
