@@ -492,8 +492,8 @@ class Controls:
       if (lac_log.saturated and not CS.steeringPressed) or \
               (self.saturated_count > STEER_ANGLE_SATURATION_TIMEOUT):
         # Check if we deviated from the path
-        left_deviation = actuators.steer > 0 and path_plan.dPoly[3] > 0.1
-        right_deviation = actuators.steer < 0 and path_plan.dPoly[3] < -0.1
+        left_deviation = actuators.steer > 0 and path_plan.dPoly[3] > 0.15
+        right_deviation = actuators.steer < 0 and path_plan.dPoly[3] < -0.15
 
         if left_deviation or right_deviation:
           self.events.add(EventName.steerSaturated)
