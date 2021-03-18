@@ -358,9 +358,9 @@ class Controls:
       if CS.steeringPressed:
         self.distance_traveled_override += CS.vEgo * DT_CTRL
     if (self.sm.frame - self.distance_traveled_frame) * DT_CTRL > 10.0 and not travis:
-      put_nonblocking("DistanceTraveled", self.distance_traveled)
-      put_nonblocking("DistanceTraveledEngaged", self.distance_traveled_engaged)
-      put_nonblocking("DistanceTraveledOverride", self.distance_traveled_override)
+      put_nonblocking("DistanceTraveled", str(round(self.distance_traveled,2)))
+      put_nonblocking("DistanceTraveledEngaged", str(round(self.distance_traveled_engaged,2)))
+      put_nonblocking("DistanceTraveledOverride", str(round(self.distance_traveled_override,2)))
       self.distance_traveled_frame = self.sm.frame
 
     return CS
