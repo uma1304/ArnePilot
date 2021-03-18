@@ -81,8 +81,8 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 13.4   # True steerRation from older prius
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.steerLimitTimer = 5.0
       if prius_pid:
+        ret.steerLimitTimer = 5.0
         ret.steerActuatorDelay = 0.52
         ret.lateralTuning.init('pid')
         ret.lateralTuning.pid.kpBP = [0.0]
@@ -92,16 +92,17 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.kf = 0.000173263811757641 # hardcoded in latcontrol_pid, this does nothing for now
         ret.lateralTuning.pid.newKfTuned = True
       else:
-       ret.lateralTuning.init('indi')
-       ret.lateralTuning.indi.innerLoopGainBP = [18, 22, 26]
-       ret.lateralTuning.indi.innerLoopGainV = [9, 12, 15]
-       ret.lateralTuning.indi.outerLoopGainBP = [18, 22, 26]
-       ret.lateralTuning.indi.outerLoopGainV = [8, 11, 14.99]
-       ret.lateralTuning.indi.timeConstantBP = [18, 22, 26]
-       ret.lateralTuning.indi.timeConstantV = [1, 3, 4.5]
-       ret.lateralTuning.indi.actuatorEffectivenessBP = [18, 22, 26]
-       ret.lateralTuning.indi.actuatorEffectivenessV = [9, 12, 15]
-       ret.steerActuatorDelay = 0.42
+        ret.steerActuatorDelay = 0
+        ret.steerLimitTimer = 0.1
+        ret.lateralTuning.init('indi')
+        ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25]
+        ret.lateralTuning.indi.innerLoopGainV = [15, 15]
+        ret.lateralTuning.indi.outerLoopGainBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.6, 33.3, 36.1]
+        ret.lateralTuning.indi.outerLoopGainV = [4.55, 6.35, 8.15, 9.95, 11.75, 13.55, 14.99, 14.99, 14.99, 14.99]
+        ret.lateralTuning.indi.timeConstantBP = [8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 30.6, 33.3, 36.1]
+        ret.lateralTuning.indi.timeConstantV = [1.0, 1.3, 1.6, 1.9, 2.2, 2.5, 2.8, 3.4, 3.7, 4.0]
+        ret.lateralTuning.indi.actuatorEffectivenessBP = [16.7, 25]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [15, 15]
 
     elif candidate in [CAR.RAV4, CAR.RAV4H]:
       stop_and_go = True if (candidate in CAR.RAV4H) else False
