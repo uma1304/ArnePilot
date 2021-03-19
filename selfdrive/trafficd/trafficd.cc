@@ -168,7 +168,6 @@ static void getFlatArray(const VIPCBuf* buf, float flatImageArray[]) {
             idx++;
             flatImageArray[idx] = clamp(r) / 255.0;
             idx++;
-            printf("%d ", idx);
         }
     }
 }
