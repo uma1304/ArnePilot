@@ -17,7 +17,7 @@ const bool debug_mode = false;
 const int original_shape[3] = {874, 1164, 3};   // global constants
 //const int original_size = 874 * 1164 * 3;
 //const int cropped_shape[3] = {665, 814, 3};
-//const int cropped_size = 665 * 814 * 3;
+const int cropped_size = 665 * 814 * 3;
 
 const int horizontal_crop = 175;
 const int top_crop = 0;
@@ -157,7 +157,7 @@ uint8_t clamp(int16_t value) {
     return value<0 ? 0 : (value>255 ? 255 : value);
 }
 
-static std::vector<float> getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
+static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
     // returns RGB if returnBGR is false
     const size_t width = original_shape[1];
     const size_t height = original_shape[0];
@@ -168,6 +168,8 @@ static std::vector<float> getFlatVector(const VIPCBuf* buf, const bool returnBGR
 
     int b, g, r;
     std::vector<float> bgrVec;
+    float bgrArr[cropped_size];
+    int idx;
     for (int y_cord = top_crop; y_cord < (original_shape[0] - hood_crop); y_cord++) {
         for (int x_cord = horizontal_crop; x_cord < (original_shape[1] - horizontal_crop); x_cord++) {
             int yy = y[(y_cord * width) + x_cord];
@@ -179,17 +181,25 @@ static std::vector<float> getFlatVector(const VIPCBuf* buf, const bool returnBGR
             b = 1.164 * (yy - 16) + 2.018 * (uu - 128);
 
             if (returnBGR){
-                bgrVec.push_back(clamp(b) / 255.0);
-                bgrVec.push_back(clamp(g) / 255.0);
-                bgrVec.push_back(clamp(r) / 255.0);
+                bgrArr[idx] = clamp(b) / 255.0;
+                idx++;
+                bgrArr[idx] = clamp(g) / 255.0;
+                idx++;
+                bgrArr[idx] = clamp(r) / 255.0;
+                idx++;
+
+//                bgrVec.push_back(clamp(b) / 255.0);
+//                bgrVec.push_back(clamp(g) / 255.0);
+//                bgrVec.push_back(clamp(r) / 255.0);
             } else {
-                bgrVec.push_back(clamp(r) / 255.0);
-                bgrVec.push_back(clamp(g) / 255.0);
-                bgrVec.push_back(clamp(b) / 255.0);
+//                bgrVec.push_back(clamp(r) / 255.0);
+//                bgrVec.push_back(clamp(g) / 255.0);
+//                bgrVec.push_back(clamp(b) / 255.0);
             }
         }
     }
-    return bgrVec;
+    return bgrArr;
+//    return bgrVec;
 }
 
 
@@ -203,27 +213,7 @@ int main(){
     const int output_size = numLabels;
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
-    VisionStream stream;
-    VisionStreamBufs buf_info;
-    err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
-    if (err) {
-        printf("trafficd: visionstream fail\n");
-        usleep(500000);
-        continue;
-    }
 
-    VIPCBuf* buf;
-    VIPCBufExtra extra;
-    buf = visionstream_get(&stream, &extra);
-    if (buf == NULL) {
-        printf("trafficd: visionstream get failed\n");
-        break;
-    }
-
-    std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-
-
-    return 0;
 
 //    initModel(); // init model
 
@@ -256,10 +246,11 @@ int main(){
             printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-            std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+            float* imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
             time = millis_since_boot() - time;
             printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
+            m->execute(imageVector, cropped_size);
 
             while (!do_exit) {
               loopStart = millis_since_boot();
