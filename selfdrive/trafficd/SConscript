@@ -8,7 +8,8 @@ common_src = [
   "../modeld/models/commonmodel.cc",
   "../modeld/runners/snpemodel.cc",
   "../modeld/transforms/loadyuv.c",
-  "../modeld/transforms/transform.cc"
+  "../modeld/transforms/transform.cc",
+  "../modeld/thneed/thneed.cc"
 ]
 
 
