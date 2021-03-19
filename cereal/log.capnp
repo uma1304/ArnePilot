@@ -2087,6 +2087,10 @@ struct TrafficModelEvent {
   confidence @1 :Float32;
 }
 
+struct TrafficModelControl {
+  active @0 :Bool;
+}
+
 struct LatControl {
   anglelater @0 :Float32;
 }
@@ -2178,6 +2182,7 @@ struct Event {
     trafficModelRaw @80 :TrafficModelRaw;
     trafficModelEvent @81 :TrafficModelEvent;
     latControl @82:LatControl;
+    trafficModelControl @83 :TrafficModelControl;
   }
 }
 
