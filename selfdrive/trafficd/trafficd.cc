@@ -203,6 +203,24 @@ int main(){
     const int output_size = numLabels;
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
+    VisionStream stream;
+    VisionStreamBufs buf_info;
+    err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
+    if (err) {
+        printf("trafficd: visionstream fail\n");
+        usleep(500000);
+        continue;
+    }
+
+    VIPCBuf* buf;
+    VIPCBufExtra extra;
+    buf = visionstream_get(&stream, &extra);
+    if (buf == NULL) {
+        printf("trafficd: visionstream get failed\n");
+        break;
+    }
+
+    std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
 
 
     return 0;
