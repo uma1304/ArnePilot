@@ -231,24 +231,24 @@ int main(){
             }
 
             time = millis_since_boot() - time;
-            printf("visionstream_get took: %lf", time);
+            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
             std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
             time = millis_since_boot() - time;
-            printf("getFlatVector took: %lf", time);
+            printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
 
             std::vector<float> modelOutputVec = runModel(imageVector);
 
             time = millis_since_boot() - time;
-            printf("model execute took: %lf", time);
+            printf("model execute took: %lf\n", time);
             time = millis_since_boot();
 
             sendPrediction(modelOutputVec, traffic_lights_sock);
 
             time = millis_since_boot() - time;
-            printf("send prediction took: %lf", time);
+            printf("send prediction took: %lf\n", time);
             time = millis_since_boot();
 
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
@@ -259,7 +259,7 @@ int main(){
             }
 
             time = millis_since_boot() - time;
-            printf("rateKeeper took: %lf", time);
+            printf("rateKeeper took: %lf\n", time);
             time = millis_since_boot();
         }
     }
