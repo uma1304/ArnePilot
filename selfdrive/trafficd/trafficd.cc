@@ -213,7 +213,6 @@ int main(){
         double loopStart;
         double lastLoop = 0;
         while (!do_exit){
-            loopStart = millis_since_boot();
 
             double time = millis_since_boot();
 
@@ -235,6 +234,7 @@ int main(){
             time = millis_since_boot();
 
             while (!do_exit) {
+              loopStart = millis_since_boot();
               std::vector<float> modelOutputVec = runModel(imageVector);
               lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
