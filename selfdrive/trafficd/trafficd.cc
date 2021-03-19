@@ -202,7 +202,7 @@ int main(){
 
     const int output_size = 4;
     float *output = (float*)calloc(output_size, sizeof(float));
-    RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", s->output, output_size, USE_GPU_RUNTIME);
+    RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
 
     initModel(); // init model
 
