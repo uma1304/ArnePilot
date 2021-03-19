@@ -203,7 +203,6 @@ managed_processes = {
   "ui": ("selfdrive/ui", ["./ui"]),
   "calibrationd": "selfdrive.locationd.calibrationd",
   "paramsd": "selfdrive.locationd.paramsd",
-  "camerad": ("selfdrive/camerad", ["./camerad"]),
   "sensord": ("selfdrive/sensord", ["./sensord"]),
   "clocksd": ("selfdrive/clocksd", ["./clocksd"]),
   "gpsd": ("selfdrive/sensord", ["./gpsd"]),
@@ -218,6 +217,7 @@ managed_processes = {
   "gpxd": "selfdrive.dragonpilot.gpxd",
   "interbridged": "selfdrive.interbridge.interbridged",
   "livedashserved": "selfdrive.livedash.served",
+  "camerad": ("selfdrive/camerad", ["./camerad"]),
 }
 
 daemon_processes = {
