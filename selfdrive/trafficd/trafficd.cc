@@ -65,7 +65,7 @@ std::unique_ptr<zdl::DlSystem::ITensor> initializeSNPE(zdl::DlSystem::Runtime_t 
     return input
 }
 
-std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
+std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec, std::unique_ptr<zdl::DlSystem::ITensor> input) {
     /* Copy the loaded input file contents into the networks input tensor. SNPE's ITensor supports C++ STL functions like std::copy() */
     std::copy(inputVec.begin(), inputVec.end(), input->begin());
     return input;
@@ -115,7 +115,7 @@ void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
 }
 
 void runModel(std::vector<float> inputVector, std::unique_ptr<zdl::DlSystem::ITensor> input) {
-    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
+    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector, input);  // inputVec)
 //    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
 
 //    std::vector<float> outputVector;
