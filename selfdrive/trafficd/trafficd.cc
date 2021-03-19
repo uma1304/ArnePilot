@@ -121,10 +121,8 @@ int main(){
 
     PubMaster pm({"trafficModelRaw"});
 
-    const int output_size = numLabels;
-    float *output = (float*)calloc(output_size, sizeof(float));
-    RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
-
+    float *output = (float*)calloc(numLabels, sizeof(float));
+    RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, numLabels, USE_GPU_RUNTIME);
 
     VisionStream stream;
     while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
@@ -142,8 +140,6 @@ int main(){
         while (!do_exit) {
             loopStart = millis_since_boot();
 
-            double time = millis_since_boot();
-
             VIPCBuf* buf;
             VIPCBufExtra extra;
             buf = visionstream_get(&stream, &extra);
@@ -152,48 +148,25 @@ int main(){
                 break;
             }
 
-            time = millis_since_boot() - time;
-            printf("visionstream_get took: %lf\n", time);
-            time = millis_since_boot();
-
             getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
-
-            time = millis_since_boot() - time;
-            printf("getFlatArray took: %lf\n", time);
-            time = millis_since_boot();
-
-            model->execute(flatImageArray, cropped_size, true);  // true for is trafficd
-
-            time = millis_since_boot() - time;
-            printf("model execute took: %lf\n\n", time);
-            time = millis_since_boot();
+            model->execute(flatImageArray, cropped_size, true);  // true uses special logic for trafficd
 
             sendPrediction(output, pm);
 
-//            time = millis_since_boot() - time;
-//            printf("send prediction took: %lf\n", time);
-//            time = millis_since_boot();
-
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
+
             if (debug_mode) {
                 int maxIdx = 0;
-                for (int i = 1; i < 3; i++) {
-                    if (output[i] > output[maxIdx])
-                        maxIdx = i;
-                }
+                for (int i = 1; i < 3; i++) if (output[i] > output[maxIdx]) maxIdx = i;
                 printf("Model prediction: %s (%f)\n", modelLabels[maxIdx].c_str(), 100.0 * output[maxIdx]);
                 std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
             }
-
-//            time = millis_since_boot() - time;
-//            printf("rateKeeper took: %lf\n\n", time);
-//            time = millis_since_boot();
         }
-            free(flatImageArray);
+        free(flatImageArray);
     }
     free(output);
     delete model;
-    std::cout << "trafficd is dead" << std::endl;
     visionstream_destroy(&stream);
+    std::cout << "trafficd is dead" << std::endl;
     return 0;
 }
