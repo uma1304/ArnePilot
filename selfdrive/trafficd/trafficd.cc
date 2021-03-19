@@ -138,7 +138,8 @@ int main(){
 
         double loopStart;
         double lastLoop = 0;
-        while (!do_exit){
+        float* flatImageArray = new float[cropped_size];
+        while (!do_exit) {
             loopStart = millis_since_boot();
 
             double time = millis_since_boot();
@@ -155,7 +156,6 @@ int main(){
             printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-            float* flatImageArray = new float[cropped_size];
             getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
 
             time = millis_since_boot() - time;
@@ -163,7 +163,6 @@ int main(){
             time = millis_since_boot();
 
             model->execute(flatImageArray, cropped_size, true);  // true for is trafficd
-//            free(flatImageArray);
 
             time = millis_since_boot() - time;
             printf("model execute took: %lf\n\n", time);
@@ -190,6 +189,7 @@ int main(){
 //            printf("rateKeeper took: %lf\n\n", time);
 //            time = millis_since_boot();
         }
+            free(flatImageArray);
     }
     free(output);
     delete model;
