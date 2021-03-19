@@ -238,15 +238,15 @@ int main(){
               std::vector<float> modelOutputVec = runModel(imageVector);
             }
 
-            time = millis_since_boot() - time;
-            printf("model execute took: %lf\n", time);
-            time = millis_since_boot();
-
-            sendPrediction(modelOutputVec, pm);
-
-            time = millis_since_boot() - time;
-            printf("send prediction took: %lf\n", time);
-            time = millis_since_boot();
+//            time = millis_since_boot() - time;
+//            printf("model execute took: %lf\n", time);
+//            time = millis_since_boot();
+//
+//            sendPrediction(modelOutputVec, pm);
+//
+//            time = millis_since_boot() - time;
+//            printf("send prediction took: %lf\n", time);
+//            time = millis_since_boot();
 
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 //            if (debug_mode) {
