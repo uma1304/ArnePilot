@@ -163,7 +163,7 @@ int main(){
             time = millis_since_boot();
 
             model->execute(flatImageArray, cropped_size, true);  // true for is trafficd
-            free(flatImageArray);
+//            free(flatImageArray);
 
             time = millis_since_boot() - time;
             printf("model execute took: %lf\n\n", time);
