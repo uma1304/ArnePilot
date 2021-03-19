@@ -185,7 +185,6 @@ int main(){
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
 
-    float* flatImageArray = new float[cropped_size];
 
 
 //    initModel(); // init model
@@ -219,6 +218,7 @@ int main(){
 //            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
+            float* flatImageArray = new float[cropped_size];
             getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
             time = millis_since_boot() - time;
 //            printf("getFlatArray took: %lf\n", time);
