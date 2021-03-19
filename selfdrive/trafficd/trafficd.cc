@@ -192,7 +192,7 @@ static std::vector<float> getFlatVector(const VIPCBuf* buf, const bool returnBGR
 
 int main(){
     signal(SIGINT, (sighandler_t)set_do_exit);
-    signal(SIGTERM, (sighandler_t)set_do_exit);
+    signal(SIGTERM, (sighandler_t)set_do_exit);m
     int err;
 
     PubMaster pm({"trafficModelRaw"});
@@ -228,22 +228,22 @@ int main(){
             printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-            std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-            time = millis_since_boot() - time;
-            printf("getFlatVector took: %lf\n", time);
-            time = millis_since_boot();
-
-            std::vector<float> modelOutputVec = runModel(imageVector);
-
-            time = millis_since_boot() - time;
-            printf("model execute took: %lf\n", time);
-            time = millis_since_boot();
-
-            sendPrediction(modelOutputVec, pm);
-
-            time = millis_since_boot() - time;
-            printf("send prediction took: %lf\n", time);
-            time = millis_since_boot();
+//            std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+//            time = millis_since_boot() - time;
+//            printf("getFlatVector took: %lf\n", time);
+//            time = millis_since_boot();
+//
+//            std::vector<float> modelOutputVec = runModel(imageVector);
+//
+//            time = millis_since_boot() - time;
+//            printf("model execute took: %lf\n", time);
+//            time = millis_since_boot();
+//
+//            sendPrediction(modelOutputVec, pm);
+//
+//            time = millis_since_boot() - time;
+//            printf("send prediction took: %lf\n", time);
+//            time = millis_since_boot();
 
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
             if (debug_mode) {
