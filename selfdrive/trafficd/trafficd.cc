@@ -198,7 +198,7 @@ static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
             }
         }
     }
-    printf("idx: %d, size: %d\n", idx, cropped_size);
+//    printf("idx: %d, size: %d\n", idx, cropped_size);
     return bgrArr;
 //    return bgrVec;
 }
@@ -251,7 +251,6 @@ int main(){
             time = millis_since_boot() - time;
 //            printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
-            m->execute(imageVector, cropped_size);
 
 //            while (!do_exit) {
 //                loopStart = millis_since_boot();
