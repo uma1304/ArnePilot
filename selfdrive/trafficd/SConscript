@@ -31,5 +31,6 @@ else:
 
 lenv.Program('_trafficd', [
     "trafficd.cc",
+    "thneed/thneed.cc",
   ], LIBS=libs)
 
