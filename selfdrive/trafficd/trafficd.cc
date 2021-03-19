@@ -33,7 +33,7 @@ zdl::DlSystem::Runtime_t checkRuntime() {
     if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::DSP)) {
         printf("Runtime: DSP\n");
         Runtime = zdl::DlSystem::Runtime_t::DSP;
-    else if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::GPU)) {
+    } else if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::GPU)) {
         printf("Runtime: GPU\n");
         Runtime = zdl::DlSystem::Runtime_t::GPU;
     } else {
