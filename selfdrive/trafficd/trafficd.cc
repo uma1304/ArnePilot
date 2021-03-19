@@ -229,10 +229,10 @@ int main(){
             printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-//            std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-//            time = millis_since_boot() - time;
-//            printf("getFlatVector took: %lf\n", time);
-//            time = millis_since_boot();
+            std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+            time = millis_since_boot() - time;
+            printf("getFlatVector took: %lf\n", time);
+            time = millis_since_boot();
 //
 //            std::vector<float> modelOutputVec = runModel(imageVector);
 //
