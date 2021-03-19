@@ -114,40 +114,40 @@ static void getFlatArray(const VIPCBuf* buf, float flatImageArray[]) {
 }
 
 
-void run_trafficd(SubMaster sm, VisionStream *stream) {
-  double loopStart;
-  double lastLoop = 0;
-  float* flatImageArray = new float[cropped_size];
-
-  while (!do_exit || !active) {
-    double loopStart = millis_since_boot();
-    sm.update(0);
-    active = sm["trafficModelControl"].getTrafficModelControl().getActive();
-
-    VIPCBuf* buf;
-    VIPCBufExtra extra;
-    buf = visionstream_get(&stream, &extra);
-    if (buf == NULL) {
-      printf("trafficd: visionstream get failed\n");
-      break;
-    }
-
-    getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
-    model->execute(flatImageArray, cropped_size, true);  // true uses special logic for trafficd
-
-    sendPrediction(output, pm);
-
-    lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
-
-    if (debug_mode) {
-      int maxIdx = 0;
-      for (int i = 1; i < 3; i++) if (output[i] > output[maxIdx]) maxIdx = i;
-      printf("Model prediction: %s (%f)\n", modelLabels[maxIdx].c_str(), 100.0 * output[maxIdx]);
-      std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
-    }
-  }
-  free(flatImageArray);
-}
+//void run_trafficd(SubMaster sm, VisionStream *stream) {
+//  double loopStart;
+//  double lastLoop = 0;
+//  float* flatImageArray = new float[cropped_size];
+//
+//  while (!do_exit || !active) {
+//    double loopStart = millis_since_boot();
+//    sm.update(0);
+//    active = sm["trafficModelControl"].getTrafficModelControl().getActive();
+//
+//    VIPCBuf* buf;
+//    VIPCBufExtra extra;
+//    buf = visionstream_get(&stream, &extra);
+//    if (buf == NULL) {
+//      printf("trafficd: visionstream get failed\n");
+//      break;
+//    }
+//
+//    getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
+//    model->execute(flatImageArray, cropped_size, true);  // true uses special logic for trafficd
+//
+//    sendPrediction(output, pm);
+//
+//    lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
+//
+//    if (debug_mode) {
+//      int maxIdx = 0;
+//      for (int i = 1; i < 3; i++) if (output[i] > output[maxIdx]) maxIdx = i;
+//      printf("Model prediction: %s (%f)\n", modelLabels[maxIdx].c_str(), 100.0 * output[maxIdx]);
+//      std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
+//    }
+//  }
+//  free(flatImageArray);
+//}
 
 
 int main(){
