@@ -200,7 +200,7 @@ int main(){
 
     PubMaster pm({"trafficModelRaw"});
 
-    const int output_size = 4;
+    const int output_size = numLabels;
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
 
