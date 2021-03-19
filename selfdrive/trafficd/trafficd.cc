@@ -12,7 +12,7 @@ volatile sig_atomic_t do_exit = 0;
 const std::vector<std::string> modelLabels = {"SLOW", "GREEN", "NONE"};
 const int numLabels = modelLabels.size();
 const double modelRate = 1 / 3.;  // 3 Hz
-const bool debug_mode = false;
+const bool debug_mode = true;
 
 const int original_shape[3] = {874, 1164, 3};   // global constants
 //const int original_size = 874 * 1164 * 3;
@@ -25,60 +25,6 @@ const int hood_crop = 209;
 const double msToSec = 1 / 1000.;  // multiply
 const double secToUs = 1e+6;
 
-
-zdl::DlSystem::Runtime_t checkRuntime() {
-    static zdl::DlSystem::Version_t Version = zdl::SNPE::SNPEFactory::getLibraryVersion();
-    static zdl::DlSystem::Runtime_t Runtime;
-    //std::cout << "SNPE Version: " << Version.asString().c_str() << std::endl; //Print Version number
-    if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::GPU)) {
-        printf("Runtime: GPU\n");
-        Runtime = zdl::DlSystem::Runtime_t::GPU;
-    } else {
-        printf("Runtime: CPU\n");
-        Runtime = zdl::DlSystem::Runtime_t::CPU;
-    }
-    return Runtime;
-}
-
-void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
-    std::unique_ptr<zdl::DlContainer::IDlContainer> container;
-    container = zdl::DlContainer::IDlContainer::open("../../models/traffic_model.dlc");
-    zdl::SNPE::SNPEBuilder snpeBuilder(container.get());
-    snpe = snpeBuilder.setOutputLayers({})
-                      .setRuntimeProcessor(runtime)
-                      .setUseUserSuppliedBuffers(false)
-                      .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::LOW_POWER_SAVER)
-                      .setCPUFallbackMode(false)
-                      .build();
-}
-
-std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
-    std::unique_ptr<zdl::DlSystem::ITensor> input;
-    const auto &strList_opt = snpe->getInputTensorNames();
-
-    if (!strList_opt) throw std::runtime_error("Error obtaining Input tensor names");
-    const auto &strList = *strList_opt;
-    assert (strList.size() == 1);
-
-    const auto &inputDims_opt = snpe->getInputDimensions(strList.at(0));
-    const auto &inputShape = *inputDims_opt;
-
-    input = zdl::SNPE::SNPEFactory::getTensorFactory().createTensor(inputShape);
-
-    /* Copy the loaded input file contents into the networks input tensor. SNPE's ITensor supports C++ STL functions like std::copy() */
-    std::copy(inputVec.begin(), inputVec.end(), input->begin());
-    return input;
-}
-
-zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, std::unique_ptr<zdl::DlSystem::ITensor>& input) {
-    static zdl::DlSystem::TensorMap outputTensorMap;
-    snpe->execute(input.get(), outputTensorMap);
-    zdl::DlSystem::StringList tensorNames = outputTensorMap.getTensorNames();
-
-    const char* name = tensorNames.at(0);  // only should the first
-    auto tensorPtr = outputTensorMap.getTensor(name);
-    return tensorPtr;
-}
 
 //int set_realtime_priority(int level) {
 //#ifdef __linux__
@@ -94,11 +40,6 @@ zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, s
 //  return -1;
 //#endif
 //}
-
-void initModel() {
-    zdl::DlSystem::Runtime_t runt=checkRuntime();
-    initializeSNPE(runt);
-}
 
 void sendPrediction(float *output, PubMaster &pm) {
     MessageBuilder msg;
@@ -184,9 +125,6 @@ int main(){
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
 
-
-
-//    initModel(); // init model
 
     VisionStream stream;
     while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
