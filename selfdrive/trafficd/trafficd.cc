@@ -197,14 +197,6 @@ int main(){
 
     PubMaster pm({"trafficModelRaw"});
 
-    // cl init
-    cl_device_id device_id = cl_get_device_id(device_type);
-    cl_context context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &err);
-    assert(err == 0);
-
-    cl_command_queue q = clCreateCommandQueue(context, device_id, 0, &err);
-    assert(err == 0);
-
     initModel(); // init model
 
     VisionStream stream;
