@@ -162,12 +162,14 @@ int main(){
   RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, numLabels, USE_GPU_RUNTIME);
 
   VisionStream stream;
+  bool first_loop = true;
 
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
-    sm.update(0);
+    sm.update(0);  //todo if updated
     active = sm["trafficModelControl"].getTrafficModelControl().getActive();
 
-    if (active) {
+    if (active || first_loop) {
+      first_loop = false;
       printf("running trafficd\n");
       VisionStreamBufs buf_info;
       err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
