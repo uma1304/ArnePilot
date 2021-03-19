@@ -141,7 +141,7 @@ uint8_t clamp(int16_t value) {
     return value<0 ? 0 : (value>255 ? 255 : value);
 }
 
-static float* getFlatArray(const VIPCBuf* buf) {
+static void getFlatArray(const VIPCBuf* buf, float *flatImageArray) {
     // returns RGB if returnBGR is false
     const size_t width = original_shape[1];
     const size_t height = original_shape[0];
@@ -151,7 +151,6 @@ static float* getFlatArray(const VIPCBuf* buf) {
     uint8_t *v = u + (width / 2) * (height / 2);
 
     int b, g, r;
-    float *bgrArr = new float[cropped_size];
     int idx = 0;
     for (int y_cord = top_crop; y_cord < (original_shape[0] - hood_crop); y_cord++) {
         for (int x_cord = horizontal_crop; x_cord < (original_shape[1] - horizontal_crop); x_cord++) {
@@ -163,15 +162,14 @@ static float* getFlatArray(const VIPCBuf* buf) {
             g = 1.164 * (yy - 16) - 0.813 * (vv - 128) - 0.391 * (uu - 128);
             b = 1.164 * (yy - 16) + 2.018 * (uu - 128);
 
-            bgrArr[idx] = clamp(b) / 255.0;
+              flatImageArray[idx] = clamp(b) / 255.0;
             idx++;
-            bgrArr[idx] = clamp(g) / 255.0;
+              flatImageArray[idx] = clamp(g) / 255.0;
             idx++;
-            bgrArr[idx] = clamp(r) / 255.0;
+              flatImageArray[idx] = clamp(r) / 255.0;
             idx++;
         }
     }
-    return bgrArr;
 }
 
 
@@ -185,6 +183,8 @@ int main(){
     const int output_size = numLabels;
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
+
+    float* flatImageArray = new float[cropped_size];
 
 
 //    initModel(); // init model
@@ -218,7 +218,7 @@ int main(){
 //            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-            float* flatImageArray = getFlatArray(buf);  // writes float vector to inputVector
+            getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
             time = millis_since_boot() - time;
 //            printf("getFlatArray took: %lf\n", time);
             time = millis_since_boot();
