@@ -184,7 +184,7 @@ ThermalStatus = cereal.log.ThermalData.ThermalStatus
 # comment out anything you don't want to run
 managed_processes = {
   "camerad": ("selfdrive/camerad", ["./camerad"]),
-  "thermald": "selfdrive.thermald.thermald",
+  # "thermald": "selfdrive.thermald.thermald",
   "traffic_manager": "selfdrive.trafficd.traffic_manager",
   "uploader": "selfdrive.loggerd.uploader",
   "deleter": "selfdrive.loggerd.deleter",
@@ -238,7 +238,7 @@ interrupt_processes: List[str] = []
 kill_processes = ['sensord']
 
 persistent_processes = [
-  'thermald',
+  # 'thermald',
   'logmessaged',
   'ui',
   'uploader',
@@ -532,7 +532,7 @@ def manager_thread():
     if msg.thermal.freeSpace < 0.05:
       logger_dead = True
 
-    if msg.thermal.started or (run_all := True):
+    if msg.thermal.started or (run_all := False):
       for p in car_started_processes:
         if p == "loggerd" and logger_dead:
           kill_managed_process(p)
