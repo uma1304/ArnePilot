@@ -192,7 +192,7 @@ static std::vector<float> getFlatVector(const VIPCBuf* buf, const bool returnBGR
 
 int main(){
     signal(SIGINT, (sighandler_t)set_do_exit);
-    signal(SIGTERM, (sighandler_t)set_do_exit);m
+    signal(SIGTERM, (sighandler_t)set_do_exit);
     int err;
 
     PubMaster pm({"trafficModelRaw"});
