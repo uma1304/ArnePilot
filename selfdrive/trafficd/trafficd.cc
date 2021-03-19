@@ -200,7 +200,9 @@ int main(){
 
     PubMaster pm({"trafficModelRaw"});
 
-    RunModel *m = new DefaultRunModel("../../models/supercombo.dlc", s->output, output_size, USE_GPU_RUNTIME);
+    const int output_size = 4;
+    float *output = (float*)calloc(output_size, sizeof(float));
+    RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", s->output, output_size, USE_GPU_RUNTIME);
 
     initModel(); // init model
 
