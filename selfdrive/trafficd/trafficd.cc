@@ -41,12 +41,6 @@ zdl::DlSystem::Runtime_t checkRuntime() {
 }
 
 void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
-    if (thneed == NULL) {
-        thneed = new Thneed();
-        thneed->stop();
-        printf("thneed cached\n");
-    }
-
     std::unique_ptr<zdl::DlContainer::IDlContainer> container;
     container = zdl::DlContainer::IDlContainer::open("../../models/traffic_model.dlc");
     zdl::SNPE::SNPEBuilder snpeBuilder(container.get());
@@ -102,6 +96,11 @@ zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, s
 //}
 
 void initModel() {
+    if (thneed == NULL) {
+        thneed = new Thneed();
+        thneed->stop();
+        printf("thneed cached\n");
+    }
     zdl::DlSystem::Runtime_t runt=checkRuntime();
     initializeSNPE(runt);
 }
