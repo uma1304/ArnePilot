@@ -253,13 +253,13 @@ int main(){
             m->execute(imageVector, cropped_size);
             return 0;
 
-            while (!do_exit) {
-              loopStart = millis_since_boot();
-//              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-              runModel(imageVector);
-              lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
-
-            }
+//            while (!do_exit) {
+//              loopStart = millis_since_boot();
+////              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+//              runModel(imageVector);
+//              lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
+//
+//            }
 
 //            std::vector<float> modelOutputVec = runModel(imageVector);
 //
