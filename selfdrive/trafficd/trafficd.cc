@@ -69,12 +69,20 @@ std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNP
 }
 
 zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, std::unique_ptr<zdl::DlSystem::ITensor>& input) {
+    double time = millis_since_boot();
     static zdl::DlSystem::TensorMap outputTensorMap;
     snpe->execute(input.get(), outputTensorMap);
+    time = millis_since_boot() - time;
+    printf("execute: %lf\n", time);
+    time = millis_since_boot();
     zdl::DlSystem::StringList tensorNames = outputTensorMap.getTensorNames();
 
     const char* name = tensorNames.at(0);  // only should the first
     auto tensorPtr = outputTensorMap.getTensor(name);
+    time = millis_since_boot() - time;
+    printf("get tensor: %lf\n", time);
+    time = millis_since_boot();
+
     return tensorPtr;
 }
 
