@@ -164,20 +164,29 @@ int main(){
   VisionStream stream;
 
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
-    VisionStreamBufs buf_info;
-    err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
-    if (err) {
-      printf("trafficd: visionstream fail\n");
-      usleep(500000);
+    sm.update(0);
+    active = sm["trafficModelControl"].getTrafficModelControl().getActive();
+
+    if (active) {
+      VisionStreamBufs buf_info;
+      err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
+      if (err) {
+        printf("trafficd: visionstream fail\n");
+        usleep(500000);
+        continue;
+      }
+    } else {
+      sleepFor(1.0);
       continue;
     }
 
     double loopStart;
     double lastLoop = 0;
     float* flatImageArray = new float[cropped_size];
-    while (!do_exit) {
+    while (!do_exit || !active) {
       loopStart = millis_since_boot();
       sm.update(0);
+      active = sm["trafficModelControl"].getTrafficModelControl().getActive();
 
       VIPCBuf* buf;
       VIPCBufExtra extra;
