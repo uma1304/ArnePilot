@@ -223,7 +223,7 @@ int main(){
 //            printf("getFlatArray took: %lf\n", time);
             time = millis_since_boot();
 
-            model->execute(imageVector, cropped_size, true);
+            model->execute(flatImageArray, cropped_size, true);
 //            printf("%lf  %lf  %lf  %lf\n", output[0], output[1], output[2], output[3]);
 
 //            time = millis_since_boot() - time;
@@ -238,7 +238,7 @@ int main(){
 
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
             if (debug_mode) {
-                std::vector<float> modelOutputVec = std::vector<float> dest(std::begin(output), std::end(output));
+                std::vector<float> modelOutputVec(std::begin(output), std::end(output));
                 int predictionIndex = std::max_element(modelOutputVec.begin(), modelOutputVec.end()) - modelOutputVec.begin();
                 printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
                 std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
