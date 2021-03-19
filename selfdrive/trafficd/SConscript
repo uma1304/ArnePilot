@@ -5,10 +5,10 @@ libs = [cereal, messaging, common, 'OpenCL', 'SNPE', 'symphony-cpu', 'capnp', 'z
 
 
 common_src = [
-  "models/commonmodel.cc",
-  "runners/snpemodel.cc",
-  "transforms/loadyuv.c",
-  "transforms/transform.cc"
+  "../modeld/models/commonmodel.cc",
+  "../modeld/runners/snpemodel.cc",
+  "../modeld/transforms/loadyuv.c",
+  "../modeld/transforms/transform.cc"
 ]
 
 
