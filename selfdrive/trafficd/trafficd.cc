@@ -252,6 +252,9 @@ int main(){
 //            time = millis_since_boot();
         }
     }
+    free(output);
+    free(flatImageArray);
+    delete model;
     std::cout << "trafficd is dead" << std::endl;
     visionstream_destroy(&stream);
     return 0;
