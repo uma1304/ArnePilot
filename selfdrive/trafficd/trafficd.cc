@@ -220,6 +220,8 @@ int main(){
         while (!do_exit){
             loopStart = millis_since_boot();
 
+            double time = millis_since_boot();
+
             VIPCBuf* buf;
             VIPCBufExtra extra;
             buf = visionstream_get(&stream, &extra);
@@ -228,10 +230,26 @@ int main(){
                 break;
             }
 
+            time = millis_since_boot() - time;
+            printf("visionstream_get took: %lf", time);
+            time = millis_since_boot();
+
             std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+            time = millis_since_boot() - time;
+            printf("getFlatVector took: %lf", time);
+            time = millis_since_boot();
+
             std::vector<float> modelOutputVec = runModel(imageVector);
 
+            time = millis_since_boot() - time;
+            printf("model execute took: %lf", time);
+            time = millis_since_boot();
+
             sendPrediction(modelOutputVec, traffic_lights_sock);
+
+            time = millis_since_boot() - time;
+            printf("send prediction took: %lf", time);
+            time = millis_since_boot();
 
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
             if (debug_mode) {
@@ -239,6 +257,10 @@ int main(){
                 printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
                 std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
             }
+
+            time = millis_since_boot() - time;
+            printf("rateKeeper took: %lf", time);
+            time = millis_since_boot();
         }
     }
     std::cout << "trafficd is dead" << std::endl;
