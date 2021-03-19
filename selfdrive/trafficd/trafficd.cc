@@ -251,7 +251,7 @@ int main(){
             printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
             m->execute(imageVector, cropped_size);
-            return 0;
+            do_exit = 1;
 
 //            while (!do_exit) {
 //              loopStart = millis_since_boot();
