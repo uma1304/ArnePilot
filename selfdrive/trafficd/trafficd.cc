@@ -25,6 +25,8 @@ const int hood_crop = 209;
 const double msToSec = 1 / 1000.;  // multiply
 const double secToUs = 1e+6;
 
+std::unique_ptr<zdl::DlSystem::ITensor> input;
+
 
 zdl::DlSystem::Runtime_t checkRuntime() {
     static zdl::DlSystem::Version_t Version = zdl::SNPE::SNPEFactory::getLibraryVersion();
@@ -51,7 +53,6 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
                       .setCPUFallbackMode(false)
                       .build();
 
-    std::unique_ptr<zdl::DlSystem::ITensor> input;
     const auto &strList_opt = snpe->getInputTensorNames();
 
     if (!strList_opt) throw std::runtime_error("Error obtaining Input tensor names");
@@ -62,19 +63,17 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     const auto &inputShape = *inputDims_opt;
 
     input = zdl::SNPE::SNPEFactory::getTensorFactory().createTensor(inputShape);
-
-    double time = millis_since_boot();
 }
 
-//std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
-//    /* Copy the loaded input file contents into the networks input tensor. SNPE's ITensor supports C++ STL functions like std::copy() */
-//    std::copy(inputVec.begin(), inputVec.end(), input->begin());
-//
-//    time = millis_since_boot() - time;
-//    printf("4: %lf\n\n", time);
-//    time = millis_since_boot();
-//    return input;
-//}
+std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
+    /* Copy the loaded input file contents into the networks input tensor. SNPE's ITensor supports C++ STL functions like std::copy() */
+    std::copy(inputVec.begin(), inputVec.end(), input->begin());
+
+    time = millis_since_boot() - time;
+    printf("4: %lf\n\n", time);
+    time = millis_since_boot();
+    return input;
+}
 
 zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, std::unique_ptr<zdl::DlSystem::ITensor>& input) {
     static zdl::DlSystem::TensorMap outputTensorMap;
@@ -120,7 +119,7 @@ void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
 }
 
 void runModel(std::vector<float> inputVector) {
-//    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
+    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
 //    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
 
 //    std::vector<float> outputVector;
