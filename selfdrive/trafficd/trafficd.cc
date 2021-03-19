@@ -235,7 +235,7 @@ int main(){
             while (!do_exit) {
               loopStart = millis_since_boot();
               std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-              std::vector<float> modelOutputVec = runModel(imageVector);
+//              std::vector<float> modelOutputVec = runModel(imageVector);
               lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
             }
