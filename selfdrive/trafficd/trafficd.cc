@@ -167,10 +167,10 @@ int main(){
     sm.update(0);  //todo if updated
     last_active = active;
     active = sm["trafficModelControl"].getTrafficModelControl().getActive();
+    VisionStream stream;
 
     if (active) {
       printf("running trafficd\n");
-      VisionStream stream;
       VisionStreamBufs buf_info;
       err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
       if (err) {
