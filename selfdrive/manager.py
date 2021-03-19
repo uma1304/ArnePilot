@@ -399,8 +399,6 @@ def join_process(process, timeout):
 
 
 def kill_managed_process(name):
-  if name == "traffic_manager":
-    subprocess.call(['pkill','-f','_trafficd'])
   if name not in running or name not in managed_processes:
     return
   cloudlog.info("killing %s" % name)
