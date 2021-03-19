@@ -215,8 +215,8 @@ int main(){
         std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
       }
     }
-    printf("releasing visionstream\n");
-    visionstream_release(&stream);
+//    printf("releasing visionstream\n");
+//    visionstream_release(&stream);
     free(flatImageArray);
   }
 
