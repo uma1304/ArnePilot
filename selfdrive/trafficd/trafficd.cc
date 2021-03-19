@@ -68,10 +68,6 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
 std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
     /* Copy the loaded input file contents into the networks input tensor. SNPE's ITensor supports C++ STL functions like std::copy() */
     std::copy(inputVec.begin(), inputVec.end(), input->begin());
-
-    time = millis_since_boot() - time;
-    printf("4: %lf\n\n", time);
-    time = millis_since_boot();
     return input;
 }
 
