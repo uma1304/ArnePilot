@@ -179,6 +179,7 @@ int main(){
         continue;
       }
     } else {
+      visionstream_destroy(&stream);
       printf("trafficd sleeping...\n");
       sleepFor(1.0);
       continue;
