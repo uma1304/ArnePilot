@@ -43,8 +43,8 @@ zdl::DlSystem::Runtime_t checkRuntime() {
 void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     if (thneed == NULL) {
         thneed = new Thneed();
-//        thneed->stop();
-//        printf("thneed cached\n");
+        thneed->stop();
+        printf("thneed cached\n");
     }
 
     std::unique_ptr<zdl::DlContainer::IDlContainer> container;
