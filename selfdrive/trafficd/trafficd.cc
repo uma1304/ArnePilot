@@ -7,7 +7,6 @@
 using namespace std;
 
 volatile sig_atomic_t do_exit = 0;
-bool active = false;
 
 const std::vector<std::string> modelLabels = {"SLOW", "GREEN", "NONE"};
 const int numLabels = modelLabels.size();
@@ -162,14 +161,15 @@ int main(){
   RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, numLabels, USE_GPU_RUNTIME);
 
   VisionStream stream;
-  bool first_loop = false;
+  bool active = false;
+  bool last_active = false;
 
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
     sm.update(0);  //todo if updated
+    last_active = active;
     active = sm["trafficModelControl"].getTrafficModelControl().getActive();
 
-    if (active || first_loop) {
-      first_loop = false;
+    if (active) {
       printf("running trafficd\n");
       VisionStreamBufs buf_info;
       err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
@@ -179,7 +179,10 @@ int main(){
         continue;
       }
     } else {
-      visionstream_destroy(&stream);
+      if (last_active) {
+        printf("destroying visionstream\n");
+        visionstream_destroy(&stream);
+      }
       printf("trafficd sleeping...\n");
       sleepFor(1.0);
       continue;
