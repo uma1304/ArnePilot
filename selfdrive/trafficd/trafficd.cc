@@ -40,7 +40,7 @@ zdl::DlSystem::Runtime_t checkRuntime() {
     return Runtime;
 }
 
-std::unique_ptr<zdl::DlSystem::ITensor> initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
+void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     std::unique_ptr<zdl::DlContainer::IDlContainer> container;
     container = zdl::DlContainer::IDlContainer::open("../../models/traffic_model.dlc");
     zdl::SNPE::SNPEBuilder snpeBuilder(container.get());
@@ -50,7 +50,9 @@ std::unique_ptr<zdl::DlSystem::ITensor> initializeSNPE(zdl::DlSystem::Runtime_t 
                       .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::LOW_POWER_SAVER)
                       .setCPUFallbackMode(false)
                       .build();
+}
 
+std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
     std::unique_ptr<zdl::DlSystem::ITensor> input;
     const auto &strList_opt = snpe->getInputTensorNames();
 
@@ -62,10 +64,7 @@ std::unique_ptr<zdl::DlSystem::ITensor> initializeSNPE(zdl::DlSystem::Runtime_t 
     const auto &inputShape = *inputDims_opt;
 
     input = zdl::SNPE::SNPEFactory::getTensorFactory().createTensor(inputShape);
-    return input
-}
 
-std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec, std::unique_ptr<zdl::DlSystem::ITensor> input) {
     /* Copy the loaded input file contents into the networks input tensor. SNPE's ITensor supports C++ STL functions like std::copy() */
     std::copy(inputVec.begin(), inputVec.end(), input->begin());
     return input;
@@ -96,9 +95,9 @@ zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, s
 //#endif
 //}
 
-std::unique_ptr<zdl::DlSystem::ITensor> initModel() {
+void initModel() {
     zdl::DlSystem::Runtime_t runt=checkRuntime();
-    return initializeSNPE(runt);
+    initializeSNPE(runt);
 }
 
 void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
@@ -114,8 +113,8 @@ void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
     pm.send("trafficModelRaw", msg);
 }
 
-void runModel(std::vector<float> inputVector, std::unique_ptr<zdl::DlSystem::ITensor> input) {
-    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector, input);  // inputVec)
+void runModel(std::vector<float> inputVector) {
+    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
 //    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
 
 //    std::vector<float> outputVector;
@@ -201,7 +200,9 @@ int main(){
 
     PubMaster pm({"trafficModelRaw"});
 
-    std::unique_ptr<zdl::DlSystem::ITensor> input = initModel(); // init model
+    RunModel *m = new DefaultRunModel("../../models/supercombo.dlc", s->output, output_size, USE_GPU_RUNTIME);
+
+    initModel(); // init model
 
     VisionStream stream;
     while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
@@ -240,7 +241,7 @@ int main(){
             while (!do_exit) {
               loopStart = millis_since_boot();
 //              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-              runModel(imageVector, input);
+              runModel(imageVector);
               lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
             }
