@@ -238,7 +238,8 @@ int main(){
 
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
             if (debug_mode) {
-                std::vector<float> modelOutputVec(std::begin(output), std::end(output));
+                std::vector<int> modelOutputVec;
+                modelOutputVec.insert(modelOutputVec.begin(), std::begin(output), std::end(output));
                 int predictionIndex = std::max_element(modelOutputVec.begin(), modelOutputVec.end()) - modelOutputVec.begin();
                 printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
                 std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
