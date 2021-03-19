@@ -47,7 +47,7 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     snpe = snpeBuilder.setOutputLayers({})
                       .setRuntimeProcessor(runtime)
                       .setUseUserSuppliedBuffers(false)
-                      .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::HIGH_PERFORMANCE)
+                      .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::POWER_SAVER)
                       .setCPUFallbackMode(false)
                       .build();
 }
