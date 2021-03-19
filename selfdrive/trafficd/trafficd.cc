@@ -162,7 +162,7 @@ int main(){
   RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, numLabels, USE_GPU_RUNTIME);
 
   VisionStream stream;
-  bool first_loop = true;
+  bool first_loop = false;
 
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
     sm.update(0);  //todo if updated
@@ -187,7 +187,7 @@ int main(){
     double loopStart;
     double lastLoop = 0;
     float* flatImageArray = new float[cropped_size];
-    while (!do_exit && !active) {
+    while (!do_exit && active) {
       loopStart = millis_since_boot();
       sm.update(0);
       active = sm["trafficModelControl"].getTrafficModelControl().getActive();
