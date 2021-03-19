@@ -30,7 +30,7 @@ public:
   void addRecurrent(float *state, int state_size);
   void addTrafficConvention(float *state, int state_size);
   void addDesire(float *state, int state_size);
-  void execute(float *net_input_buf, int buf_size);
+  void execute(float *net_input_buf, int buf_size, bool trafficd = false);
 private:
   uint8_t *model_data = NULL;
 
