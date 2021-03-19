@@ -224,6 +224,7 @@ int main(){
             time = millis_since_boot();
 
             model->execute(flatImageArray, cropped_size, true);  // true for is trafficd
+            free(flatImageArray);
 //            printf("%lf  %lf  %lf\n", output[0], output[1], output[2]);
 
 //            time = millis_since_boot() - time;
