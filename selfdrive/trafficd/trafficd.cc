@@ -98,7 +98,7 @@ zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, s
 
 std::unique_ptr<zdl::DlSystem::ITensor> initModel() {
     zdl::DlSystem::Runtime_t runt=checkRuntime();
-    std::unique_ptr<zdl::DlSystem::ITensor> input = initializeSNPE(runt);
+    return initializeSNPE(runt);
 }
 
 void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
