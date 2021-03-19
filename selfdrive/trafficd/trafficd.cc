@@ -169,7 +169,7 @@ static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
     int b, g, r;
     std::vector<float> bgrVec;
     float *bgrArr = new float[cropped_size];
-    int idx;
+    int idx = 0;
     for (int y_cord = top_crop; y_cord < (original_shape[0] - hood_crop); y_cord++) {
         for (int x_cord = horizontal_crop; x_cord < (original_shape[1] - horizontal_crop); x_cord++) {
             int yy = y[(y_cord * width) + x_cord];
@@ -198,6 +198,7 @@ static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
             }
         }
     }
+    printf("idx: %d, size: %d\n", idx, cropped_size);
     return bgrArr;
 //    return bgrVec;
 }
@@ -243,12 +244,12 @@ int main(){
             }
 
             time = millis_since_boot() - time;
-            printf("visionstream_get took: %lf\n", time);
+//            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
             float* imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
             time = millis_since_boot() - time;
-            printf("getFlatVector took: %lf\n", time);
+//            printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
             m->execute(imageVector, cropped_size);
 
