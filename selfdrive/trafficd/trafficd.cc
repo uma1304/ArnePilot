@@ -168,7 +168,7 @@ static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
 
     int b, g, r;
     std::vector<float> bgrVec;
-    float bgrArr[cropped_size];
+    float *bgrArr = new float[cropped_size];
     int idx;
     for (int y_cord = top_crop; y_cord < (original_shape[0] - hood_crop); y_cord++) {
         for (int x_cord = horizontal_crop; x_cord < (original_shape[1] - horizontal_crop); x_cord++) {
