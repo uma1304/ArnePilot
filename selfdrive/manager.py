@@ -532,7 +532,7 @@ def manager_thread():
     if msg.thermal.freeSpace < 0.05:
       logger_dead = True
 
-    if msg.thermal.started or (run_all := True):
+    if msg.thermal.started or (run_all := False):
       for p in car_started_processes:
         if p == "loggerd" and logger_dead:
           kill_managed_process(p)
