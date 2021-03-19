@@ -96,11 +96,6 @@ zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, s
 //}
 
 void initModel() {
-    if (thneed == NULL) {
-        thneed = new Thneed();
-        thneed->stop();
-        printf("thneed cached\n");
-    }
     zdl::DlSystem::Runtime_t runt=checkRuntime();
     initializeSNPE(runt);
 }
@@ -118,16 +113,16 @@ void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
     pm.send("trafficModelRaw", msg);
 }
 
-std::vector<float> runModel(std::vector<float> inputVector) {
+void runModel(std::vector<float> inputVector) {
     std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
-    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
+//    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
 
-    std::vector<float> outputVector;
-    for (auto it = tensor->cbegin(); it != tensor->cend(); ++it ){
-        float op = *it;
-        outputVector.push_back(op);
-    }
-    return outputVector;
+//    std::vector<float> outputVector;
+//    for (auto it = tensor->cbegin(); it != tensor->cend(); ++it ){
+//        float op = *it;
+//        outputVector.push_back(op);
+//    }
+//    return outputVector;
 }
 
 void sleepFor(double sec) {
@@ -244,7 +239,7 @@ int main(){
             while (!do_exit) {
               loopStart = millis_since_boot();
 //              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-              std::vector<float> modelOutputVec = runModel(imageVector);
+              runModel(imageVector);
               lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
             }
