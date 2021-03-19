@@ -30,8 +30,8 @@ zdl::DlSystem::Runtime_t checkRuntime() {
     static zdl::DlSystem::Version_t Version = zdl::SNPE::SNPEFactory::getLibraryVersion();
     static zdl::DlSystem::Runtime_t Runtime;
     //std::cout << "SNPE Version: " << Version.asString().c_str() << std::endl; //Print Version number
-    printf("Runtime: DSP\n");
-    Runtime = zdl::DlSystem::Runtime_t::DSP;
+    printf("Runtime: CPU\n");
+    Runtime = zdl::DlSystem::Runtime_t::CPU;
 //    if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::DSP)) {
 //        printf("Runtime: DSP\n");
 //        Runtime = zdl::DlSystem::Runtime_t::DSP;
