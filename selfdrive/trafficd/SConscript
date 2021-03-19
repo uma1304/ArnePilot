@@ -4,6 +4,14 @@ lenv = env.Clone()
 libs = [cereal, messaging, common, 'OpenCL', 'SNPE', 'symphony-cpu', 'capnp', 'zmq', 'kj', 'yuv', gpucommon, visionipc]
 
 
+common_src = [
+  "models/commonmodel.cc",
+  "runners/snpemodel.cc",
+  "transforms/loadyuv.c",
+  "transforms/transform.cc"
+]
+
+
 if arch == "aarch64":
   libs += ['gsl', 'CB', 'gnustl_shared']
   lenv['CFLAGS'].append("-DUSE_THNEED")
@@ -31,5 +39,5 @@ else:
 
 lenv.Program('_trafficd', [
     "trafficd.cc",
-  ], LIBS=libs)
+  ]+common_src, LIBS=libs)
 
