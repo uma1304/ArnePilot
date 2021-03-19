@@ -168,6 +168,7 @@ int main(){
     active = sm["trafficModelControl"].getTrafficModelControl().getActive();
 
     if (active) {
+      printf("running trafficd\n");
       VisionStreamBufs buf_info;
       err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
       if (err) {
@@ -176,6 +177,7 @@ int main(){
         continue;
       }
     } else {
+      printf("trafficd sleeping...\n");
       sleepFor(1.0);
       continue;
     }
