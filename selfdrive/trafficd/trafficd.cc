@@ -194,6 +194,7 @@ int main(){
     while (!do_exit && active) {
       loopStart = millis_since_boot();
       sm.update(0);
+      last_active = active;
       active = sm["trafficModelControl"].getTrafficModelControl().getActive();
 
       VIPCBuf* buf;
