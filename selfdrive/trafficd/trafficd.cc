@@ -30,18 +30,13 @@ zdl::DlSystem::Runtime_t checkRuntime() {
     static zdl::DlSystem::Version_t Version = zdl::SNPE::SNPEFactory::getLibraryVersion();
     static zdl::DlSystem::Runtime_t Runtime;
     //std::cout << "SNPE Version: " << Version.asString().c_str() << std::endl; //Print Version number
-    printf("Runtime: CPU\n");
-    Runtime = zdl::DlSystem::Runtime_t::CPU;
-//    if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::DSP)) {
-//        printf("Runtime: DSP\n");
-//        Runtime = zdl::DlSystem::Runtime_t::DSP;
-//    } else if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::GPU)) {
-//        printf("Runtime: GPU\n");
-//        Runtime = zdl::DlSystem::Runtime_t::GPU;
-//    } else {
-//        printf("Runtime: CPU\n");
-//        Runtime = zdl::DlSystem::Runtime_t::CPU;
-//    }
+    if (zdl::SNPE::SNPEFactory::isRuntimeAvailable(zdl::DlSystem::Runtime_t::GPU)) {
+        printf("Runtime: GPU\n");
+        Runtime = zdl::DlSystem::Runtime_t::GPU;
+    } else {
+        printf("Runtime: CPU\n");
+        Runtime = zdl::DlSystem::Runtime_t::CPU;
+    }
     return Runtime;
 }
 
@@ -53,7 +48,7 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
                       .setRuntimeProcessor(runtime)
                       .setUseUserSuppliedBuffers(false)
                       .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::HIGH_PERFORMANCE)
-                      .setCPUFallbackMode(true)
+                      .setCPUFallbackMode(false)
                       .build();
 }
 
