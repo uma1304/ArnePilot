@@ -204,7 +204,10 @@ int main(){
     float *output = (float*)calloc(output_size, sizeof(float));
     RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
 
-    initModel(); // init model
+
+    return 0;
+
+//    initModel(); // init model
 
     VisionStream stream;
     while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
