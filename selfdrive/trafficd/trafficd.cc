@@ -197,21 +197,27 @@ int main(){
     signal(SIGINT, (sighandler_t)set_do_exit);
     signal(SIGTERM, (sighandler_t)set_do_exit);
     int err;
-    //usleep(5000000);
-    //set_realtime_priority(2);
+
+    PubSocket* traffic_lights_sock = PubSocket::create(c, "trafficModelRaw");
+    assert(traffic_lights_sock != NULL);
+
+    // cl init
+    cl_device_id device_id = cl_get_device_id(device_type);
+    cl_context context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &err);
+    assert(err == 0);
+
+    cl_command_queue q = clCreateCommandQueue(context, device_id, 0, &err);
+    assert(err == 0);
+
     initModel(); // init model
 
     VisionStream stream;
-
-    Context* c = Context::create();
-    PubSocket* traffic_lights_sock = PubSocket::create(c, "trafficModelRaw");
-    assert(traffic_lights_sock != NULL);
     while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
         VisionStreamBufs buf_info;
         err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
-        if (err != 0) {
+        if (err) {
             printf("trafficd: visionstream fail\n");
-            usleep(100000);
+            usleep(500000);
             continue;
         }
 
@@ -259,7 +265,7 @@ int main(){
             }
 
             time = millis_since_boot() - time;
-            printf("rateKeeper took: %lf\n", time);
+            printf("rateKeeper took: %lf\n\n", time);
             time = millis_since_boot();
         }
     }
