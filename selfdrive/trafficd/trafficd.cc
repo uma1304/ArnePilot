@@ -163,7 +163,7 @@ int main(){
 
   VisionStream stream;
 
-  while (!do_exit) {
+  while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
     VisionStreamBufs buf_info;
     err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
     if (err) {
@@ -172,27 +172,45 @@ int main(){
       continue;
     }
 
+    double loopStart;
+    double lastLoop = 0;
+    float* flatImageArray = new float[cropped_size];
     while (!do_exit) {
-      if (active) {
-        printf("running trafficd\n");
-        run_trafficd(sm, stream);
-      } else {
-        sm.update(0);
-        active = sm["trafficModelControl"].getTrafficModelControl().getActive();
-        sleepFor(1.0);
+      loopStart = millis_since_boot();
+      sm.update(0);
+
+      VIPCBuf* buf;
+      VIPCBufExtra extra;
+      buf = visionstream_get(&stream, &extra);
+      if (buf == NULL) {
+        printf("trafficd: visionstream get failed\n");
+        break;
+      }
+
+      getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
+      model->execute(flatImageArray, cropped_size, true);  // true uses special logic for trafficd
+
+      sendPrediction(output, pm);
+
+      lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
+
+      if (debug_mode) {
+        int maxIdx = 0;
+        for (int i = 1; i < 3; i++) if (output[i] > output[maxIdx]) maxIdx = i;
+        printf("Model prediction: %s (%f)\n", modelLabels[maxIdx].c_str(), 100.0 * output[maxIdx]);
+        std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
       }
     }
+    free(flatImageArray);
   }
+
   free(output);
   delete model;
   visionstream_destroy(&stream);
   std::cout << "trafficd is dead" << std::endl;
   return 0;
-}
 
-
-
-//  while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
+//  while (!do_exit) {
 //    VisionStreamBufs buf_info;
 //    err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
 //    if (err) {
@@ -201,34 +219,16 @@ int main(){
 //      continue;
 //    }
 //
-//
 //    while (!do_exit) {
-//      sm.update(0);
-//      loopStart = millis_since_boot();
-//
-//      VIPCBuf* buf;
-//      VIPCBufExtra extra;
-//      buf = visionstream_get(&stream, &extra);
-//      if (buf == NULL) {
-//        printf("trafficd: visionstream get failed\n");
-//        break;
-//      }
-//
-//      getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
-//      model->execute(flatImageArray, cropped_size, true);  // true uses special logic for trafficd
-//
-//      sendPrediction(output, pm);
-//
-//      lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
-//
-//      if (debug_mode) {
-//        int maxIdx = 0;
-//        for (int i = 1; i < 3; i++) if (output[i] > output[maxIdx]) maxIdx = i;
-//        printf("Model prediction: %s (%f)\n", modelLabels[maxIdx].c_str(), 100.0 * output[maxIdx]);
-//        std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
+//      if (active) {
+//        printf("running trafficd\n");
+//        run_trafficd(sm, stream);
+//      } else {
+//        sm.update(0);
+//        active = sm["trafficModelControl"].getTrafficModelControl().getActive();
+//        sleepFor(1.0);
 //      }
 //    }
-//    free(flatImageArray);
 //  }
 //  free(output);
 //  delete model;
@@ -236,3 +236,4 @@ int main(){
 //  std::cout << "trafficd is dead" << std::endl;
 //  return 0;
 //}
+}
