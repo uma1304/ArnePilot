@@ -218,7 +218,7 @@ int main(){
 //            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-            getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
+            getFlatArray(buf, &flatImageArray);  // writes float vector to flatImageArray
             time = millis_since_boot() - time;
 //            printf("getFlatArray took: %lf\n", time);
             time = millis_since_boot();
