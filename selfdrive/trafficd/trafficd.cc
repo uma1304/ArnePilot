@@ -12,7 +12,7 @@ volatile sig_atomic_t do_exit = 0;
 const std::vector<std::string> modelLabels = {"SLOW", "GREEN", "NONE"};
 const int numLabels = modelLabels.size();
 const double modelRate = 1 / 3.;  // 3 Hz
-const bool debug_mode = false;
+const bool debug_mode = true;
 
 const int original_shape[3] = {874, 1164, 3};   // global constants
 //const int original_size = 874 * 1164 * 3;
@@ -100,29 +100,13 @@ void initModel() {
     initializeSNPE(runt);
 }
 
-void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
-    float modelOutput[numLabels];
-    for (int i = 0; i < numLabels; i++){  // convert vector to array for capnp
-        modelOutput[i] = modelOutputVec[i];
-    }
+void sendPrediction(float *output, PubMaster &pm) {
     MessageBuilder msg;
     auto traffic_lights = msg.initEvent().initTrafficModelRaw();
 
-    kj::ArrayPtr<const float> modelOutput_vs(&modelOutput[0], numLabels);
-    traffic_lights.setPrediction(modelOutput_vs);
+    kj::ArrayPtr<const float> output_vs(&output[0], numLabels);
+    traffic_lights.setPrediction(output_vs);
     pm.send("trafficModelRaw", msg);
-}
-
-void runModel(std::vector<float> inputVector) {
-    std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
-//    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
-
-//    std::vector<float> outputVector;
-//    for (auto it = tensor->cbegin(); it != tensor->cend(); ++it ){
-//        float op = *it;
-//        outputVector.push_back(op);
-//    }
-//    return outputVector;
 }
 
 void sleepFor(double sec) {
@@ -157,7 +141,7 @@ uint8_t clamp(int16_t value) {
     return value<0 ? 0 : (value>255 ? 255 : value);
 }
 
-static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
+static float* getFlatArray(const VIPCBuf* buf) {
     // returns RGB if returnBGR is false
     const size_t width = original_shape[1];
     const size_t height = original_shape[0];
@@ -167,7 +151,6 @@ static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
     uint8_t *v = u + (width / 2) * (height / 2);
 
     int b, g, r;
-    std::vector<float> bgrVec;
     float *bgrArr = new float[cropped_size];
     int idx = 0;
     for (int y_cord = top_crop; y_cord < (original_shape[0] - hood_crop); y_cord++) {
@@ -180,27 +163,15 @@ static float* getFlatVector(const VIPCBuf* buf, const bool returnBGR) {
             g = 1.164 * (yy - 16) - 0.813 * (vv - 128) - 0.391 * (uu - 128);
             b = 1.164 * (yy - 16) + 2.018 * (uu - 128);
 
-            if (returnBGR){
-                bgrArr[idx] = clamp(b) / 255.0;
-                idx++;
-                bgrArr[idx] = clamp(g) / 255.0;
-                idx++;
-                bgrArr[idx] = clamp(r) / 255.0;
-                idx++;
-
-//                bgrVec.push_back(clamp(b) / 255.0);
-//                bgrVec.push_back(clamp(g) / 255.0);
-//                bgrVec.push_back(clamp(r) / 255.0);
-            } else {
-//                bgrVec.push_back(clamp(r) / 255.0);
-//                bgrVec.push_back(clamp(g) / 255.0);
-//                bgrVec.push_back(clamp(b) / 255.0);
-            }
+            bgrArr[idx] = clamp(b) / 255.0;
+            idx++;
+            bgrArr[idx] = clamp(g) / 255.0;
+            idx++;
+            bgrArr[idx] = clamp(r) / 255.0;
+            idx++;
         }
     }
-//    printf("idx: %d, size: %d\n", idx, cropped_size);
     return bgrArr;
-//    return bgrVec;
 }
 
 
@@ -213,7 +184,7 @@ int main(){
 
     const int output_size = numLabels;
     float *output = (float*)calloc(output_size, sizeof(float));
-    RunModel *m = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
+    RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, output_size, USE_GPU_RUNTIME);
 
 
 //    initModel(); // init model
@@ -247,42 +218,31 @@ int main(){
 //            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
-            float* imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+            float* flatImageArray = getFlatArray(buf);  // writes float vector to inputVector
             time = millis_since_boot() - time;
-//            printf("getFlatVector took: %lf\n", time);
+//            printf("getFlatArray took: %lf\n", time);
             time = millis_since_boot();
 
-//            while (!do_exit) {
-//                loopStart = millis_since_boot();
-//                //              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-//                //              runModel(imageVector);
-//                m->execute(imageVector, cropped_size);
-//                printf("%lf  %lf  %lf  %lf\n", output[0], output[1], output[2], output[3]);
-//                lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
-//
-//            }
+            model->execute(imageVector, cropped_size, true);
+//            printf("%lf  %lf  %lf  %lf\n", output[0], output[1], output[2], output[3]);
 
-            m->execute(imageVector, cropped_size, true);
-            printf("%lf  %lf  %lf  %lf\n", output[0], output[1], output[2], output[3]);
-
-//            std::vector<float> modelOutputVec = runModel(imageVector);
-//
 //            time = millis_since_boot() - time;
 //            printf("model execute took: %lf\n", time);
 //            time = millis_since_boot();
-//
-//            sendPrediction(modelOutputVec, pm);
-//
-//            time = millis_since_boot() - time;
-//            printf("send prediction took: %lf\n", time);
-//            time = millis_since_boot();
-//
+
+            sendPrediction(output, pm);
+
+            time = millis_since_boot() - time;
+            printf("send prediction took: %lf\n", time);
+            time = millis_since_boot();
+
             lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
-//            if (debug_mode) {
-//                int predictionIndex = std::max_element(modelOutputVec.begin(), modelOutputVec.end()) - modelOutputVec.begin();
-//                printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
-//                std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
-//            }
+            if (debug_mode) {
+                std::vector<float> modelOutputVec = std::vector<float> dest(std::begin(output), std::end(output));
+                int predictionIndex = std::max_element(modelOutputVec.begin(), modelOutputVec.end()) - modelOutputVec.begin();
+                printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
+                std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
+            }
 
             time = millis_since_boot() - time;
             printf("rateKeeper took: %lf\n\n", time);
