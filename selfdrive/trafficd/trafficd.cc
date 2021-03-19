@@ -141,7 +141,7 @@ uint8_t clamp(int16_t value) {
     return value<0 ? 0 : (value>255 ? 255 : value);
 }
 
-static void getFlatArray(const VIPCBuf* buf, float & flatImageArray[cropped_size]) {
+static void getFlatArray(const VIPCBuf* buf, float flatImageArray[]) {
     // returns RGB if returnBGR is false
     const size_t width = original_shape[1];
     const size_t height = original_shape[0];
@@ -162,12 +162,13 @@ static void getFlatArray(const VIPCBuf* buf, float & flatImageArray[cropped_size
             g = 1.164 * (yy - 16) - 0.813 * (vv - 128) - 0.391 * (uu - 128);
             b = 1.164 * (yy - 16) + 2.018 * (uu - 128);
 
-              flatImageArray[idx] = clamp(b) / 255.0;
+            flatImageArray[idx] = clamp(b) / 255.0;
             idx++;
-              flatImageArray[idx] = clamp(g) / 255.0;
+            flatImageArray[idx] = clamp(g) / 255.0;
             idx++;
-              flatImageArray[idx] = clamp(r) / 255.0;
+            flatImageArray[idx] = clamp(r) / 255.0;
             idx++;
+            printf("%d ", idx);
         }
     }
 }
