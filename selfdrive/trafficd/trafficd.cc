@@ -236,6 +236,8 @@ int main(){
 
             while (!do_exit) {
               std::vector<float> modelOutputVec = runModel(imageVector);
+              lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
+
             }
 
 //            time = millis_since_boot() - time;
@@ -248,7 +250,6 @@ int main(){
 //            printf("send prediction took: %lf\n", time);
 //            time = millis_since_boot();
 
-            lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 //            if (debug_mode) {
 //                int predictionIndex = std::max_element(modelOutputVec.begin(), modelOutputVec.end()) - modelOutputVec.begin();
 //                printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
