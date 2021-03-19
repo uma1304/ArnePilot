@@ -41,9 +41,9 @@ zdl::DlSystem::Runtime_t checkRuntime() {
 }
 
 void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
-    thneed = new Thneed();
-    thneed->stop();
-    printf("thneed cached\n");
+//    thneed = new Thneed();
+//    thneed->stop();
+//    printf("thneed cached\n");
 
     std::unique_ptr<zdl::DlContainer::IDlContainer> container;
     container = zdl::DlContainer::IDlContainer::open("../../models/traffic_model.dlc");
@@ -51,7 +51,7 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     snpe = snpeBuilder.setOutputLayers({})
                       .setRuntimeProcessor(runtime)
                       .setUseUserSuppliedBuffers(false)
-                      .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::POWER_SAVER)
+                      .setPerformanceProfile(zdl::DlSystem::PerformanceProfile_t::LOW_POWER_SAVER)
                       .setCPUFallbackMode(false)
                       .build();
 }
