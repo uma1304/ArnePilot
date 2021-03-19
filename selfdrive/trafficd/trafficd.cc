@@ -152,23 +152,22 @@ int main(){
             }
 
             time = millis_since_boot() - time;
-//            printf("visionstream_get took: %lf\n", time);
+            printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
             float* flatImageArray = new float[cropped_size];
             getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
+
             time = millis_since_boot() - time;
-//            printf("getFlatArray took: %lf\n", time);
+            printf("getFlatArray took: %lf\n", time);
             time = millis_since_boot();
 
             model->execute(flatImageArray, cropped_size, true);  // true for is trafficd
             free(flatImageArray);
 
-//            printf("%lf  %lf  %lf\n", output[0], output[1], output[2]);
-
-//            time = millis_since_boot() - time;
-//            printf("model execute took: %lf\n", time);
-//            time = millis_since_boot();
+            time = millis_since_boot() - time;
+            printf("model execute took: %lf\n\n", time);
+            time = millis_since_boot();
 
             sendPrediction(output, pm);
 
