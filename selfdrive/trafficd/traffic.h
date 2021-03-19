@@ -28,9 +28,13 @@
 #include "common/timing.h"
 #include "messaging.hpp"
 
+#include "thneed/thneed.h"
+
 //#include "cereal/gen/cpp/log.capnp.h"
 
 //#include <capnp/message.h>
 //#include <capnp/serialize-packed.h>
+
+Thneed *thneed = NULL;
 
 int main();
