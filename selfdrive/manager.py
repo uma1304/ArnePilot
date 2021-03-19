@@ -246,6 +246,8 @@ persistent_processes = [
   'systemd',
   'appd',
 ]
+if traffic_lights:
+  persistent_processes.append('trafficd')
 
 if interbridged:
   persistent_processes += [
@@ -287,7 +289,6 @@ driver_view_processes = [
 if traffic_lights:
   car_started_processes += [
     'traffic_manager',
-    'trafficd',
   ]
   
 if WEBCAM:
