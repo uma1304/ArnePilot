@@ -160,7 +160,6 @@ int main(){
   float *output = (float*)calloc(numLabels, sizeof(float));
   RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, numLabels, USE_GPU_RUNTIME);
 
-  VisionStream stream;
   bool active = false;
   bool last_active = false;
 
@@ -171,6 +170,7 @@ int main(){
 
     if (active) {
       printf("running trafficd\n");
+      VisionStream stream;
       VisionStreamBufs buf_info;
       err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
       if (err) {
@@ -215,6 +215,8 @@ int main(){
         std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
       }
     }
+    printf("destroying visionstream\n");
+    visionstream_destroy(&stream);
 //    printf("releasing visionstream\n");
 //    visionstream_release(&stream);
     free(flatImageArray);
