@@ -97,20 +97,17 @@ void initModel() {
     initializeSNPE(runt);
 }
 
-void sendPrediction(std::vector<float> modelOutputVec, PubSocket* traffic_lights_sock) {
+void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
     float modelOutput[numLabels];
     for (int i = 0; i < numLabels; i++){  // convert vector to array for capnp
         modelOutput[i] = modelOutputVec[i];
     }
-
-    kj::ArrayPtr<const float> modelOutput_vs(&modelOutput[0], numLabels);
     MessageBuilder msg;
     auto traffic_lights = msg.initEvent().initTrafficModelRaw();
-    traffic_lights.setPrediction(modelOutput_vs);
 
-    auto words = capnp::messageToFlatArray(msg);
-    auto bytes = words.asBytes();
-    traffic_lights_sock->send((char*)bytes.begin(), bytes.size());
+    kj::ArrayPtr<const float> modelOutput_vs(&modelOutput[0], numLabels);
+    traffic_lights.setPrediction(modelOutput_vs);
+    pm.send("trafficModelRaw", msg);
 }
 
 std::vector<float> runModel(std::vector<float> inputVector) {
@@ -198,8 +195,7 @@ int main(){
     signal(SIGTERM, (sighandler_t)set_do_exit);
     int err;
 
-    PubSocket* traffic_lights_sock = PubSocket::create(c, "trafficModelRaw");
-    assert(traffic_lights_sock != NULL);
+    PubMaster pm({"trafficModelRaw"});
 
     // cl init
     cl_device_id device_id = cl_get_device_id(device_type);
@@ -251,7 +247,7 @@ int main(){
             printf("model execute took: %lf\n", time);
             time = millis_since_boot();
 
-            sendPrediction(modelOutputVec, traffic_lights_sock);
+            sendPrediction(modelOutputVec, pm);
 
             time = millis_since_boot() - time;
             printf("send prediction took: %lf\n", time);
