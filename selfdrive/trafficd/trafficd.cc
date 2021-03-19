@@ -251,15 +251,16 @@ int main(){
             printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
             m->execute(imageVector, cropped_size);
-            do_exit = 1;
 
-//            while (!do_exit) {
-//              loopStart = millis_since_boot();
-////              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-//              runModel(imageVector);
-//              lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
-//
-//            }
+            while (!do_exit) {
+                loopStart = millis_since_boot();
+                //              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+                //              runModel(imageVector);
+                m->execute(imageVector, cropped_size);
+                printf("%lf  %lf  %lf  %lf\n", output[0], output[1], output[2], output[3]);
+                lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
+
+            }
 
 //            std::vector<float> modelOutputVec = runModel(imageVector);
 //
