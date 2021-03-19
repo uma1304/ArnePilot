@@ -213,6 +213,7 @@ int main(){
         double loopStart;
         double lastLoop = 0;
         while (!do_exit){
+            loopStart = millis_since_boot();
 
             double time = millis_since_boot();
 
@@ -228,18 +229,21 @@ int main(){
             printf("visionstream_get took: %lf\n", time);
             time = millis_since_boot();
 
+            std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
             time = millis_since_boot() - time;
             printf("getFlatVector took: %lf\n", time);
             time = millis_since_boot();
 
             while (!do_exit) {
               loopStart = millis_since_boot();
-              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-//              std::vector<float> modelOutputVec = runModel(imageVector);
+//              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
+              std::vector<float> modelOutputVec = runModel(imageVector);
               lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
             }
 
+//            std::vector<float> modelOutputVec = runModel(imageVector);
+//
 //            time = millis_since_boot() - time;
 //            printf("model execute took: %lf\n", time);
 //            time = millis_since_boot();
@@ -249,7 +253,8 @@ int main(){
 //            time = millis_since_boot() - time;
 //            printf("send prediction took: %lf\n", time);
 //            time = millis_since_boot();
-
+//
+//            lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 //            if (debug_mode) {
 //                int predictionIndex = std::max_element(modelOutputVec.begin(), modelOutputVec.end()) - modelOutputVec.begin();
 //                printf("Model prediction: %s (%f%%)\n", modelLabels[predictionIndex].c_str(), 100 * modelOutputVec[predictionIndex]);
