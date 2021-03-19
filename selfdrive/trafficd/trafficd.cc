@@ -262,7 +262,7 @@ int main(){
 //
 //            }
 
-            m->execute(imageVector, cropped_size);
+            m->execute(imageVector, cropped_size, true);
             printf("%lf  %lf  %lf  %lf\n", output[0], output[1], output[2], output[3]);
 
 //            std::vector<float> modelOutputVec = runModel(imageVector);
