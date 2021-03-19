@@ -1,4 +1,5 @@
 #pragma clang diagnostic ignored "-Wexceptions"
+#pragma clang diagnostic ignored "-Weunused"
 #include "traffic.h"
 
 //#include <sched.h>
