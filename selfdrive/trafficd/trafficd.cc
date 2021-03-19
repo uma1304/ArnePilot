@@ -185,7 +185,7 @@ int main(){
     double loopStart;
     double lastLoop = 0;
     float* flatImageArray = new float[cropped_size];
-    while (!do_exit || !active) {
+    while (!do_exit && !active) {
       loopStart = millis_since_boot();
       sm.update(0);
       active = sm["trafficModelControl"].getTrafficModelControl().getActive();
