@@ -25,8 +25,6 @@ const int hood_crop = 209;
 const double msToSec = 1 / 1000.;  // multiply
 const double secToUs = 1e+6;
 
-std::unique_ptr<zdl::DlSystem::ITensor> input;
-
 
 zdl::DlSystem::Runtime_t checkRuntime() {
     static zdl::DlSystem::Version_t Version = zdl::SNPE::SNPEFactory::getLibraryVersion();
@@ -42,7 +40,7 @@ zdl::DlSystem::Runtime_t checkRuntime() {
     return Runtime;
 }
 
-void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
+std::unique_ptr<zdl::DlSystem::ITensor> initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     std::unique_ptr<zdl::DlContainer::IDlContainer> container;
     container = zdl::DlContainer::IDlContainer::open("../../models/traffic_model.dlc");
     zdl::SNPE::SNPEBuilder snpeBuilder(container.get());
@@ -53,6 +51,7 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
                       .setCPUFallbackMode(false)
                       .build();
 
+    std::unique_ptr<zdl::DlSystem::ITensor> input;
     const auto &strList_opt = snpe->getInputTensorNames();
 
     if (!strList_opt) throw std::runtime_error("Error obtaining Input tensor names");
@@ -63,6 +62,7 @@ void initializeSNPE(zdl::DlSystem::Runtime_t runtime) {
     const auto &inputShape = *inputDims_opt;
 
     input = zdl::SNPE::SNPEFactory::getTensorFactory().createTensor(inputShape);
+    return input
 }
 
 std::unique_ptr<zdl::DlSystem::ITensor> loadInputTensor(std::unique_ptr<zdl::SNPE::SNPE> &snpe, std::vector<float> inputVec) {
@@ -96,9 +96,9 @@ zdl::DlSystem::ITensor* executeNetwork(std::unique_ptr<zdl::SNPE::SNPE>& snpe, s
 //#endif
 //}
 
-void initModel() {
+std::unique_ptr<zdl::DlSystem::ITensor> initModel() {
     zdl::DlSystem::Runtime_t runt=checkRuntime();
-    initializeSNPE(runt);
+    std::unique_ptr<zdl::DlSystem::ITensor> input = initializeSNPE(runt);
 }
 
 void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
@@ -201,7 +201,7 @@ int main(){
 
     PubMaster pm({"trafficModelRaw"});
 
-    initModel(); // init model
+    std::unique_ptr<zdl::DlSystem::ITensor> input = initModel(); // init model
 
     VisionStream stream;
     while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
