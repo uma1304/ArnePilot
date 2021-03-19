@@ -114,7 +114,7 @@ void sendPrediction(std::vector<float> modelOutputVec, PubMaster &pm) {
     pm.send("trafficModelRaw", msg);
 }
 
-void runModel(std::vector<float> inputVector) {
+void runModel(std::vector<float> inputVector, std::unique_ptr<zdl::DlSystem::ITensor> input) {
     std::unique_ptr<zdl::DlSystem::ITensor> inputTensor = loadInputTensor(snpe, inputVector);  // inputVec)
 //    zdl::DlSystem::ITensor* tensor = executeNetwork(snpe, inputTensor);
 
@@ -240,7 +240,7 @@ int main(){
             while (!do_exit) {
               loopStart = millis_since_boot();
 //              std::vector<float> imageVector = getFlatVector(buf, true);  // writes float vector to inputVector
-              runModel(imageVector);
+              runModel(imageVector, input);
               lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
             }
