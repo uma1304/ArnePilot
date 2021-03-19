@@ -141,7 +141,7 @@ uint8_t clamp(int16_t value) {
     return value<0 ? 0 : (value>255 ? 255 : value);
 }
 
-static void getFlatArray(const VIPCBuf* buf, float &flatImageArray) {
+static void getFlatArray(const VIPCBuf* buf, float & flatImageArray[cropped_size]) {
     // returns RGB if returnBGR is false
     const size_t width = original_shape[1];
     const size_t height = original_shape[0];
