@@ -7,6 +7,6 @@ while 1:
   msg = new_message('trafficModelControl')
   msg.trafficModelControl.active = active
   pm.send('trafficModelControl', msg)
-  print('Sent {}'.format(active))
+  print('Sent {}'.format(active), flush=True)
   input()
   active = not active
