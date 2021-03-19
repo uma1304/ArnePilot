@@ -179,10 +179,6 @@ int main(){
         continue;
       }
     } else {
-      if (last_active) {
-        printf("destroying visionstream\n");
-        visionstream_destroy(&stream);
-      }
       printf("trafficd sleeping...\n");
       sleepFor(1.0);
       continue;
@@ -219,6 +215,8 @@ int main(){
         std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
       }
     }
+    printf("destroying visionstream\n");
+    visionstream_destroy(&stream);
     free(flatImageArray);
   }
 
