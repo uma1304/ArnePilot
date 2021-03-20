@@ -161,7 +161,7 @@ int main(){
 
   VisionStream stream;
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
-    printf("running trafficd\n");
+//    printf("running trafficd\n");
     VisionStreamBufs buf_info;
     err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
     if (err) {
@@ -199,10 +199,10 @@ int main(){
       }
     }
     free(flatImageArray);
+    visionstream_destroy(&stream);
   }
   free(output);
   delete model;
-  visionstream_destroy(&stream);
   std::cout << "trafficd is dead" << std::endl;
   return 0;
 
