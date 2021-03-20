@@ -204,10 +204,10 @@ managed_processes = {
   "calibrationd": "selfdrive.locationd.calibrationd",
   "paramsd": "selfdrive.locationd.paramsd",
   "camerad": ("selfdrive/camerad", ["./camerad"]),
+  "trafficd": ("selfdrive/trafficd", ["./trafficd"]),
   "sensord": ("selfdrive/sensord", ["./sensord"]),
   "clocksd": ("selfdrive/clocksd", ["./clocksd"]),
   "gpsd": ("selfdrive/sensord", ["./gpsd"]),
-  "trafficd": ("selfdrive/trafficd", ["./trafficd"]),
   "updated": "selfdrive.updated",
   "dmonitoringmodeld": ("selfdrive/modeld", ["./dmonitoringmodeld"]),
   "modeld": ("selfdrive/modeld", ["./modeld"]),
@@ -229,7 +229,7 @@ def get_running():
   return running
 
 # due to qualcomm kernel bugs SIGKILLing camerad sometimes causes page table corruption
-unkillable_processes = ['camerad', 'trafficd']
+unkillable_processes = ['camerad']
 
 # processes to end with SIGINT instead of SIGTERM
 interrupt_processes: List[str] = []
