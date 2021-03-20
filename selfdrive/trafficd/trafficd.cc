@@ -154,44 +154,27 @@ int main(){
   signal(SIGTERM, (sighandler_t)set_do_exit);
 
   PubMaster pm({"trafficModelRaw"});
-  SubMaster sm({"trafficModelControl"});
   
   int err;
   float *output = (float*)calloc(numLabels, sizeof(float));
   RunModel *model = new DefaultRunModel("../../models/traffic_model.dlc", output, numLabels, USE_GPU_RUNTIME);
 
-  bool active = false;
-  bool last_active = false;
-
+  VisionStream stream;
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
-    sm.update(0);  //todo if updated
-    last_active = active;
-    active = sm["trafficModelControl"].getTrafficModelControl().getActive();
-    VisionStream stream;
-
-    if (active) {
-      printf("running trafficd\n");
-      VisionStreamBufs buf_info;
-      err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
-      if (err) {
-        printf("trafficd: visionstream fail\n");
-        usleep(500000);
-        continue;
-      }
-    } else {
-      printf("trafficd sleeping...\n");
-      sleepFor(1.0);
+    printf("running trafficd\n");
+    VisionStreamBufs buf_info;
+    err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
+    if (err) {
+      printf("trafficd: visionstream fail\n");
+      usleep(500000);
       continue;
     }
 
     double loopStart;
     double lastLoop = 0;
     float* flatImageArray = new float[cropped_size];
-    while (!do_exit && active) {
+    while (!do_exit) {
       loopStart = millis_since_boot();
-      sm.update(0);
-      last_active = active;
-      active = sm["trafficModelControl"].getTrafficModelControl().getActive();
 
       VIPCBuf* buf;
       VIPCBufExtra extra;
@@ -215,16 +198,11 @@ int main(){
         std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
       }
     }
-//    printf("destroying visionstream\n");
-//    visionstream_destroy(&stream);
-    printf("releasing visionstream\n");
-    visionstream_release(&stream);
     free(flatImageArray);
   }
-
   free(output);
   delete model;
-//  visionstream_destroy(&stream);
+  visionstream_destroy(&stream);
   std::cout << "trafficd is dead" << std::endl;
   return 0;
 
