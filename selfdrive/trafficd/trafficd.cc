@@ -224,7 +224,7 @@ int main(){
 
   free(output);
   delete model;
-  visionstream_destroy(&stream);
+//  visionstream_destroy(&stream);
   std::cout << "trafficd is dead" << std::endl;
   return 0;
 
