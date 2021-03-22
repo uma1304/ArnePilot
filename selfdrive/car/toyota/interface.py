@@ -81,12 +81,26 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 13.4   # True steerRation from older prius
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.steerLimitTimer = 5.0
       ret.steerActuatorDelay = 0.52
-      ret.lateralTuning.pid.kpV = [0.036]
-      ret.lateralTuning.pid.kiV = [0.0012]
-      ret.lateralTuning.pid.kf = 0.000173263811757641 # hardcoded in latcontrol_pid, this does nothing for now
-      ret.lateralTuning.pid.newKfTuned = True
+      ret.steerLimitTimer = 5.0
+      if spairrowtuning:
+        ret.lateralTuning.init('indi')
+        ret.lateralTuning.indi.innerLoopGainBP = [18, 22, 26]
+        ret.lateralTuning.indi.innerLoopGainV = [9, 12, 15]
+        ret.lateralTuning.indi.outerLoopGainBP = [18, 22, 26]
+        ret.lateralTuning.indi.outerLoopGainV = [8, 11, 14.99]
+        ret.lateralTuning.indi.timeConstantBP = [18, 22, 26]
+        ret.lateralTuning.indi.timeConstantV = [1, 3, 4.5]
+        ret.lateralTuning.indi.actuatorEffectivenessBP = [18, 22, 26]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [9, 12, 15]
+        ret.steerActuatorDelay = 0.42
+      else:
+        ret.lateralTuning.pid.kpBP = [0.0]
+        ret.lateralTuning.pid.kiBP = [0.0]
+        ret.lateralTuning.pid.kpV = [0.036]
+        ret.lateralTuning.pid.kiV = [0.0012]
+        ret.lateralTuning.pid.kf = 0.000153263811757641
+        ret.lateralTuning.pid.newKfTuned = True
 
     elif candidate in [CAR.RAV4, CAR.RAV4H]:
       stop_and_go = True if (candidate in CAR.RAV4H) else False
@@ -319,7 +333,7 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.kiBP = [0.0]
         ret.lateralTuning.pid.kpV = [0.036]
         ret.lateralTuning.pid.kiV = [0.0012]
-        ret.lateralTuning.pid.kf = 0.000153263811757641 
+        ret.lateralTuning.pid.kf = 0.000153263811757641
         ret.lateralTuning.pid.newKfTuned = True
 
     elif candidate in [CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2]:
