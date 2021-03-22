@@ -24,6 +24,10 @@ from selfdrive.locationd.calibrationd import Calibration
 from common.travis_checker import travis
 #import threading
 from selfdrive.interceptor import Interceptor
+from common.op_params import opParams
+op_params = opParams()
+
+distance_traveled = op_params.get('distance_traveled')
 
 LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
 LANE_DEPARTURE_THRESHOLD = 0.1
@@ -136,6 +140,7 @@ class Controls:
     self.last_blinker_frame = 0
     self.saturated_count = 0
     self.distance_traveled_now = 0
+    self.distance_traveled_now = op_params.get('distance_traveled')
     if not travis:
       self.distance_traveled = float(params.get("DistanceTraveled", encoding='utf8'))
       self.distance_traveled_engaged = float(params.get("DistanceTraveledEngaged", encoding='utf8'))
@@ -146,7 +151,7 @@ class Controls:
       self.distance_traveled_override = 0
 
     self.distance_traveled_frame = 0
-    
+
     self.last_functional_fan_frame = 0
     self.events_prev = []
     self.current_alert_types = [ET.PERMANENT]
@@ -379,7 +384,7 @@ class Controls:
       #print("there")
       self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
       #print(" v_cruise_kph = " + str(self.v_cruise_kph))
-    
+
 
     # decrease the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
