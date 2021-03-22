@@ -323,7 +323,7 @@ def fetch_update(wait_helper: WaitTimeHelper) -> bool:
 
 class AutoReboot:
   def __init__(self):
-    self.min_reboot_time = 5.
+    self.min_reboot_time = 5. * 30
     self.need_reboot = False
     self.time_offroad = 0.0
 
