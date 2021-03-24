@@ -6,7 +6,7 @@ import requests
 import threading
 import traceback
 import subprocess
-from common.params import Params
+
 
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "common", "version.h")) as _versionf:
   version = _versionf.read().split('"')[1]
@@ -65,7 +65,7 @@ else:
     os.mkdir(COMMUNITY_DIR)
   if not os.path.exists(CRASHES_DIR):
     os.mkdir(CRASHES_DIR)
-
+  from common.params import Params
   params = Params()
   try:
     dongle_id = params.get("DongleId").decode('utf8')
