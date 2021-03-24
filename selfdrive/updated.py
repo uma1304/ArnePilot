@@ -116,7 +116,7 @@ def set_consistent_flag():
 
 def set_update_available_params(new_version=False):
   params = Params()
-  if not os.path.exists("/data/openpilot/selfdrive/data_collection/gps-data"):
+  if not os.path.exists("/data/gps-data"):
     t = datetime.datetime.utcnow().isoformat()
     params.put("LastUpdateTime", t.encode('utf8'))
 
