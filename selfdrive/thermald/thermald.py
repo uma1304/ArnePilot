@@ -195,7 +195,6 @@ def thermald_thread():
   handle_fan = None
   is_uno = False
   has_relay = False
-  time_valid_prev = True
   
   params = Params()
   power_monitor = PowerMonitoring()
