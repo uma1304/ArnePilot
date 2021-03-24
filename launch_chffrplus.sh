@@ -202,7 +202,7 @@ function launch {
 
           # Partial mitigation for symlink-related filesystem corruption
           # Ensure all files match the repo versions after update
-          git reset --hard
+          #git reset --hard
           git submodule foreach --recursive git reset --hard
 
           echo "Restarting launch script ${LAUNCHER_LOCATION}"
@@ -238,7 +238,7 @@ function launch {
 
   # write tmux scrollback to a file
   tmux capture-pane -pq -S-1000 > /tmp/launch_log
-
+  scons -u
   # start manager
   cd selfdrive
   ./manager.py
