@@ -238,7 +238,7 @@ function launch {
 
   # write tmux scrollback to a file
   tmux capture-pane -pq -S-1000 > /tmp/launch_log
-  scons -u
+  #scons -u
   # start manager
   cd selfdrive
   ./manager.py
