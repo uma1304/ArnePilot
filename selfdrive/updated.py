@@ -292,15 +292,15 @@ def attempt_update(time_offroad, need_reboot):
   cloudlog.info("comparing %s to %s" % (cur_hash, upstream_hash))
   if new_version or git_fetch_result:
     cloudlog.info("Running update")
-    if new_version:
-      cloudlog.info("git reset in progress")
-      r = [
-        run(NICE_LOW_PRIORITY + ["git", "reset", "--hard", "@{u}"], OVERLAY_MERGED),
-        run(NICE_LOW_PRIORITY + ["git", "clean", "-xdf"], OVERLAY_MERGED),
-        run(NICE_LOW_PRIORITY + ["git", "submodule", "init"], OVERLAY_MERGED),
-        run(NICE_LOW_PRIORITY + ["git", "submodule", "update"], OVERLAY_MERGED),
-      ]
-      cloudlog.info("git reset success: %s", '\n'.join(r))
+    #if new_version:
+    #  cloudlog.info("git reset in progress")
+    #  r = [
+    #    run(NICE_LOW_PRIORITY + ["git", "reset", "--hard", "@{u}"], OVERLAY_MERGED),
+    #    run(NICE_LOW_PRIORITY + ["git", "clean", "-xdf"], OVERLAY_MERGED),
+    #    run(NICE_LOW_PRIORITY + ["git", "submodule", "init"], OVERLAY_MERGED),
+    #    run(NICE_LOW_PRIORITY + ["git", "submodule", "update"], OVERLAY_MERGED),
+    #  ]
+    #  cloudlog.info("git reset success: %s", '\n'.join(r))
 
     # Un-set the validity flag to prevent the finalized tree from being
     # activated later if the finalize step is interrupted
