@@ -34,6 +34,7 @@ import fcntl
 import threading
 import time
 from cffi import FFI
+from selfdrive.hardware import HARDWARE
 
 from common.basedir import BASEDIR
 from common.params import Params
@@ -325,7 +326,7 @@ def auto_update_reboot(time_offroad, need_reboot, new_version):
     if 'already up to date' not in run(NICE_LOW_PRIORITY + ["git", "pull"]).lower():
       need_reboot = True
   if time.time() - time_offroad > min_reboot_time * 60 and need_reboot:  # allow reboot x minutes after stopping openpilot or starting EON
-    run(["am", "start", "-a", "android.intent.action.REBOOT"])
+    HARDWARE.reboot()
   return need_reboot
 
 
