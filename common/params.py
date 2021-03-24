@@ -2,9 +2,9 @@ try:
   from common.params_pyx import Params, UnknownKeyName, put_nonblocking # pylint: disable=no-name-in-module, import-error
 except ModuleNotFoundError:
   import subprocess
-  subprocess.check_call(["scons", "-u", "-c", "."])
-  subprocess.check_call(["scons", "-u", "-j4", "."])
-  from common.params_pyx import Params, UnknownKeyName, put_nonblocking # pylint: disable=no-name-in-module, import-error
+  subprocess.check_call(["scons", "-u"])
+  from selfdrive.hardware import HARDWARE
+  HARDWARE.reboot()
 assert Params
 assert UnknownKeyName
 assert put_nonblocking
