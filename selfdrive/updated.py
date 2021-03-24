@@ -349,8 +349,8 @@ def main():
   ov_lock_fd = open('/tmp/safe_staging_overlay.lock', 'w')
   try:
     fcntl.flock(ov_lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-  except IOError:
-    raise RuntimeError("couldn't get overlay lock; is another updated running?")
+  except IOError as e:
+    raise RuntimeError("couldn't get overlay lock; is another updated running?") from e
 
   time_offroad = time.time()
   need_reboot = False
