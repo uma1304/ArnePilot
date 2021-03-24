@@ -258,8 +258,8 @@ def thermald_thread():
 
       # Handle disconnect
       if pandaState_prev is not None:
-        #if pandaState.pandaState.pandaType == log.PandaState.PandaType.unknown and \
-         # pandaState_prev.pandaState.pandaType != log.PandaState.PandaType.unknown:
+        if pandaState.pandaState.pandaType == log.PandaState.PandaType.unknown and \
+          pandaState_prev.pandaState.pandaType != log.PandaState.PandaType.unknown:
           params.panda_disconnect()
       pandaState_prev = pandaState
 
