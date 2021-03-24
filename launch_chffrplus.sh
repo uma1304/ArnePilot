@@ -84,9 +84,9 @@ function two_init {
     if [ ! -f "$BASEDIR/prebuilt" ]; then
       # Clean old build products, but preserve the scons cache
       cd $DIR
-      scons --clean
-      git clean -xdf
-      git submodule foreach --recursive git clean -xdf
+      #scons --clean
+      #git clean -xdf
+      #git submodule foreach --recursive git clean -xdf
     fi
 
     "$DIR/installer/updater/updater" "file://$DIR/installer/updater/update.json"
@@ -203,7 +203,7 @@ function launch {
           # Partial mitigation for symlink-related filesystem corruption
           # Ensure all files match the repo versions after update
           #git reset --hard
-          git submodule foreach --recursive git reset --hard
+          #git submodule foreach --recursive git reset --hard
 
           echo "Restarting launch script ${LAUNCHER_LOCATION}"
           unset REQUIRED_NEOS_VERSION
