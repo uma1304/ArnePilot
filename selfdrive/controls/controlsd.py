@@ -34,7 +34,8 @@ STEER_ANGLE_SATURATION_THRESHOLD = 2.5  # Degrees
 
 SIMULATION = "SIMULATION" in os.environ
 NOSENSOR = "NOSENSOR" in os.environ
-IGNORE_PROCESSES = set(["rtshield", "uploader", "deleter", "loggerd", "logmessaged", "tombstoned", "logcatd", "proclogd", "clocksd", "updated", "timezoned"])
+IGNORE_PROCESSES = set(["rtshield", "uploader", "deleter", "loggerd", "logmessaged", "tombstoned", "logcatd", "proclogd", "clocksd", "updated", "timezoned",
+                       "trafficd", "traffic_manager", "interbridged", "livedashserved"])
 
 ThermalStatus = log.DeviceState.ThermalStatus
 State = log.ControlsState.OpenpilotState
@@ -285,7 +286,7 @@ class Controls:
       not_running = set(p.name for p in self.sm['managerState'].processes if not p.running)
       if self.sm.rcv_frame['managerState'] and (not_running - IGNORE_PROCESSES):
         print("not running: " + str(not_running - IGNORE_PROCESSES))
-        #self.events.add(EventName.processNotRunning)
+        self.events.add(EventName.processNotRunning)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
     if not self.sm['dragonConf'].dpAtl and CS.brakePressed and self.sm['longitudinalPlan'].vTargetFuture >= STARTING_TARGET_SPEED \
