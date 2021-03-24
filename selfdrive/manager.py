@@ -132,7 +132,7 @@ def build():
           print("scons build failed after retry")
           process = subprocess.check_output(['git', 'pull'])
           print(process)
-          os.system('reboot')
+          HARDWARE.reboot()
           sys.exit(1)
       else:
         # Build failed log errors
@@ -156,7 +156,7 @@ def build():
           t.wait_for_exit()
         process = subprocess.check_output(['git', 'pull'])
         print(process)
-        os.system('reboot')
+        HARDWARE.reboot()
         exit(1)
     else:
       break
@@ -710,7 +710,7 @@ if __name__ == "__main__":
       t.wait_for_exit()
     process = subprocess.check_output(['git', 'pull'])
     print(process)
-    os.system('reboot')
+    HARDWARE.reboot()
     raise
 
   # manual exit because we are forked
