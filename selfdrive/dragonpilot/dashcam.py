@@ -7,7 +7,7 @@ DASHCAM_VIDEOS_PATH = '/sdcard/dashcam/'
 DASHCAM_DURATION = 180 # max is 180
 DASHCAM_BIT_RATES = 4000000 # max is 4000000
 DASHCAM_MAX_SIZE_PER_FILE = DASHCAM_BIT_RATES/8*DASHCAM_DURATION # 4Mbps / 8 * 180 = 90MB per 180 seconds
-DASHCAM_FREESPACE_LIMIT = 0.15 # we start cleaning up footage when freespace is below 15%
+DASHCAM_FREESPACE_LIMIT = 15 # we start cleaning up footage when freespace is below 15%
 DASHCAM_KEPT = DASHCAM_MAX_SIZE_PER_FILE * 240 # 12 hrs of video = 21GB
 
 class Dashcam():
@@ -17,15 +17,19 @@ class Dashcam():
     self.dashcam_mkdir_retry = 0
     self.dashcam_next_time = 0
     self.started = False
-    self.free_space = 1.
+    self.free_space_percent = 100
 
-  def run(self, started, free_space):
+  def run(self, started, free_space_percent):
     self.started = started
-    self.free_space = free_space
+    self.free_space_percent = free_space_percent
     self.make_folder()
     if self.dashcam_folder_exists:
       self.record()
       self.clean_up()
+
+  def stop(self):
+    os.system("killall -SIGINT screenrecord")
+    self.dashcam_next_time = 0
 
   def make_folder(self):
     if not self.dashcam_folder_exists and self.dashcam_mkdir_retry <= 5:
@@ -53,7 +57,7 @@ class Dashcam():
 
   def clean_up(self):
     # clean up
-    if (self.free_space < DASHCAM_FREESPACE_LIMIT) or (self.get_used_spaces() > DASHCAM_KEPT):
+    if (self.free_space_percent < DASHCAM_FREESPACE_LIMIT) or (self.get_used_spaces() > DASHCAM_KEPT):
       try:
         files = [f for f in sorted(os.listdir(DASHCAM_VIDEOS_PATH)) if os.path.isfile(DASHCAM_VIDEOS_PATH + f)]
         os.system("rm -fr %s &" % (DASHCAM_VIDEOS_PATH + files[0]))

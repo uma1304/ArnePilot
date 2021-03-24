@@ -219,7 +219,7 @@ class SubMaster():
     for s in service_list:
       if not self.valid[s]:
         print(str(s) + " is not valid!")
-      if not self.alive[s]:
+      if not self.alive[s] and s not in self.ignore_alive:
         print(str(s) +' is not alive!')
 
 class PubMaster():

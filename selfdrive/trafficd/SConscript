@@ -3,6 +3,13 @@ lenv = env.Clone()
 
 libs = [cereal, messaging, common, 'OpenCL', 'SNPE', 'symphony-cpu', 'capnp', 'zmq', 'kj', 'yuv', gpucommon, visionipc]
 
+common_src = [
+  "../modeld/models/commonmodel.cc",
+  "../modeld/runners/snpemodel.cc",
+  "../modeld/transforms/loadyuv.c",
+  "../modeld/transforms/transform.cc",
+  "../modeld/thneed/thneed.cc"
+]
 
 if arch == "aarch64":
   libs += ['gsl', 'CB', 'gnustl_shared']
@@ -31,5 +38,5 @@ else:
 
 lenv.Program('_trafficd', [
     "trafficd.cc",
-  ], LIBS=libs)
+  ]+common_src, LIBS=libs)
 

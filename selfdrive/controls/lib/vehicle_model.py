@@ -12,12 +12,13 @@ x_dot = A*x + B*u
 
 A depends on longitudinal speed, u [m/s], and vehicle parameters CP
 """
+from typing import Tuple
+
 import numpy as np
 from numpy.linalg import solve
-from typing import Tuple
+
 from cereal import car
 from common.params import Params
-
 
 class VehicleModel:
   def __init__(self, CP: car.CarParams):
@@ -35,6 +36,7 @@ class VehicleModel:
 
     self.cF_orig = CP.tireStiffnessFront
     self.cR_orig = CP.tireStiffnessRear
+
     # dp
     self.sR_orig = CP.steerRatio
     self.dp_sr_learner = Params().get('dp_sr_learner') == b'1'

@@ -88,6 +88,6 @@ def param_get(param_name, type_of, default):
       val = int(val)
     elif type_of == 'float':
       val = float(val)
-  except (TypeError, ValueError):
+  except (AttributeError, TypeError, ValueError):
     val = default
   return val

@@ -1,29 +1,21 @@
 #!/usr/bin/env python3
-import ctypes
-import inspect
 import json
 import os
 import random
-import re
-import subprocess
+import requests
 import threading
 import time
 import traceback
 
-import requests
-
 from cereal import log
-from common.hardware import HARDWARE
+import cereal.messaging as messaging
 from common.api import Api
 from common.params import Params
 from selfdrive.loggerd.xattr_cache import getxattr, setxattr
 from selfdrive.loggerd.config import ROOT
 from selfdrive.swaglog import cloudlog
-from common.dp_time import LAST_MODIFIED_UPLOADER
-from common.dp_common import get_last_modified, param_get_if_updated
-from selfdrive.data_collection import gps_uploader
 
-NetworkType = log.ThermalData.NetworkType
+NetworkType = log.DeviceState.NetworkType
 UPLOAD_ATTR_NAME = 'user.upload'
 UPLOAD_ATTR_VALUE = b'1'
 
@@ -31,28 +23,6 @@ allow_sleep = bool(os.getenv("UPLOADER_SLEEP", "1"))
 force_wifi = os.getenv("FORCEWIFI") is not None
 fake_upload = os.getenv("FAKEUPLOAD") is not None
 
-
-def raise_on_thread(t, exctype):
-  '''Raises an exception in the threads with id tid'''
-  for ctid, tobj in threading._active.items():
-    if tobj is t:
-      tid = ctid
-      break
-  else:
-    raise Exception("Could not find thread")
-
-  if not inspect.isclass(exctype):
-    raise TypeError("Only types can be raised (not instances)")
-
-  res = ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(tid),
-                                                   ctypes.py_object(exctype))
-  if res == 0:
-    raise ValueError("invalid thread id")
-  elif res != 1:
-    # "if it returns a number greater than one, you're in trouble,
-    # and you should call it again with exc=NULL to revert the effect"
-    ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, 0)
-    raise SystemError("PyThreadState_SetAsyncExc failed")
 
 def get_directory_sort(d):
   return list(map(lambda s: s.rjust(10, '0'), d.rsplit('--', 1)))
@@ -76,18 +46,6 @@ def clear_locks(root):
     except OSError:
       cloudlog.exception("clear_locks failed")
 
-def is_on_wifi():
-  return HARDWARE.get_network_type() == NetworkType.wifi
-
-def is_on_hotspot():
-  try:
-    result = subprocess.check_output(["ifconfig", "wlan0"], stderr=subprocess.STDOUT, encoding='utf8')
-    result = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-    return (result.startswith('192.168.43.') or  # android
-            result.startswith('172.20.10.') or  # ios
-            result.startswith('10.0.2.'))  # toyota entune
-  except Exception:
-    return False
 
 class Uploader():
   def __init__(self, dongle_id, root):
@@ -100,6 +58,7 @@ class Uploader():
     self.last_resp = None
     self.last_exc = None
 
+    self.immediate_folders = ["crash/", "boot/"]
     self.immediate_priority = {"qlog.bz2": 0, "qcamera.ts": 1}
     self.high_priority = {"rlog.bz2": 0, "fcamera.hevc": 1, "dcamera.hevc": 2, "ecamera.hevc": 3}
 
@@ -140,7 +99,7 @@ class Uploader():
 
     # try to upload qlog files first
     for name, key, fn in upload_files:
-      if name in self.immediate_priority:
+      if name in self.immediate_priority or any(f in fn for f in self.immediate_folders):
         return (key, fn)
 
     if with_raw:
@@ -234,7 +193,6 @@ def uploader_fn(exit_event):
 
   params = Params()
   dongle_id = params.get("DongleId")
-  uploader_disabled = params.get("dp_uploader") == b'0'
 
   if dongle_id is None:
     return
@@ -243,44 +201,17 @@ def uploader_fn(exit_event):
   else:
     dongle_id = dongle_id.decode('utf8')
 
+  sm = messaging.SubMaster(['deviceState'])
   uploader = Uploader(dongle_id, ROOT)
 
-  # dp
-  dp_upload_on_mobile = False
-  dp_last_modified_upload_on_mobile = None
-  dp_upload_on_hotspot = False
-  dp_last_modified_upload_on_hotspot = None
-
-  modified = None
-  last_modified = None
-  last_modified_check = None
-
   backoff = 0.1
-  counter = 0
-  should_upload = False
   while not exit_event.is_set():
+    sm.update(0)
+    on_wifi = force_wifi or sm['deviceState'].networkType == NetworkType.wifi
     offroad = params.get("IsOffroad") == b'1'
-    allow_raw_upload = (params.get("IsUploadRawEnabled") != b"0") and offroad
-    check_network = (counter % 12 == 0 if offroad else True)
-    if check_network:
-      on_hotspot = is_on_hotspot()
-      on_wifi = is_on_wifi()
+    allow_raw_upload = params.get("IsUploadRawEnabled") != b"0"
 
-      # dp - load temp monitor conf
-      last_modified_check, modified = get_last_modified(LAST_MODIFIED_UPLOADER, last_modified_check, modified)
-      if last_modified != modified:
-        dp_upload_on_mobile, dp_last_modified_upload_on_mobile = param_get_if_updated("dp_upload_on_mobile", "bool", dp_upload_on_mobile, dp_last_modified_upload_on_mobile)
-        dp_upload_on_hotspot, dp_last_modified_upload_on_hotspot = param_get_if_updated("dp_upload_on_hotspot", "bool", dp_upload_on_hotspot, dp_last_modified_upload_on_hotspot)
-        last_modified = modified
-
-      should_upload = on_wifi and not on_hotspot
-
-    if not uploader_disabled:
-      d = uploader.next_file_to_upload(with_raw=allow_raw_upload and should_upload)
-    else:
-      d = None
-    gps_uploader.upload_data()
-    counter += 1
+    d = uploader.next_file_to_upload(with_raw=allow_raw_upload and on_wifi and offroad)
     if d is None:  # Nothing to upload
       if allow_sleep:
         time.sleep(60 if offroad else 5)
@@ -288,7 +219,7 @@ def uploader_fn(exit_event):
 
     key, fn = d
 
-    cloudlog.event("uploader_netcheck", is_on_hotspot=on_hotspot, is_on_wifi=on_wifi)
+    cloudlog.event("uploader_netcheck", is_on_wifi=on_wifi)
     cloudlog.info("to upload %r", d)
     success = uploader.upload(key, fn)
     if success:

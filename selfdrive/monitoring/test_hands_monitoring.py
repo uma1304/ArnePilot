@@ -10,7 +10,7 @@ from selfdrive.monitoring.hands_on_wheel_monitor import HandsOnWheelStatus, _PRE
                                   _MIN_MONITORING_SPEED
 
 EventName = car.CarEvent.EventName
-HandsOnWheelState = log.DMonitoringState.HandsOnWheelState
+HandsOnWheelState = log.DriverMonitoringState.HandsOnWheelState
 
 _TEST_TIMESPAN = 120  # seconds
 

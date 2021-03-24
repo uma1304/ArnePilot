@@ -30,13 +30,14 @@ public:
   void addRecurrent(float *state, int state_size);
   void addTrafficConvention(float *state, int state_size);
   void addDesire(float *state, int state_size);
-  void execute(float *net_input_buf, int buf_size);
-private:
-  uint8_t *model_data = NULL;
+  void execute(float *net_input_buf, int buf_size, bool trafficd = false);
 
 #ifdef USE_THNEED
   Thneed *thneed = NULL;
 #endif
+
+private:
+  uint8_t *model_data = NULL;
 
 #if defined(QCOM) || defined(QCOM2)
   zdl::DlSystem::Runtime_t Runtime;

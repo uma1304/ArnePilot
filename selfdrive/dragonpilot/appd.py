@@ -1,9 +1,9 @@
 #!/usr/bin/env python3.7
 import time
 import subprocess
-import cereal
+from cereal import log
 import cereal.messaging as messaging
-ThermalStatus = cereal.log.ThermalData.ThermalStatus
+ThermalStatus = log.DeviceState.ThermalStatus
 from selfdrive.swaglog import cloudlog
 from common.params import Params, put_nonblocking
 params = Params()

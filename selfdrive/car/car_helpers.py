@@ -88,12 +88,12 @@ def only_toyota_left(candidate_cars):
 
 # **** for use live only ****
 def fingerprint(logcan, sendcan, has_relay):
-  params = Params()    
+  params = Params()
   if not travis:
     cached_fingerprint = params.get('CachedFingerprint')
   else:
     cached_fingerprint = None
-    
+
   car_selected = params.get('dp_car_selected', encoding='utf8')
   car_detected = params.get('dp_car_detected', encoding='utf8')
   cached_params = params.get("CarParamsCache")
@@ -147,7 +147,7 @@ def fingerprint(logcan, sendcan, has_relay):
       finger[0] = {int(key): value for key, value in cached_fingerprint[2].items()}
       source = car.CarParams.FingerprintSource.can
       return (str(cached_fingerprint[0]), finger, vin, car_fw, cached_fingerprint[1])
-    
+
   while not done:
     a = get_one_can(logcan)
 
@@ -181,7 +181,7 @@ def fingerprint(logcan, sendcan, has_relay):
             car_fingerprint = "TOYOTA COROLLA HYBRID TSS2 2019"
           if any(("TOYOTA PRIUS 2017" in c) for c in candidate_cars[b]):
             car_fingerprint = "TOYOTA PRIUS 2017"
-            
+
     # bail if no cars left or we've been waiting for more than 2s
     failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 200
     succeeded = car_fingerprint is not None

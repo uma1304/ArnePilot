@@ -1,18 +1,18 @@
 from selfdrive.car.mazda import mazdacan
-from selfdrive.car.mazda.values import SteerLimitParams, Buttons
+from selfdrive.car.mazda.values import CarControllerParams, Buttons
 from opendbc.can.packer import CANPacker
 from selfdrive.car import apply_std_steer_torque_limits
 from common.dp_common import common_controller_ctrl
 
 class CarController():
   def __init__(self, dbc_name, CP, VM):
-    self.apply_steer_last = 0
-    self.packer = CANPacker(dbc_name)
-    self.steer_rate_limited = False
-
     # dp
     self.last_blinker_on = False
     self.blinker_end_frame = 0.
+
+    self.apply_steer_last = 0
+    self.packer = CANPacker(dbc_name)
+    self.steer_rate_limited = False
 
   def update(self, enabled, CS, frame, actuators, dragonconf):
     """ Controls thread """
@@ -23,9 +23,9 @@ class CarController():
 
     if enabled:
       # calculate steer and also set limits due to driver torque
-      new_steer = int(round(actuators.steer * SteerLimitParams.STEER_MAX))
+      new_steer = int(round(actuators.steer * CarControllerParams.STEER_MAX))
       apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last,
-                                                  CS.out.steeringTorque, SteerLimitParams)
+                                                  CS.out.steeringTorque, CarControllerParams)
       self.steer_rate_limited = new_steer != apply_steer
 
       if CS.out.standstill and frame % 20 == 0:

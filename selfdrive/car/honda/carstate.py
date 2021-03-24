@@ -22,42 +22,42 @@ def calc_cruise_offset(offset, speed):
 def get_can_signals(CP):
   # this function generates lists for signal, messages and initial values
   signals = [
-    ("XMISSION_SPEED", "ENGINE_DATA", 0),
-    ("WHEEL_SPEED_FL", "WHEEL_SPEEDS", 0),
-    ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
-    ("WHEEL_SPEED_RL", "WHEEL_SPEEDS", 0),
-    ("WHEEL_SPEED_RR", "WHEEL_SPEEDS", 0),
-    ("STEER_ANGLE", "STEERING_SENSORS", 0),
-    ("STEER_ANGLE_RATE", "STEERING_SENSORS", 0),
-    ("MOTOR_TORQUE", "STEER_MOTOR_TORQUE", 0),
-    ("STEER_TORQUE_SENSOR", "STEER_STATUS", 0),
-    ("LEFT_BLINKER", "SCM_FEEDBACK", 0),
-    ("RIGHT_BLINKER", "SCM_FEEDBACK", 0),
-    ("GEAR", "GEARBOX", 0),
-    ("SEATBELT_DRIVER_LAMP", "SEATBELT_STATUS", 1),
-    ("SEATBELT_DRIVER_LATCHED", "SEATBELT_STATUS", 0),
-    ("BRAKE_PRESSED", "POWERTRAIN_DATA", 0),
-    ("BRAKE_SWITCH", "POWERTRAIN_DATA", 0),
-    ("CRUISE_BUTTONS", "SCM_BUTTONS", 0),
-    ("ESP_DISABLED", "VSA_STATUS", 1),
-    ("USER_BRAKE", "VSA_STATUS", 0),
-    ("BRAKE_HOLD_ACTIVE", "VSA_STATUS", 0),
-    ("HUD_LEAD", "ACC_HUD", 0),
-    ("STEER_STATUS", "STEER_STATUS", 5),
-    ("GEAR_SHIFTER", "GEARBOX", 0),
-    ("PEDAL_GAS", "POWERTRAIN_DATA", 0),
-    ("CRUISE_SETTING", "SCM_BUTTONS", 0),
-    ("ACC_STATUS", "POWERTRAIN_DATA", 0),
+      ("XMISSION_SPEED", "ENGINE_DATA", 0),
+      ("WHEEL_SPEED_FL", "WHEEL_SPEEDS", 0),
+      ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
+      ("WHEEL_SPEED_RL", "WHEEL_SPEEDS", 0),
+      ("WHEEL_SPEED_RR", "WHEEL_SPEEDS", 0),
+      ("STEER_ANGLE", "STEERING_SENSORS", 0),
+      ("STEER_ANGLE_RATE", "STEERING_SENSORS", 0),
+      ("MOTOR_TORQUE", "STEER_MOTOR_TORQUE", 0),
+      ("STEER_TORQUE_SENSOR", "STEER_STATUS", 0),
+      ("LEFT_BLINKER", "SCM_FEEDBACK", 0),
+      ("RIGHT_BLINKER", "SCM_FEEDBACK", 0),
+      ("GEAR", "GEARBOX", 0),
+      ("SEATBELT_DRIVER_LAMP", "SEATBELT_STATUS", 1),
+      ("SEATBELT_DRIVER_LATCHED", "SEATBELT_STATUS", 0),
+      ("BRAKE_PRESSED", "POWERTRAIN_DATA", 0),
+      ("BRAKE_SWITCH", "POWERTRAIN_DATA", 0),
+      ("CRUISE_BUTTONS", "SCM_BUTTONS", 0),
+      ("ESP_DISABLED", "VSA_STATUS", 1),
+      ("USER_BRAKE", "VSA_STATUS", 0),
+      ("BRAKE_HOLD_ACTIVE", "VSA_STATUS", 0),
+      ("STEER_STATUS", "STEER_STATUS", 5),
+      ("GEAR_SHIFTER", "GEARBOX", 0),
+      ("PEDAL_GAS", "POWERTRAIN_DATA", 0),
+      ("CRUISE_SETTING", "SCM_BUTTONS", 0),
+      ("ACC_STATUS", "POWERTRAIN_DATA", 0),
+      ("HUD_LEAD", "ACC_HUD", 0),
   ]
 
   checks = [
-    ("ENGINE_DATA", 100),
-    ("WHEEL_SPEEDS", 50),
-    ("STEERING_SENSORS", 100),
-    ("SEATBELT_STATUS", 10),
-    ("CRUISE", 10),
-    ("POWERTRAIN_DATA", 100),
-    ("VSA_STATUS", 50),
+      ("ENGINE_DATA", 100),
+      ("WHEEL_SPEEDS", 50),
+      ("STEERING_SENSORS", 100),
+      ("SEATBELT_STATUS", 10),
+      ("CRUISE", 10),
+      ("POWERTRAIN_DATA", 100),
+      ("VSA_STATUS", 50),
   ]
 
   if CP.carFingerprint == CAR.ODYSSEY_CHN:
@@ -180,7 +180,6 @@ class CarState(CarStateBase):
     self.cruise_setting = 0
     self.v_cruise_pcm_prev = 0
     self.cruise_mode = 0
-    self.pcm_acc_active = False
 
     #dp
     self.lkMode = True
@@ -242,8 +241,8 @@ class CarState(CarStateBase):
     ret.vEgoRaw = (1. - v_weight) * cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] * CV.KPH_TO_MS * speed_factor + v_weight * v_wheel
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
-    ret.steeringAngle = cp.vl["STEERING_SENSORS"]['STEER_ANGLE']
-    ret.steeringRate = cp.vl["STEERING_SENSORS"]['STEER_ANGLE_RATE']
+    ret.steeringAngleDeg = cp.vl["STEERING_SENSORS"]['STEER_ANGLE']
+    ret.steeringRateDeg = cp.vl["STEERING_SENSORS"]['STEER_ANGLE_RATE']
 
     # dp - when user presses LKAS button on steering wheel
     if self.cruise_setting == 1:
@@ -276,7 +275,7 @@ class CarState(CarStateBase):
 
     self.pedal_gas = cp.vl["POWERTRAIN_DATA"]['PEDAL_GAS']
     # crv doesn't include cruise control
-    if self.CP.carFingerprint in (CAR.CRV, CAR.CRV_EU, CAR.HRV, CAR.JADE, CAR.ODYSSEY, CAR.ACURA_RDX, CAR.RIDGELINE, CAR.PILOT_2019, CAR.ODYSSEY_CHN):
+    if self.CP.carFingerprint in (CAR.CRV, CAR.CRV_EU, CAR.HRV, CAR.ODYSSEY, CAR.ACURA_RDX, CAR.RIDGELINE, CAR.PILOT_2019, CAR.ODYSSEY_CHN, CAR.JADE):
       ret.gas = self.pedal_gas / 256.
     else:
       ret.gas = cp.vl["GAS_PEDAL_2"]['CAR_GAS'] / 256.
@@ -323,16 +322,9 @@ class CarState(CarStateBase):
       self.brake_switch_ts = cp.ts["POWERTRAIN_DATA"]['BRAKE_SWITCH']
 
     ret.brake = cp.vl["VSA_STATUS"]['USER_BRAKE']
+    ret.cruiseState.enabled = cp.vl["POWERTRAIN_DATA"]['ACC_STATUS'] != 0
     ret.cruiseState.available = bool(main_on)
     ret.cruiseState.nonAdaptive = self.cruise_mode != 0
-    if not self.pcm_acc_active and cp.vl["POWERTRAIN_DATA"]['ACC_STATUS'] != 0:
-      self.pcm_acc_active = True
-    if not ret.cruiseState.available:
-      self.pcm_acc_active = False
-    if self.pcm_acc_active:
-      ret.cruiseState.enabled = ret.cruiseState.available
-    else:
-      ret.cruiseState.enabled = cp.vl["POWERTRAIN_DATA"]['ACC_STATUS'] != 0
 
     # afa feature
     self.hud_lead = cp.vl["ACC_HUD"]['HUD_LEAD']

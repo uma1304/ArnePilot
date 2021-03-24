@@ -1,11 +1,16 @@
 import os
+from pathlib import Path
+from selfdrive.hardware import PC
 
 if os.environ.get('LOGGERD_ROOT', False):
   ROOT = os.environ['LOGGERD_ROOT']
-  print("Custom loggerd root: ", ROOT)
+elif PC:
+  ROOT = os.path.join(str(Path.home()), ".comma", "media", "0", "realdata")
 else:
-  ROOT = '/data/media/0/realdata/'
-
+  ROOT = '/data/media/0/ArnePilotdata/'
+  if not os.path.exists(ROOT):
+    os.makedirs(ROOT,mode=0o777)
+    os.chmod(ROOT,0o777)
 
 CAMERA_FPS = 20
 SEGMENT_LENGTH = 60

@@ -47,7 +47,7 @@ class LoggerThread(threading.Thread):
 
     def save_gps_data(self, gps, osm_way_id):
         try:
-            location = [gps.speed, gps.bearing, gps.latitude, gps.longitude, gps.altitude, gps.accuracy, time.time(), osm_way_id]
+            location = [gps.speed, gps.bearingDeg, gps.latitude, gps.longitude, gps.altitude, gps.accuracy, time.time(), osm_way_id]
             with open("/data/gps-data", "a") as f:
                 f.write("{}\n".format(location))
         except:
@@ -174,7 +174,7 @@ class QueryThread(LoggerThread):
                         self.logger.error("There is no query_lock")
 
             if last_gps is not None and last_gps.accuracy < 5.0:
-                q, lat, lon = self.build_way_query(last_gps.latitude, last_gps.longitude, last_gps.bearing, radius=radius)
+                q, lat, lon = self.build_way_query(last_gps.latitude, last_gps.longitude, last_gps.bearingDeg, radius=radius)
                 try:
                     if self.is_connected_to_local():
                         api = overpy.Overpass(url=self.OVERPASS_API_LOCAL)
@@ -342,7 +342,7 @@ class MapsdThread(LoggerThread):
                 map_valid = True
                 lat = gps.latitude
                 lon = gps.longitude
-                heading = gps.bearing
+                heading = gps.bearingDeg
                 speed = gps.speed
 
                 query_lock.acquire()

@@ -37,19 +37,8 @@ if (origin is not None) and (branch is not None):
 dirty = not arne_remote
 dirty = dirty or (subprocess.call(["git", "diff-index", "--quiet", branch, "--"]) != 0)
 
+from selfdrive.hardware import PC
 from selfdrive.swaglog import cloudlog
-from common.hardware import PC
-
-def save_exception(exc_text):
-  i = 0
-  log_file = '{}/{}'.format(CRASHES_DIR, datetime.now().strftime('%Y-%m-%d--%H-%M-%S.%f.log')[:-3])
-  if os.path.exists(log_file):
-    while os.path.exists(log_file + str(i)):
-      i += 1
-    log_file += str(i)
-  with open(log_file, 'w') as f:
-    f.write(exc_text)
-  print('Logged current crash to {}'.format(log_file))
 
 if os.getenv("NOLOG") or os.getenv("NOCRASH") or PC:
   def capture_exception(*args, **kwargs):
@@ -98,8 +87,8 @@ else:
     ip = requests.get('https://checkip.amazonaws.com/').text.strip()
   except Exception:
     ip = "255.255.255.255"
-  error_tags = {'dirty': dirty, 'dongle_id': dongle_id, 'branch': branch, 'remote': origin, 
-                'distance_traveled': distance_traveled, 'distance_traveled_engaged': distance_traveled_engaged, 
+  error_tags = {'dirty': dirty, 'dongle_id': dongle_id, 'branch': branch, 'remote': origin,
+                'distance_traveled': distance_traveled, 'distance_traveled_engaged': distance_traveled_engaged,
                 'distance_traveled_override': distance_traveled_override}
   #uniqueID = op_params.get('uniqueID')
   username = opParams().get('username')
@@ -171,3 +160,12 @@ else:
       self.run = run_with_except_hook
 
     threading.Thread.__init__ = init
+
+  # dp - from @ShaneSmiskol, save log into local directory
+  def save_exception(exc_text):
+    if not os.path.exists(CRASHES_DIR):
+      os.mkdir(CRASHES_DIR)
+    log_file = '{}/{}'.format(CRASHES_DIR, datetime.now().strftime('%Y-%m-%d--%H-%M-%S.%f.log')[:-3])
+    with open(log_file, 'w') as f:
+      f.write(exc_text)
+    print('Logged current crash to {}'.format(log_file))

@@ -27,6 +27,7 @@
 #include "common/visionipc.h"
 #include "common/timing.h"
 #include "messaging.hpp"
+#include "runners/run.h"
 
 //#include "cereal/gen/cpp/log.capnp.h"
 

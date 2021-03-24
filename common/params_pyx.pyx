@@ -20,8 +20,8 @@ keys = {
   b"CachedFingerprint": [TxType.CLEAR_ON_PANDA_DISCONNECT],
   b"CalibrationParams": [TxType.PERSISTENT],
   b"CarBatteryCapacity": [TxType.PERSISTENT],
-  b"CarParams": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
-  b"CarParamsCache": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
+  b"CarParams": [TxType.CLEAR_ON_PANDA_DISCONNECT],
+  b"CarParamsCache": [TxType.CLEAR_ON_PANDA_DISCONNECT],
   b"CarVin": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   b"CommunityFeaturesToggle": [TxType.PERSISTENT],
   b"CompletedTrainingVersion": [TxType.PERSISTENT],
@@ -36,10 +36,12 @@ keys = {
   b"GitCommit": [TxType.PERSISTENT],
   b"GitRemote": [TxType.PERSISTENT],
   b"GithubSshKeys": [TxType.PERSISTENT],
+  b"HardwareSerial": [TxType.PERSISTENT],
   b"HandsOnWheelMonitoring": [TxType.PERSISTENT],
   b"HasAcceptedTerms": [TxType.PERSISTENT],
   b"HasCompletedSetup": [TxType.PERSISTENT],
   b"IsDriverViewEnabled": [TxType.CLEAR_ON_MANAGER_START],
+  b"IMEI": [TxType.PERSISTENT],
   b"IsLdwEnabled": [TxType.PERSISTENT],
   b"IsMetric": [TxType.PERSISTENT],
   b"IsOffroad": [TxType.CLEAR_ON_MANAGER_START],
@@ -48,8 +50,9 @@ keys = {
   b"IsUpdateAvailable": [TxType.CLEAR_ON_MANAGER_START],
   b"IsUploadRawEnabled": [TxType.PERSISTENT],
   b"LastAthenaPingTime": [TxType.PERSISTENT],
-  b"LastUpdateTime": [TxType.PERSISTENT],
+  b"LastGPSPosition": [TxType.PERSISTENT],
   b"LastUpdateException": [TxType.PERSISTENT],
+  b"LastUpdateTime": [TxType.PERSISTENT],
   b"LimitSetSpeed": [TxType.PERSISTENT],
   b"LimitSetSpeedNeural": [TxType.PERSISTENT],
   b"LiveParameters": [TxType.PERSISTENT],
@@ -64,12 +67,15 @@ keys = {
   b"ReleaseNotes": [TxType.PERSISTENT],
   b"ShouldDoUpdate": [TxType.CLEAR_ON_MANAGER_START],
   b"SubscriberInfo": [TxType.PERSISTENT],
+  b"SshEnabled": [TxType.PERSISTENT],
   b"SpeedLimitOffset": [TxType.PERSISTENT],
   b"TermsVersion": [TxType.PERSISTENT],
+  b"Timezone": [TxType.PERSISTENT],
   b"TrainingVersion": [TxType.PERSISTENT],
   b"UpdateAvailable": [TxType.CLEAR_ON_MANAGER_START],
   b"UpdateFailedCount": [TxType.CLEAR_ON_MANAGER_START],
   b"Version": [TxType.PERSISTENT],
+  b"VisionRadarToggle": [TxType.PERSISTENT],
   b"Offroad_ChargeDisabled": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   b"Offroad_ConnectivityNeeded": [TxType.CLEAR_ON_MANAGER_START],
   b"Offroad_ConnectivityNeededPrompt": [TxType.CLEAR_ON_MANAGER_START],
@@ -80,6 +86,7 @@ keys = {
   b"Offroad_NeosUpdate": [TxType.CLEAR_ON_MANAGER_START],
   b"Offroad_UpdateFailed": [TxType.CLEAR_ON_MANAGER_START],
   b"Offroad_HardwareUnsupported": [TxType.CLEAR_ON_MANAGER_START],
+  b"ForcePowerDown": [TxType.CLEAR_ON_MANAGER_START],
 }
 
 keys = init_params_keys(keys, [TxType.PERSISTENT])
@@ -161,7 +168,6 @@ cdef class Params:
   def delete(self, key):
     key = ensure_bytes(key)
     self.p.delete_db_value(key)
-
 
 def put_nonblocking(key, val, d=None):
   def f(key, val):

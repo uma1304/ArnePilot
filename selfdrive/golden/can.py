@@ -81,7 +81,7 @@ def can_function(pm, speed, angle, idx, cruise_button=0, is_engaged=False):
   for k, v in FINGERPRINTS[CAR.CIVIC][0].items():
     if k not in done and k not in [0xE4, 0x194]:
       msg.append([k, 0, b'\x00'*v, 0])
-  pm.send('can', can_list_to_can_capnp(msg))
+  pm.send('deviceState', can_list_to_can_capnp(msg))
 
 def sendcan_function(sendcan):
   sc = messaging.drain_sock_raw(sendcan)

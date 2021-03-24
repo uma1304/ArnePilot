@@ -4,7 +4,7 @@ from selfdrive.car import apply_toyota_steer_torque_limits, create_gas_command, 
 from selfdrive.car.toyota.toyotacan import create_steer_command, create_ui_command, \
                                            create_accel_command, create_acc_cancel_command, \
                                            create_fcw_command
-from selfdrive.car.toyota.values import Ecu, CAR, STATIC_MSGS, NO_STOP_TIMER_CAR, SteerLimitParams, TSS2_CAR
+from selfdrive.car.toyota.values import Ecu, CAR, STATIC_MSGS, NO_STOP_TIMER_CAR, CarControllerParams, TSS2_CAR
 from opendbc.can.packer import CANPacker
 from common.dp_common import common_controller_ctrl
 from common.op_params import opParams
@@ -13,11 +13,19 @@ speed_signs_in_mph = opParams().get('speed_signs_in_mph')
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
-# Accel limits
-ACCEL_HYST_GAP = 0.02  # don't change accel command for small oscilalitons within this value
-ACCEL_MAX = 3.5  # 3.5 m/s2
-ACCEL_MIN = -3.5 # 3.5 m/s2
-ACCEL_SCALE = max(ACCEL_MAX, -ACCEL_MIN)
+def accel_hysteresis(accel, accel_steady, enabled):
+
+  # for small accel oscillations within ACCEL_HYST_GAP, don't change the accel command
+  if not enabled:
+    # send 0 when disabled, otherwise acc faults
+    accel_steady = 0.
+  elif accel > accel_steady + CarControllerParams.ACCEL_HYST_GAP:
+    accel_steady = accel - CarControllerParams.ACCEL_HYST_GAP
+  elif accel < accel_steady - CarControllerParams.ACCEL_HYST_GAP:
+    accel_steady = accel + CarControllerParams.ACCEL_HYST_GAP
+  accel = accel_steady
+
+  return accel, accel_steady
 
 # Blindspot codes
 LEFT_BLINDSPOT = b'\x41'
@@ -93,23 +101,11 @@ def create_rsa3_command(packer,OVSPVALL,OVSPVALM,OVSPVALH,NTLVLSPD,TSRSPU):
 
  return packer.make_can_msg("RSA3", 0, values)
 
-def accel_hysteresis(accel, accel_steady, enabled):
-
-  # for small accel oscillations within ACCEL_HYST_GAP, don't change the accel command
-  if not enabled:
-    # send 0 when disabled, otherwise acc faults
-    accel_steady = 0.
-  elif accel > accel_steady + ACCEL_HYST_GAP:
-    accel_steady = accel - ACCEL_HYST_GAP
-  elif accel < accel_steady - ACCEL_HYST_GAP:
-    accel_steady = accel + ACCEL_HYST_GAP
-  accel = accel_steady
-
-  return accel, accel_steady
-
-
 class CarController():
   def __init__(self, dbc_name, CP, VM):
+      # dp
+    self.last_blinker_on = False
+    self.blinker_end_frame = 0.
     self.last_steer = 0
     self.accel_steady = 0.
     self.alert_active = False
@@ -119,9 +115,9 @@ class CarController():
     self.blindspot_blink_counter_right = 0
     self.blindspot_debug_enabled_left = False
     self.blindspot_debug_enabled_right = False
-    
+
     self.rsa_sync_counter = 0
-    
+
     self.last_fault_frame = -200
     self.steer_rate_limited = False
 
@@ -132,10 +128,6 @@ class CarController():
       self.fake_ecus.add(Ecu.dsu)
 
     self.packer = CANPacker(dbc_name)
-
-    # dp
-    self.last_blinker_on = False
-    self.blinker_end_frame = 0.
 
   def update(self, enabled, CS, frame, actuators, pcm_cancel_cmd, hud_alert,
              left_line, right_line, lead, left_lane_depart, right_lane_depart, dragonconf, lkas):
@@ -162,7 +154,7 @@ class CarController():
         #dynamic_accel_max = ACCEL_MAX - (((CS.out.vEgo - 5.5)/ 14.5))
 
     apply_accel, self.accel_steady = accel_hysteresis(apply_accel, self.accel_steady, enabled)
-    apply_accel = clip(apply_accel * ACCEL_SCALE, ACCEL_MIN, ACCEL_MAX)
+    apply_accel = clip(apply_accel * CarControllerParams.ACCEL_SCALE, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
     if CS.CP.enableGasInterceptor:
       if CS.out.gasPressed:
@@ -177,17 +169,16 @@ class CarController():
         apply_accel = min(apply_accel, 0.0)
 
     # steer torque
-    new_steer = int(round(actuators.steer * SteerLimitParams.STEER_MAX))
-    apply_steer = apply_toyota_steer_torque_limits(new_steer, self.last_steer, CS.out.steeringTorqueEps, SteerLimitParams)
-    self.steer_rate_limited = new_steer != apply_steer
+    new_steer = int(round(actuators.steer * CarControllerParams.STEER_MAX))
+    apply_steer = apply_toyota_steer_torque_limits(new_steer, self.last_steer, CS.out.steeringTorqueEps, CarControllerParams)
 
     # only cut torque when steer state is a known fault
     if CS.steer_state in [9, 25]:
       self.last_fault_frame = frame
 
     # Cut steering for 2s after fault
-    if lkas == 0 or not enabled or (frame - self.last_fault_frame < 100) or abs(CS.out.steeringRate) > 100 or abs(CS.out.steeringAngle) > 400 \
-    or (abs(CS.out.steeringAngle) > 150 and CS.CP.carFingerprint in [CAR.RAV4H, CAR.PRIUS]):
+    if lkas == 0 or not enabled or (frame - self.last_fault_frame < 100) or abs(CS.out.steeringRateDeg) > 100 or abs(CS.out.steeringAngleDeg) > 400 \
+    or (abs(CS.out.steeringAngleDeg) > 150 and CS.CP.carFingerprint in [CAR.RAV4H, CAR.PRIUS]):
       apply_steer = 0
       apply_steer_req = 0
     else:
@@ -341,7 +332,7 @@ class CarController():
         #can_sends.append(make_can_msg(0x750, b'\x42\x02\x21\x69\x00\x00\x00\x00', 0))
         can_sends.append(poll_blindspot_status(RIGHT_BLINDSPOT))
         #print("debug Right blindspot poll")
-        
+
     if frame > 200 and CS.CP.carFingerprint not in TSS2_CAR:
       if frame % 100 == 0:
         if speed_signs_in_mph:

@@ -11,14 +11,15 @@ from common.params import Params, put_nonblocking
 import subprocess
 import re
 import os
+from selfdrive.hardware import HARDWARE
 from typing import Dict, Any
-from selfdrive.thermald.power_monitoring import set_battery_charging, get_battery_charging
 params = Params()
 from common.realtime import sec_since_boot
 from common.i18n import get_locale
 from common.dp_common import param_get, get_last_modified
 from common.dp_time import LAST_MODIFIED_SYSTEMD
 from selfdrive.dragonpilot.dashcam import Dashcam
+from selfdrive.hardware import EON
 from common.travis_checker import travis
 if travis:
   PARAM_PATH = str(os.environ.get('HOME')) + "/.comma/params/d/"
@@ -39,7 +40,7 @@ HERTZ = 1/DELAY
 last_modified_confs: Dict[str, Any] = {}
 
 def confd_thread():
-  sm = messaging.SubMaster(['thermal'])
+  sm = messaging.SubMaster(['deviceState'])
   pm = messaging.PubMaster(['dragonConf'])
 
   last_dp_msg = None
@@ -55,6 +56,7 @@ def confd_thread():
   last_charging_ctrl = False
   last_started = False
   dashcam = Dashcam()
+  last_dashcam_recorded = False
 
   while True:
     start_sec = sec_since_boot()
@@ -160,6 +162,10 @@ def confd_thread():
     '''
     if msg.dragonConf.dpDashcam and frame % HERTZ == 0:
       dashcam.run(started, free_space)
+      last_dashcam_recorded = True
+    if last_dashcam_recorded and not msg.dragonConf.dpDashcam:
+      dashcam.stop()
+      last_dashcam_recorded = False
     '''
     ===================================================
     finalise
@@ -203,25 +209,29 @@ def update_conf_all(confs, msg, first_run = False):
 def process_charging_ctrl(msg, last_charging_ctrl, battery_percent):
   charging_ctrl = msg.dragonConf.dpChargingCtrl
   if last_charging_ctrl != charging_ctrl:
-    set_battery_charging(True)
+    HARDWARE.set_battery_charging(True)
   if charging_ctrl:
-    if battery_percent >= msg.dragonConf.dpDischargingAt and get_battery_charging():
-      set_battery_charging(False)
-    elif battery_percent <= msg.dragonConf.dpChargingAt and not get_battery_charging():
-      set_battery_charging(True)
+    if battery_percent >= msg.dragonConf.dpDischargingAt and HARDWARE.get_battery_charging():
+      HARDWARE.set_battery_charging(False)
+    elif battery_percent <= msg.dragonConf.dpChargingAt and not HARDWARE.get_battery_charging():
+      HARDWARE.set_battery_charging(True)
   return charging_ctrl
 
 
 def pull_thermald(frame, sm, started, free_space, battery_percent, overheat):
   sm.update(0)
-  if sm.updated['thermal']:
-    started = sm['thermal'].started
-    free_space = sm['thermal'].freeSpace
-    battery_percent = sm['thermal'].batteryPercent
-    overheat = sm['thermal'].thermalStatus >= 2
+  if sm.updated['deviceState']:
+    started = sm['deviceState'].started
+    free_space = sm['deviceState'].freeSpacePercent
+    battery_percent = sm['deviceState'].batteryPercent
+    overheat = sm['deviceState'].thermalStatus >= 2
   return started, free_space, battery_percent, overheat
 
 def update_custom_logic(msg):
+  # dynamic follow change to standard follow, we dont have option 4 anymore
+  if msg.dragonConf.dpDynamicFollow >= 4:
+    msg.dragonConf.dpDynamicFollow = 0
+    put_nonblocking('dp_dynamic_follow', str(msg.dragonConf.dpDynamicFollow))
   if msg.dragonConf.dpAssistedLcMinMph > msg.dragonConf.dpAutoLcMinMph:
     put_nonblocking('dp_auto_lc_min_mph', str(msg.dragonConf.dpAssistedLcMinMph))
     msg.dragonConf.dpAutoLcMinMph = msg.dragonConf.dpAssistedLcMinMph
@@ -242,11 +252,12 @@ def update_updating(msg):
 
 def update_ip(msg):
   val = 'N/A'
-  try:
-    result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')
-    val = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-  except Exception:
-    pass
+  if EON:
+    try:
+      result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')
+      val = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
+    except Exception:
+      pass
   setattr(msg.dragonConf, get_struct_name('dp_ip_addr'), val)
   return msg
 
