@@ -140,7 +140,6 @@ class Controls:
     self.last_blinker_frame = 0
     self.saturated_count = 0
     self.distance_traveled_now = 0
-    self.distance_traveled_now = op_params.get('distance_traveled')
     if not travis:
       self.distance_traveled = float(params.get("DistanceTraveled", encoding='utf8'))
       self.distance_traveled_engaged = float(params.get("DistanceTraveledEngaged", encoding='utf8'))
@@ -362,7 +361,7 @@ class Controls:
       self.distance_traveled_engaged += CS.vEgo * DT_CTRL
       if CS.steeringPressed:
         self.distance_traveled_override += CS.vEgo * DT_CTRL
-    if (self.sm.frame - self.distance_traveled_frame) * DT_CTRL > 10.0 and not travis:
+    if (self.sm.frame - self.distance_traveled_frame) * DT_CTRL > 10.0 and not travis and distance_traveled:
       put_nonblocking("DistanceTraveled", str(round(self.distance_traveled,2)))
       put_nonblocking("DistanceTraveledEngaged", str(round(self.distance_traveled_engaged,2)))
       put_nonblocking("DistanceTraveledOverride", str(round(self.distance_traveled_override,2)))
