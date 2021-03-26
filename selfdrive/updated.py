@@ -107,8 +107,8 @@ def set_params(new_version: bool, failed_count: int, exception: Optional[str]) -
   params = Params()
 
   params.put("UpdateFailedCount", str(failed_count))
-  if failed_count == 0:
-    t = datetime.datetime.utcnow().isoformat()
+  #if failed_count == 0:
+    #t = datetime.datetime.utcnow().isoformat()
     #params.put("LastUpdateTime", t.encode('utf8'))
 
   if exception is None:
