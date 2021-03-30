@@ -7,9 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstdint>
+#include <unistd.h>
 
 #include "common/visionbuf.h"
 #include "common/visionipc.h"
