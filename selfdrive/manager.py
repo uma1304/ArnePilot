@@ -204,7 +204,7 @@ managed_processes = {
   "calibrationd": "selfdrive.locationd.calibrationd",
   "paramsd": "selfdrive.locationd.paramsd",
   "camerad": ("selfdrive/camerad", ["./camerad"]),
-  "trafficd": ("selfdrive/modeld/trafficd", ["./trafficd"]),
+  "trafficd": ("selfdrive/modeld", ["./trafficd"]),
   "sensord": ("selfdrive/sensord", ["./sensord"]),
   "clocksd": ("selfdrive/clocksd", ["./clocksd"]),
   "gpsd": ("selfdrive/sensord", ["./gpsd"]),
