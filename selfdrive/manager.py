@@ -287,7 +287,7 @@ driver_view_processes = [
 if traffic_lights:
   car_started_processes += [
     'traffic_manager',
-    'trafficd'
+    'trafficd',
   ]
   
 if WEBCAM:
