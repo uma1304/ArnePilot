@@ -22,7 +22,6 @@ import cereal.messaging as messaging
 from selfdrive.version import version, dirty
 from common.transformations.coordinates import geodetic2ecef
 from selfdrive.mapd.mapd_helpers import MAPS_LOOKAHEAD_DISTANCE, Way, circle_through_points, rate_curvature_points
-#from selfdrive.trafficd.traffic_manager import TrafficdThread
 from common.op_params import opParams
 
 traffic_lights = opParams().get('traffic_lights')
@@ -72,7 +71,6 @@ class QueryThread(LoggerThread):
             'Accept-Encoding': 'gzip'
         }
         self.prev_ecef = None
-        #self.trafficd_thread = TrafficdThread()
         #self.traffic_light_in_range = False
         
     def is_connected_to_local(self, timeout=3.0):
@@ -135,12 +133,6 @@ class QueryThread(LoggerThread):
                 continue
             else:
                 start = time.time()
-                
-            #if self.trafficd_thread.running and not self.traffic_light_in_range and traffic_lights:
-            #  self.trafficd_thread.stop()
-            #if self.traffic_light_in_range and not self.trafficd_thread.running and traffic_lights:
-            #  subprocess.call(['pkill','-f','_trafficd'])
-            #  self.trafficd_thread.start()
                 
             self.logger.debug("Starting after sleeping for 1 second ...")
             last_gps = self.sharedParams.get('last_gps', None)

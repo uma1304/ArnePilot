@@ -6,33 +6,6 @@ from common.realtime import sec_since_boot
 import cereal.messaging as messaging
 import numpy as np
 import time
-import subprocess
-import os
-import signal
-
-
-class TrafficdThread:
-  def __init__(self):
-    self.proc_path = 'selfdrive/trafficd/trafficd'
-    self.proc = None
-    self.running = False
-
-  def start(self):
-    if not self.running:
-      self.proc = subprocess.Popen(os.path.join(BASEDIR, self.proc_path), cwd=os.path.join(BASEDIR, os.path.dirname(self.proc_path)))
-      self.running = True
-      print('trafficd starting')
-    else:
-      print('trafficd already running')
-
-  def stop(self):
-    if self.proc is not None and self.running:
-      self.proc.send_signal(signal.SIGINT)
-      self.running = False
-      print('trafficd stopped')
-    else:
-      print('trafficd not running, can\'t stop')
-
 
 
 class Traffic:
