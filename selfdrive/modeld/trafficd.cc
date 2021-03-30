@@ -135,9 +135,10 @@ int main(){
     while (!do_exit) {
       printf("inside main loop\n");
       loopStart = millis_since_boot();
-
+      printf("creating vipc buf\n");
       VIPCBuf* buf;
       VIPCBufExtra extra;
+      printf("vision stream get\n");
       buf = visionstream_get(&stream, &extra);
       if (buf == NULL) {
         printf("trafficd: visionstream get failed\n");
