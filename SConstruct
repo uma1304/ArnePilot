@@ -172,7 +172,6 @@ env = Environment(
     "#selfdrive/loggerd/include",
     "#selfdrive/modeld",
     "#selfdrive/sensord",
-    "#selfdrive/trafficd",
     "#selfdrive/ui",
     "#cereal/messaging",
     "#cereal",
