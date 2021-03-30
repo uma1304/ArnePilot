@@ -21,7 +21,7 @@ volatile sig_atomic_t do_exit = 0;
 const std::vector<std::string> modelLabels = {"SLOW", "GREEN", "NONE"};
 const int numLabels = modelLabels.size();
 const double modelRate = 1 / 4.;  // 3 Hz
-const bool debug_mode = true;
+const bool debug_mode = false;
 
 const int original_shape[3] = {874, 1164, 3};   // global constants
 //const int original_size = 874 * 1164 * 3;
@@ -119,7 +119,7 @@ int main(){
 
   VisionStream stream;
   while (!do_exit){  // keep traffic running in case we can't get a frame (mimicking modeld)
-//    printf("running trafficd\n");
+    printf("running trafficd\n");
     VisionStreamBufs buf_info;
     err = visionstream_init(&stream, VISION_STREAM_YUV, true, &buf_info);
     if (err) {
@@ -131,7 +131,9 @@ int main(){
     double loopStart;
     double lastLoop = 0;
     float* flatImageArray = new float[cropped_size];
+    printf("outside main loop\n");
     while (!do_exit) {
+      printf("inside main loop\n");
       loopStart = millis_since_boot();
 
       VIPCBuf* buf;
@@ -141,12 +143,13 @@ int main(){
         printf("trafficd: visionstream get failed\n");
         break;
       }
-
+      printf("getting flat array\n");
       getFlatArray(buf, flatImageArray);  // writes float vector to flatImageArray
+      printf("executing model\n"); 
       model->execute(flatImageArray, cropped_size, true);  // true uses special logic for trafficd
 
       sendPrediction(output, pm);
-
+      printf("rate keeping\n"); 
       lastLoop = rateKeeper(millis_since_boot() - loopStart, lastLoop);
 
       if (debug_mode) {
@@ -156,8 +159,10 @@ int main(){
         std::cout << "Current frequency: " << 1 / ((millis_since_boot() - loopStart) * msToSec) << " Hz" << std::endl;
       }
     }
+    printf("freeing memory\n"); 
     free(flatImageArray);
     visionstream_destroy(&stream);
+    
   }
   free(output);
   delete model;
