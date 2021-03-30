@@ -468,7 +468,7 @@ def thermald_thread():
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
     msg.thermal.chargingError = current_filter.x > 0. and msg.thermal.batteryPercent < 90  # if current is positive, then battery is being discharged
-    msg.thermal.started = os.path.exists('/data/started')  # started_ts is not None
+    msg.thermal.started = started_ts is not None
     msg.thermal.startedTs = int(1e9*(started_ts or 0))
 
     msg.thermal.thermalStatus = thermal_status
