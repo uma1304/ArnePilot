@@ -1,6 +1,7 @@
 #ifndef RUNMODEL_H
 #define RUNMODEL_H
 
+// cppcheck-suppress virtualDestructor
 class RunModel {
 public:
   virtual void addRecurrent(float *state, int state_size) {}
