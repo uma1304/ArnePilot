@@ -15,12 +15,16 @@ common_src = [
 
 if arch == "aarch64":
   libs += ['gsl', 'CB', 'gnustl_shared']
+  if not TEST_THNEED:
+    common_src += ["thneed/thneed.cc"]
   lenv['CFLAGS'].append("-DUSE_THNEED")
   lenv['CXXFLAGS'].append("-DUSE_THNEED")
 elif arch == "larch64":
   libs += ['gsl', 'CB', 'pthread', 'dl']
-  lenv['CFLAGS'].append("-DUSE_THNEED")
-  lenv['CXXFLAGS'].append("-DUSE_THNEED")
+  if not TEST_THNEED:
+    common_src += ["thneed/thneed.cc"]
+    lenv['CFLAGS'].append("-DUSE_THNEED")
+    lenv['CXXFLAGS'].append("-DUSE_THNEED")
 else:
   libs += ['pthread']
 
@@ -36,9 +40,11 @@ else:
     # no SNPE on Mac
     del libs[libs.index('SNPE')]
     del libs[libs.index('symphony-cpu')]
+    del common_src[common_src.index('runners/snpemodel.cc')]
 
+common = lenv.Object(common_src)
 
 lenv.Program('_trafficd', [
     "trafficd.cc",
-  ]+common_src, LIBS=libs)
+  ]+common, LIBS=libs)
 
