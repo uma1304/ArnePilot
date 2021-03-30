@@ -183,7 +183,7 @@ ThermalStatus = cereal.log.ThermalData.ThermalStatus
 
 # comment out anything you don't want to run
 managed_processes = {
-  # "thermald": "selfdrive.thermald.thermald",
+  "thermald": "selfdrive.thermald.thermald",
   "traffic_manager": "selfdrive.trafficd.traffic_manager",
   "uploader": "selfdrive.loggerd.uploader",
   "deleter": "selfdrive.loggerd.deleter",
@@ -564,7 +564,7 @@ def manager_thread():
       if not running[p].is_alive():
         process_dead = True
     # If a process is dead, log the status of every process
-    if process_dead or True:
+    if process_dead:
       running_list = ["%s%s\u001b[0m" % ("\u001b[32m" if running[p].is_alive() else "\u001b[31m", p) for p in running]
       cloudlog.debug(' '.join(running_list))
 
