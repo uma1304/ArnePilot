@@ -396,6 +396,8 @@ selfdrive/camerad/imgproc/utils.h
 
 selfdrive/modeld/SConscript
 selfdrive/modeld/modeld.cc
+selfdrive/modeld/trafficd.cc
+selfdrive/modeld/trafficd
 selfdrive/modeld/dmonitoringmodeld.cc
 selfdrive/modeld/constants.py
 selfdrive/modeld/modeld
