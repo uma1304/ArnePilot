@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from common.numpy_fast import clip
-from common.basedir import BASEDIR
 from common.realtime import sec_since_boot
 import cereal.messaging as messaging
 import numpy as np
