@@ -45,3 +45,4 @@ repos:
         - --quiet
         - --force
         - -j8
+        - --suppress=virtualDestructor=selfdrive/modeld/runners/runmodel.h
