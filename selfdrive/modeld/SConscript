@@ -56,6 +56,10 @@ lenv.Program('_modeld', [
     "models/driving.cc",
   ]+common, LIBS=libs)
 
+lenv.Program('_trafficd', [
+    "trafficd.cc",
+  ]+common, LIBS=libs)
+
 if TEST_THNEED:
   lenv.Program('thneed/debug/_thneed', [
       "thneed/thneed.cc", "thneed/debug/test.cc"
