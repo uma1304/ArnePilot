@@ -564,7 +564,7 @@ def manager_thread():
       if not running[p].is_alive():
         process_dead = True
     # If a process is dead, log the status of every process
-    if process_dead:
+    if process_dead or True:
       running_list = ["%s%s\u001b[0m" % ("\u001b[32m" if running[p].is_alive() else "\u001b[31m", p) for p in running]
       cloudlog.debug(' '.join(running_list))
 
