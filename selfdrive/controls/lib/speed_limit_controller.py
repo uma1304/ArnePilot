@@ -313,7 +313,7 @@ class SpeedLimitController():
     self._v_ego = v_ego
     self._a_ego = a_ego
 
-    resolver = SpeedLimitResolver(v_ego, sm)
+    resolver = SpeedLimitResolver(v_ego, sm, SpeedLimitResolver.Policy.map_data_only)
     resolver.resolve()
     self._speed_limit_set = resolver.speed_limit
 

@@ -331,7 +331,8 @@ class TurnController():
       _debug(f'Tc: OLD CALC: High Lat Acc ahead. Distance: {v_target_distance:.2f}, target v: {v_target:.2f}')
 
   def _update_calculations(self):
-    calculator = TurnCalculator(self._v_ego, self._a_ego, self._v_cruise_setpoint, self._d_poly, self._sm)
+    calculator = TurnCalculator(self._v_ego, self._a_ego, self._v_cruise_setpoint, self._d_poly, self._sm,
+                                TurnCalculator.Policy.map_data_only)
     calculator.calculate()
 
     self._max_pred_curvature = calculator.max_pred_curvature
