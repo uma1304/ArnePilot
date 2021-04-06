@@ -277,6 +277,20 @@ class TurnController():
   def is_active(self):
     return self._state != TurnState.DISABLED
 
+  @property
+  def distance_to_turn(self):
+    if self._v_target_distance < _MAX_DISTANCE_HORIZON:
+      return self._v_target_distance
+
+    if self._state == TurnState.ENTERING:
+      return -1.
+    if self._state == TurnState.TURNING:
+      return -2.
+    if self._state == TurnState.LEAVING:
+      return -3.
+
+    return 0.
+
   @state.setter
   def state(self, value):
     if value != self._state:

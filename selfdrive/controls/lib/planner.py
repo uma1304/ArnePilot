@@ -237,6 +237,7 @@ class Planner():
     plan_send.plan.fcw = fcw
 
     plan_send.plan.decelForTurn = bool(self.turn_controller.is_active)
+    plan_send.plan.distToTurn = float(self.turn_controller.distance_to_turn)
     plan_send.plan.speedLimitControlState = self.speed_limit_controller.state
     plan_send.plan.speedLimit = float(self.speed_limit_controller.speed_limit)
     plan_send.plan.eventsDEPRECATED = events.to_msg()

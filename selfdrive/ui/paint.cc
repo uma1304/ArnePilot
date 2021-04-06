@@ -397,9 +397,28 @@ static void ui_draw_vision_event(UIState *s) {
   const int viz_event_x = s->scene.viz_rect.right() - (viz_event_w + bdr_s*2);
   const int viz_event_y = s->scene.viz_rect.y + (bdr_s*1.5);
   if (s->scene.controls_state.getDecelForModel() && s->scene.controls_state.getEnabled()) {
+    // draw distance to turn or turn state
+    const float distToTurn = s->scene.controls_state.getDistToTurn();
+
+    char distance_str[16];
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+
+    if (distToTurn > 0) {
+      snprintf(distance_str, sizeof(distance_str), "%d", int(distToTurn));
+    } else if (int(distToTurn) == -1) {
+      snprintf(distance_str, sizeof(distance_str), "ENTERING");
+    } else if (int(distToTurn) == -2) {
+      snprintf(distance_str, sizeof(distance_str), "TURNING");
+    } else if (int(distToTurn) == -3) {
+      snprintf(distance_str, sizeof(distance_str), "LEAVING");
+    } else {
+      snprintf(distance_str, sizeof(distance_str), "?????");
+    }
+    
+    ui_draw_text(s->vg, viz_event_x + bdr_s + (viz_event_w / 2), viz_event_y + bdr_s - 25, distance_str, 80, COLOR_RED, s->font_sans_bold);
     // draw winding road sign
-    const int img_turn_size = 160*1.5;
-    ui_draw_image(s->vg, viz_event_x - (img_turn_size / 4), viz_event_y + bdr_s - 25, img_turn_size, img_turn_size, s->img_turn, 1.0f);
+    // const int img_turn_size = 160*1.5;
+    // ui_draw_image(s->vg, viz_event_x - (img_turn_size / 4), viz_event_y + bdr_s - 25, img_turn_size, img_turn_size, s->img_turn, 1.0f);
   } else if (s->scene.controls_state.getEngageable()) {
     // draw steering wheel
     const int bg_wheel_size = 96;
