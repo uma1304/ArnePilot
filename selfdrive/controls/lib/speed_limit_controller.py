@@ -186,8 +186,12 @@ class SpeedLimitController():
     return self.state > SpeedLimitControlState.tempInactive
 
   @property
-  def speed_limit(self):
+  def speed_limit_offseted(self):
     return self._speed_limit * (1.0 + self._speed_limit_perc_offset / 100.0)
+
+  @property
+  def speed_limit(self):
+    return self._speed_limit
 
   def _update_params(self):
     time = sec_since_boot()
@@ -212,7 +216,7 @@ class SpeedLimitController():
       elif time > self._last_speed_limit_set_change_ts + _WAIT_TIME_LIMIT_RISE:
         self._speed_limit = self._speed_limit_set
     # Update current velocity offset (error)
-    self._v_offset = self.speed_limit - self._v_ego
+    self._v_offset = self.speed_limit_offseted - self._v_ego
     # Update change tracking variables
     self._speed_limit_changed = self._speed_limit != self._speed_limit_prev
     self._v_cruise_setpoint_changed = self._v_cruise_setpoint != self._v_cruise_setpoint_prev
@@ -272,7 +276,7 @@ class SpeedLimitController():
     elif self.state == SpeedLimitControlState.adapting:
       # Calculate to adapt speed on target time.
       adapting_time = max(_LIMIT_ADAPT_TIME - self._adapting_cycles * _LON_MPC_STEP, 1.0)  # min adapt time 1 sec.
-      a_target = (self.speed_limit - self._v_ego) / adapting_time
+      a_target = (self.speed_limit_offseted - self._v_ego) / adapting_time
       # smooth out acceleration using jerk limits.
       j_limits = np.array(self._adapting_jerk_limits)
       a_limits = self._a_ego + j_limits * _LON_MPC_STEP
@@ -284,7 +288,7 @@ class SpeedLimitController():
     # active
     elif self.state == SpeedLimitControlState.active:
       # Calculate following same cruise logic in planner.py
-      self.v_limit, self.a_limit = speed_smoother(self._v_ego, self._a_ego, self.speed_limit,
+      self.v_limit, self.a_limit = speed_smoother(self._v_ego, self._a_ego, self.speed_limit_offseted,
                                                   self._active_accel_limits[1], self._active_accel_limits[0],
                                                   self._active_jerk_limits[1], self._active_jerk_limits[0],
                                                   _LON_MPC_STEP)
