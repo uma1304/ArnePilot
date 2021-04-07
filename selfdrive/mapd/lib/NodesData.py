@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from enum import Enum
 from .geo import DIRECTION, R
 
@@ -58,6 +59,15 @@ def node_calculations(points):
   # https://www.mathopenref.com/trianglecircumcircle.html
   # (N-2, 1) array. v[0] and v[-1] have no curvature
   c = 2. * np.sin(a) / np.linalg.norm(v[:-1] + v[1:], axis=1)
+
+  # Use the moving average the curvatures when the distance between nodes is less than a threshold.
+  _DIST_TH = 5.
+  d_n = d[:-1]
+  d_p = d[1:]
+  f = np.logical_or(d_n < _DIST_TH, d_p < _DIST_TH)
+  c = np.concatenate(([[0.], c, [0.]]))
+  c_av = np.convolve(c, np.ones(3), 'valid') / 3
+  c = c[1:-1] * (1 - f) + c_av * f
 
   # Calculate the bearing (from true north clockwise) for every node.
   # (N-1, 1) array. No bearing for v[-1]
