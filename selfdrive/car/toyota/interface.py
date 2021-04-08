@@ -81,9 +81,9 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 13.4   # True steerRation from older prius
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.steerActuatorDelay = 0.61
-      ret.steerLimitTimer = 5.0
       if prius_pid:
+        ret.steerActuatorDelay = 0.61
+        ret.steerLimitTimer = 5.0
         ret.lateralTuning.init('pid')
         ret.lateralTuning.pid.kpBP = [0.0]
         ret.lateralTuning.pid.kiBP = [0.0]
@@ -92,27 +92,18 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.pid.kf = 0.000153263811757641
         ret.lateralTuning.pid.newKfTuned = True
       else:
-        ret.steerRateCost = 0.45 #0.45
-        ret.longitudinalTuning.deadzoneBP = [0., 8.05]
-        ret.longitudinalTuning.deadzoneV = [.0, .14]
-        ret.longitudinalTuning.kpBP = [0., 5., 20.]
-        ret.longitudinalTuning.kpV = [1.3, 1.0, 0.7]
-        ret.longitudinalTuning.kiBP = [0., 5., 12., 20., 27.]
-        ret.longitudinalTuning.kiV = [.35, .23, .20, .17, .1]
-        ret.stoppingBrakeRate = 0.14 # reach stopping target smoothly
-        ret.startingBrakeRate = 1.21 # release brakes fast
-        ret.startAccel = 1.50 # Accelerate from 0 faster
+        ret.steerRateCost = 0.3 #0.45
         ret.steerActuatorDelay = 0
-        ret.steerLimitTimer = 1
+        #ret.steerLimitTimer = 1
         ret.lateralTuning.init('indi')
-        ret.lateralTuning.indi.innerLoopGainBP = [5.5, 8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25]
-        ret.lateralTuning.indi.innerLoopGainV = [6.4, 8.2, 10, 12, 13.8, 15, 15, 15] # optimal centering values for curving
-        ret.lateralTuning.indi.outerLoopGainBP = [5.5, 8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25, 28.4, 30.3]
-        ret.lateralTuning.indi.outerLoopGainV = [2.75, 4.6, 6.35, 8.1, 9.85, 11.7, 13.6, 15.4, 17.2, 19] # optimal centering values for curving; last 3 values for smoother ALC and solid lane centering
-        ret.lateralTuning.indi.timeConstantBP = [5.5, 8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 30.09, 30.1]
-        ret.lateralTuning.indi.timeConstantV = [0.33, 0.44, 0.55, 0.66, 0.88, 1.3, 3.0, 3.0, 6.0] # optimized course plotting for low speed curves; high last value produces smoother ALC and ride quality
-        ret.lateralTuning.indi.actuatorEffectivenessBP = [5.5, 8.3, 11.1, 13.9, 16.7, 19.4, 22.2, 25]
-        ret.lateralTuning.indi.actuatorEffectivenessV = [6.0, 7.8, 9.6, 11.6, 13.4, 15, 15, 15] # balance between high angle curving and rocking
+        ret.lateralTuning.indi.innerLoopGainBP = [18, 22, 26]
+        ret.lateralTuning.indi.innerLoopGainV = [10, 13, 15]
+        ret.lateralTuning.indi.outerLoopGainBP = [18, 22, 26]
+        ret.lateralTuning.indi.outerLoopGainV = [9, 12, 14.99]
+        ret.lateralTuning.indi.timeConstantBP = [18, 22, 26, 33]
+        ret.lateralTuning.indi.timeConstantV = [1, 3, 4.5, 8]
+        et.lateralTuning.indi.actuatorEffectivenessBP = [18, 22, 26]
+        ret.lateralTuning.indi.actuatorEffectivenessV = [10, 13, 15]
         #ret.lateralTuning.init('indi') #really good tune from cgw.
         #ret.lateralTuning.indi.innerLoopGainBP = [16.7, 25, 36.1]
         #ret.lateralTuning.indi.innerLoopGainV = [9.5, 15, 15]
