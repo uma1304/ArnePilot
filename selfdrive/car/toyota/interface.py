@@ -487,8 +487,8 @@ class CarInterface(CarInterfaceBase):
     else:
       ret.gasMaxBP = [0., 9., 55]
       ret.gasMaxV = [0.2, 0.5, 0.7]
-      ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # braking tune from rav4h
-      ret.longitudinalTuning.kiV = [0.195, 0.10]
+      ret.longitudinalTuning.kpV = [0.25, 0.3, 0.325]  # braking tune from rav4h
+      ret.longitudinalTuning.kiV = [0.1, 0.10]
 
     return ret
 
