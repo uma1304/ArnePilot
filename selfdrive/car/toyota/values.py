@@ -45,7 +45,7 @@ class CAR:
   LEXUS_ISH = "LEXUS IS300h 2017"
   LEXUS_GSH = "LEXUS GS450h 2017"
   LEXUS_NXT = "LEXUS NX200T 2015"
-
+  LEXUS_ESH = "LEXUS ES 300H 2017"
 
 # addr: (ecu, cars, bus, 1/freq*100, vl)
 STATIC_MSGS = [
@@ -1252,6 +1252,28 @@ FW_VERSIONS = {
       b'\x028646F3304100\x00\x00\x00\x008646G2601200\x00\x00\x00\x00',
     ],
   },
+    CAR.LEXUS_ESH: {
+      (Ecu.engine, 0x7e0, None): [
+        b'\x02333M4200\x00\x00\x00\x00\x00\x00\x00\x00A4701000\x00\x00\x00\x00\x00\x00\x00\x00',
+      ],
+      (Ecu.esp, 0x7b0, None): [
+        b'F152633171\x00\x00\x00\x00\x00\x00',
+      ],
+      (Ecu.dsu, 0x791, None): [
+        b'881513310400\x00\x00\x00\x00',
+      ],
+      (Ecu.eps, 0x7a1, None): [
+        b'8965B33512\x00\x00\x00\x00\x00\x00',
+      ],
+      (Ecu.fwdRadar, 0x750, 0xf): [
+        b'8821F4701100\x00\x00\x00\x00',
+        b'8821F4701300\x00\x00\x00\x00',
+      ],
+      (Ecu.fwdCamera, 0x750, 0x6d): [
+        b'8646F3302001\x00\x00\x00\x00',
+        b'8646F3302200\x00\x00\x00\x00',
+      ],
+  },
   CAR.LEXUS_NX: {
     (Ecu.engine, 0x700, None): [
       b'\x01896637851000\x00\x00\x00\x00',
@@ -1489,6 +1511,7 @@ DBC = {
   CAR.LEXUS_ISH: dbc_dict('lexus_is300h_2017_pt_generated', 'toyota_adas'),
   CAR.LEXUS_GSH: dbc_dict('lexus_is300h_2017_pt_generated', 'toyota_adas'),
   CAR.LEXUS_NXT: dbc_dict('lexus_nxt_2015_pt_generated', 'toyota_adas'),
+  CAR.LEXUS_ESH: dbc_dict('lexus_ct200h_2018_pt_generated', 'toyota_adas'),
 }
 
 NO_DSU_CAR = set([CAR.CHR, CAR.CHRH, CAR.CAMRY, CAR.CAMRYH, CAR.RAV4_TSS2, CAR.COROLLA_TSS2, CAR.COROLLAH_TSS2, CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2, CAR.LEXUS_RX_TSS2, CAR.LEXUS_RXH_TSS2, CAR.HIGHLANDER_TSS2, CAR.HIGHLANDERH_TSS2, CAR.LEXUS_NXT, CAR.PRIUS_TSS2])
