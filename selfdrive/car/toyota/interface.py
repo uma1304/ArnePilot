@@ -362,6 +362,16 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kfV = [0.00007818594]
 
+    elif candidate == CAR.LEXUS_ESH:
+      stop_and_go = True
+      ret.safetyParam = 73
+      ret.wheelbase = 2.8190
+      ret.steerRatio = 14.06
+      tire_stiffness_factor = 0.444  # not optimized yet
+      ret.mass = 3682. * CV.LB_TO_KG + STD_CARGO_KG
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
+      ret.lateralTuning.pid.kf = 0.00007818594
+      
     elif candidate == CAR.SIENNA:
       stop_and_go = True
       ret.safetyParam = 73
@@ -476,8 +486,8 @@ class CarInterface(CarInterfaceBase):
 
     ret.longitudinalTuning.deadzoneBP = [0., 9.]
     ret.longitudinalTuning.deadzoneV = [0., .15]
-    ret.longitudinalTuning.kpBP = [0., 5., 35.]
-    ret.longitudinalTuning.kiBP = [0., 35.]
+    ret.longitudinalTuning.kpBP = [0., 5., 55.]
+    ret.longitudinalTuning.kiBP = [0., 55.]
 
     if ret.enableGasInterceptor:
       ret.gasMaxBP = [0., 9., 35]
@@ -487,8 +497,8 @@ class CarInterface(CarInterfaceBase):
     else:
       ret.gasMaxBP = [0., 9., 55]
       ret.gasMaxV = [0.2, 0.5, 0.7]
-      ret.longitudinalTuning.kpV = [0.25, 0.3, 0.25]  # braking tune from rav4h
-      ret.longitudinalTuning.kiV = [0.1, 0.10]
+      ret.longitudinalTuning.kpV = [0.25, 0.2, 0.05]  # braking tune from rav4h
+      ret.longitudinalTuning.kiV = [0.1, 0.010]
 
     return ret
 
