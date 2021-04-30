@@ -488,7 +488,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.longitudinalTuning.deadzoneBP = [0., 9.]
     ret.longitudinalTuning.deadzoneV = [0., .15]
-    ret.longitudinalTuning.kpBP = [0., 5., 55.]
+    ret.longitudinalTuning.kpBP = [0., 8.5, 55.]
     ret.longitudinalTuning.kiBP = [0., 55.]
 
     if ret.enableGasInterceptor:
@@ -499,8 +499,8 @@ class CarInterface(CarInterfaceBase):
     else:
       ret.gasMaxBP = [0., 9., 55]
       ret.gasMaxV = [0.2, 0.5, 0.7]
-      ret.longitudinalTuning.kpV = [0.35, 0.2, 0.05]  # braking tune from rav4h
-      ret.longitudinalTuning.kiV = [0.15, 0.010]
+      ret.longitudinalTuning.kpV = [0.45, 0.1, 0.05]  # braking tune from rav4h
+      ret.longitudinalTuning.kiV = [0.2, 0.010]
 
     return ret
 
