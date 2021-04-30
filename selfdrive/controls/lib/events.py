@@ -406,7 +406,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
   },
 
   EventName.keepHandsOnWheel: {
-    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("Driver kept hands off sterring wheel"),
+    ET.SOFT_DISABLE: SoftDisableAlert(_("Driver kept hands off sterring wheel")),
   },
 
   EventName.driverMonitorLowAcc: {
