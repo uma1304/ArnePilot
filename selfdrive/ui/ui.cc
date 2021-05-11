@@ -264,6 +264,7 @@ static void update_status(UIState *s) {
       s->scene.speed_limit_control_enabled = Params().getBool("SpeedLimitControl");
       s->scene.speed_limit_perc_offset = Params().getBool("SpeedLimitPercOffset");
       s->scene.show_debug_ui = Params().getBool("ShowDebugUI");
+      s->scene.debug_snapshot_enabled = Params().getBool("EnableDebugSnapshot");
     } else {
       s->vipc_client->connected = false;
     }
@@ -276,7 +277,7 @@ QUIState::QUIState(QObject *parent) : QObject(parent) {
   ui_state.sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
     "modelV2", "controlsState", "liveCalibration", "deviceState", "roadCameraState",
     "pandaState", "carParams", "driverMonitoringState", "sensorEvents", "carState", "liveLocationKalman",
-    "longitudinalPlan",
+    "longitudinalPlan", "liveMapData",
   });
 
   ui_state.fb_w = vwp_w;

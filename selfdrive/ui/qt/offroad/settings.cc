@@ -104,6 +104,11 @@ TogglesPanel::TogglesPanel(QWidget *parent) : QWidget(parent) {
                                   "Show UI elements that aid debugging.",
                                   "../assets/offroad/icon_calibration.png",
                                   this));
+  toggles.append(new ParamControl("EnableDebugSnapshot",
+                                  "Debug snapshot on screen center tap",
+                                  "Stores snapshot file with current state of some modules.",
+                                  "../assets/offroad/icon_calibration.png",
+                                  this));
   toggles.append(new ParamControl("DisableDisengageOnGas",
                                   "Disable disengage on gas",
                                   "Disable default comma stock disengage on gas feature",
