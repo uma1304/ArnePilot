@@ -202,10 +202,10 @@ class CarInterface(CarInterfaceBase):
       stop_and_go = True
       ret.safetyParam = 73
       ret.wheelbase = 2.79
-      ret.steerRatio = 14.8
+      ret.steerRatio = 13.8
       tire_stiffness_factor = 0.5533  # not optimized yet
       ret.mass = 4387. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.1]]
       ret.lateralTuning.pid.kfV = [0.00007818594]
 
     elif candidate == CAR.LEXUS_RXH_TSS2:
