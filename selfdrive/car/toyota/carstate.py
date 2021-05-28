@@ -442,11 +442,11 @@ class CarState(CarStateBase):
       ("WHEEL_SPEED_FR", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_RL", "WHEEL_SPEEDS", 0),
       ("WHEEL_SPEED_RR", "WHEEL_SPEEDS", 0),
-      ("DOOR_OPEN_FL", "SEATS_DOORS", 1),
-      ("DOOR_OPEN_FR", "SEATS_DOORS", 1),
-      ("DOOR_OPEN_RL", "SEATS_DOORS", 1),
-      ("DOOR_OPEN_RR", "SEATS_DOORS", 1),
-      ("SEATBELT_DRIVER_UNLATCHED", "SEATS_DOORS", 1),
+      ("DOOR_OPEN_FL", "SEATS_DOORS", 0),
+      ("DOOR_OPEN_FR", "SEATS_DOORS", 0),
+      ("DOOR_OPEN_RL", "SEATS_DOORS", 0),
+      ("DOOR_OPEN_RR", "SEATS_DOORS", 0),
+      ("SEATBELT_DRIVER_UNLATCHED", "SEATS_DOORS", 0),
       ("TC_DISABLED", "ESP_CONTROL", 1),
       ("STEER_FRACTION", "STEER_ANGLE_SENSOR", 0),
       ("STEER_RATE", "STEER_ANGLE_SENSOR", 0),
@@ -461,7 +461,7 @@ class CarState(CarStateBase):
       ("BRAKE_LIGHTS_ACC", "ESP_CONTROL", 0),
       ("AUTO_HIGH_BEAM", "LIGHT_STALK", 0),
       ("SPORT_ON", "GEAR_PACKET", 0),
-      ("ECON_ON", "GEAR_PACKET", 0),
+      ("ECON_ON", "GEAR_PACKET", 1),
       ("DISTANCE_LINES", "PCM_CRUISE_SM", 0),
     ]
 
@@ -506,8 +506,8 @@ class CarState(CarStateBase):
       signals.append(("SET_SPEED", "DSU_CRUISE", 0))
       checks.append(("DSU_CRUISE", 5))
     else:
-      signals.append(("MAIN_ON", "PCM_CRUISE_2", 0))
-      signals.append(("SET_SPEED", "PCM_CRUISE_2", 0))
+      signals.append(("MAIN_ON", "PCM_CRUISE_2", 1))
+      signals.append(("SET_SPEED", "PCM_CRUISE_2", 42))
       signals.append(("LOW_SPEED_LOCKOUT", "PCM_CRUISE_2", 0))
       checks.append(("PCM_CRUISE_2", 33))
 
