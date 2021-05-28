@@ -447,7 +447,7 @@ class CarState(CarStateBase):
       ("DOOR_OPEN_RL", "SEATS_DOORS", 0),
       ("DOOR_OPEN_RR", "SEATS_DOORS", 0),
       ("SEATBELT_DRIVER_UNLATCHED", "SEATS_DOORS", 0),
-      ("TC_DISABLED", "ESP_CONTROL", 1),
+      ("TC_DISABLED", "ESP_CONTROL", 0),
       ("STEER_FRACTION", "STEER_ANGLE_SENSOR", 0),
       ("STEER_RATE", "STEER_ANGLE_SENSOR", 0),
       ("CRUISE_ACTIVE", "PCM_CRUISE", 0),
