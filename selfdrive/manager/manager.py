@@ -39,6 +39,7 @@ def manager_init():
     ("MaxDecelerationForTurns", "-2.0"),
     ("OpenpilotEnabledToggle", "1"),
     ("HandsOnWheelMonitoring", "1"),
+    ("ShowDebugUI", "1"),
     ("SpeedLimitControl", "1"),
     ("SpeedLimitPercOffset", "1"),
     ("SpeedLimitDelayIncrease", "1"),
