@@ -126,6 +126,10 @@ class CarInterfaceBase():
         events.add(EventName.speedTooHigh)
     else:
       if cs_out.vEgo > self.dragonconf.dpMaxCtrlSpeed:
+        print("vEgo=")
+        print(cs_out.vEgo)
+        print("self.dragonconf.dpMaxCtrlSpeed =")
+        print(self.dragonconf.dpMaxCtrlSpeed)
         events.add(EventName.speedTooHigh)
     if cs_out.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
