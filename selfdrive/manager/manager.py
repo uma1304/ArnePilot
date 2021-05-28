@@ -40,7 +40,9 @@ def manager_init():
     ("OpenpilotEnabledToggle", "1"),
     ("HandsOnWheelMonitoring", "1"),
     ("SpeedLimitControl", "1"),
-    ("SpeedLimitPercOffset", "30.0"),
+    ("SpeedLimitPercOffset", "1"),
+    ("SpeedLimitDelayIncrease", "1"),
+    ("TurnSpeedControl", "1"),
     ("TurnVisionControl", "1"),
   ]
 
