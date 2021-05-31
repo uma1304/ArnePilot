@@ -39,6 +39,8 @@ def manager_init():
     ("MaxDecelerationForTurns", "-2.0"),
     ("OpenpilotEnabledToggle", "1"),
     ("HandsOnWheelMonitoring", "1"),
+    ("SpeedLimitControl", "1"),
+    ("SpeedLimitPercOffset", "30.0"),
     ("TurnVisionControl", "1"),
   ]
 
@@ -59,6 +61,11 @@ def manager_init():
 
   # dp init params
   init_params_vals(params)
+  # parameters set by Enviroment Varables
+  if os.getenv("HANDSMONITORING") is not None:
+    params.put_bool("HandsOnWheelMonitoring", bool(int(os.getenv("HANDSMONITORING"))))
+  if os.getenv("FOLLOWSPEEDLIMIT") is not None:
+    params.put_bool("SpeedLimitControl", bool(int(os.getenv("FOLLOWSPEEDLIMIT"))))
 
   # is this dashcam?
   if os.getenv("PASSIVE") is not None:
