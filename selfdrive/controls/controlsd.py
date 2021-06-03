@@ -183,6 +183,7 @@ class Controls:
     self.dp_camera_offset = CAMERA_OFFSET * 100
     self.sm['dragonConf'].dpAtl = False
     self.sm['dragonConf'].dpCameraOffset = 6
+    self.sm['dragonConf'].dpMaxCtrlSpeed = 55
 
     self.dp_lead_away_alert = params.get('dp_lead_car_away_alert') == b'1'
     self.dp_lead_away_min_speed = 80 # kph
