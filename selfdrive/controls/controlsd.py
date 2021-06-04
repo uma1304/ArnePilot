@@ -273,7 +273,7 @@ class Controls:
       self.events.add(EventName.posenetInvalid)
     if not self.sm['liveLocationKalman'].deviceStable:
       self.events.add(EventName.deviceFalling)
-    if not self.sm['plan'].radarValid:
+    if not self.sm['plan'].radarValid and self.sm.frame > 5 / DT_CTRL:
       self.events.add(EventName.radarFault)
     if self.sm['plan'].radarCanError and self.sm.frame > 5 / DT_CTRL:
       self.events.add(EventName.radarCanError)
