@@ -275,7 +275,7 @@ class Controls:
       self.events.add(EventName.deviceFalling)
     if not self.sm['plan'].radarValid:
       self.events.add(EventName.radarFault)
-    if self.sm['plan'].radarCanError:
+    if self.sm['plan'].radarCanError and self.sm.frame > 5 / DT_CTRL:
       self.events.add(EventName.radarCanError)
     if log.HealthData.FaultType.relayMalfunction in self.sm['health'].faults:
       self.events.add(EventName.relayMalfunction)
