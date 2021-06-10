@@ -36,8 +36,10 @@ def manager_init():
     ("CompletedTrainingVersion", "0"),
     ("HasAcceptedTerms", "0"),
     ("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')),
+    ("MaxDecelerationForTurns", "-2.0"),
     ("OpenpilotEnabledToggle", "1"),
     ("HandsOnWheelMonitoring", "1"),
+    ("TurnVisionControl", "1"),
   ]
 
   if TICI:
