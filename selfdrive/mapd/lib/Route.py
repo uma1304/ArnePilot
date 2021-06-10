@@ -6,7 +6,7 @@ import numpy as np
 
 
 _MAX_ALLOWED_BEARING_DELTA_COSINE_AT_EDGE = -0.3420  # bearing delta at route edge must be 180 +/- 70 degrees.
-_MAP_DATA_EDGE_DISTANCE = 50  # mts. Consider edge of map data from this distance to edge of query radius.
+_MAP_DATA_EDGE_DISTANCE = 100  # mts. Consider edge of map data from this distance to edge of query radius.
 
 
 class Route():
