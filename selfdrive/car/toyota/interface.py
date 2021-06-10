@@ -91,7 +91,7 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 13.4   # True steerRation from older prius
       tire_stiffness_factor = 0.6371   # hand-tune
       ret.mass = 3115. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0., 30.], [0., 30.]]
+      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0., 27.], [0., 27.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3, 0.6], [0.05, 0.03]]
       ret.lateralTuning.pid.kf = 0.00007818594
 
