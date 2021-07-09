@@ -311,7 +311,8 @@ class Controls:
         if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.dp_lead_away_alert_lead_count >= 300:
           self.dp_lead_away_state = LEAD_AWAY_STATE_ON
         elif self.dp_lead_away_state == LEAD_AWAY_STATE_ON and self.dp_lead_away_alert_nolead_count >= nolead_count:
-          self.events.add(EventName.leadCarMoving)
+          if self.sm['dragonConf'].dpLeadCarAlert:
+            self.events.add(EventName.leadCarMoving)
           self.dp_lead_away_state = LEAD_AWAY_STATE_ALERTED
 
     # dp lead car moving alert
