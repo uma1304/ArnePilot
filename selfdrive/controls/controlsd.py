@@ -26,7 +26,7 @@ from common.travis_checker import travis
 from selfdrive.interceptor import Interceptor
 from common.op_params import opParams
 op_params = opParams()
-radar_failed = False
+
 
 distance_traveled = op_params.get('distance_traveled')
 
@@ -128,7 +128,7 @@ class Controls:
       self.LaC = LatControlLQR(self.CP)
     elif self.CP.lateralTuning.which() == 'pid':
       self.LaC = LatControlPID(self.CP)
-
+    self.radar_failed = False
     self.state = State.disabled
     self.enabled = False
     self.active = False
@@ -275,7 +275,7 @@ class Controls:
     if not self.sm['liveLocationKalman'].deviceStable:
       self.events.add(EventName.deviceFalling)
     if not self.sm['plan'].radarValid:
-      radar_failed = True
+      self.radar_failed = True
       if self.sm.frame > 5 / DT_CTRL:
         self.events.add(EventName.radarFault)
     if self.sm['plan'].radarCanError and self.sm.frame > 5 / DT_CTRL:
@@ -474,7 +474,7 @@ class Controls:
     if not self.active:
       self.LaC.reset()
       self.LoC.reset(v_pid=plan.vTargetFuture)
-    elif radar_failed and self.sm.frame < 4 / DT_CTRL and self.sm.frame > 3 / DT_CTRL:
+    elif self.radar_failed and self.sm.frame < 4 / DT_CTRL and self.sm.frame > 3 / DT_CTRL:
       self.LoC.reset(v_pid=CS.vEgo)
 
     plan_age = DT_CTRL * (self.sm.frame - self.sm.rcv_frame['plan'])
