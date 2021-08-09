@@ -27,6 +27,7 @@ from selfdrive.interceptor import Interceptor
 from common.op_params import opParams
 op_params = opParams()
 
+
 distance_traveled = op_params.get('distance_traveled')
 
 LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
@@ -127,7 +128,7 @@ class Controls:
       self.LaC = LatControlLQR(self.CP)
     elif self.CP.lateralTuning.which() == 'pid':
       self.LaC = LatControlPID(self.CP)
-
+    self.radar_failed = False
     self.state = State.disabled
     self.enabled = False
     self.active = False
@@ -274,8 +275,10 @@ class Controls:
     if not self.sm['liveLocationKalman'].deviceStable:
       self.events.add(EventName.deviceFalling)
     if not self.sm['plan'].radarValid:
-      self.events.add(EventName.radarFault)
-    if self.sm['plan'].radarCanError:
+      self.radar_failed = True
+      if self.sm.frame > 5 / DT_CTRL:
+        self.events.add(EventName.radarFault)
+    if self.sm['plan'].radarCanError and self.sm.frame > 5 / DT_CTRL:
       self.events.add(EventName.radarCanError)
     if log.HealthData.FaultType.relayMalfunction in self.sm['health'].faults:
       self.events.add(EventName.relayMalfunction)
@@ -311,7 +314,8 @@ class Controls:
         if self.dp_lead_away_state == LEAD_AWAY_STATE_OFF and self.dp_lead_away_alert_lead_count >= 300:
           self.dp_lead_away_state = LEAD_AWAY_STATE_ON
         elif self.dp_lead_away_state == LEAD_AWAY_STATE_ON and self.dp_lead_away_alert_nolead_count >= nolead_count:
-          self.events.add(EventName.leadCarMoving)
+          if self.sm['dragonConf'].dpLeadCarAlert:
+            self.events.add(EventName.leadCarMoving)
           self.dp_lead_away_state = LEAD_AWAY_STATE_ALERTED
 
     # dp lead car moving alert
@@ -470,6 +474,8 @@ class Controls:
     if not self.active:
       self.LaC.reset()
       self.LoC.reset(v_pid=plan.vTargetFuture)
+    elif self.radar_failed and self.sm.frame < 4 / DT_CTRL and self.sm.frame > 3 / DT_CTRL:
+      self.LoC.reset(v_pid=CS.vEgo)
 
     plan_age = DT_CTRL * (self.sm.frame - self.sm.rcv_frame['plan'])
     # no greater than dt mpc + dt, to prevent too high extraps
@@ -480,6 +486,8 @@ class Controls:
 
     # Gas/Brake PID loop
     actuators.gas, actuators.brake = self.LoC.update(self.active, CS, v_acc_sol, plan.vTargetFuture, a_acc_sol, self.CP, self.sm, plan.hasLead, self.sm['radarState'], plan.decelForTurn, plan.longitudinalPlanSource)
+    if not travis and self.sm.frame < 4 / DT_CTRL:
+      actuators.gas, actuators.brake = 0.,0.
     # Steering PID loop and lateral MPC
     actuators.steer, actuators.steerAngle, lac_log = self.LaC.update(self.active, CS, self.CP, path_plan)
 
