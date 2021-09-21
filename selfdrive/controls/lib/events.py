@@ -236,6 +236,15 @@ def joystick_alert(CP: car.CarParams, sm: messaging.SubMaster, metric: bool) -> 
     AlertStatus.normal, AlertSize.mid,
     Priority.LOW, VisualAlert.none, AudibleAlert.none, 0., 0., .1)
 
+def speed_limit_adjust_alert(CP: car.CarParams, sm: messaging.SubMaster, metric: bool) -> Alert:
+  speedLimit = sm['longitudinalPlan'].speedLimit
+  speed = round(speedLimit * (CV.MS_TO_KPH if metric else CV.MS_TO_MPH))
+  message = f'Adjusting to {speed} {"km/h" if metric else "mph"} speed limit'
+  return Alert(
+    message,
+    "",
+    AlertStatus.normal, AlertSize.small,
+    Priority.LOW, VisualAlert.none, AudibleAlert.none, 0., 0., 4.)
 
 EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, bool], Alert]]]] = {
   # ********** events with no alerts **********
@@ -570,11 +579,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
   },
 
   EventName.speedLimitValueChange: {
-    ET.WARNING: Alert(
-      "Adjusting speed to match new speed limit",
-      "",
-      AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, 1., 0., 2.),
+    ET.WARNING: speed_limit_adjust_alert,
   },
 
   # ********** events that affect controls state transitions **********
