@@ -289,7 +289,8 @@ static void ui_draw_vision_speedlimit(UIState *s) {
 
   if (speedLimit > 0.0 && s->scene.engageable) {
     const Rect maxspeed_rect = {bdr_s * 2, int(bdr_s * 1.5), 184, 202};
-    const Rect speed_sign_rect = {maxspeed_rect.right() + bdr_s, maxspeed_rect.y, 2 * speed_sgn_r, 2 * speed_sgn_r};
+    const Rect speed_sign_rect = {maxspeed_rect.centerX() - speed_sgn_r, maxspeed_rect.bottom() + bdr_s,
+                                  2 * speed_sgn_r, 2 * speed_sgn_r};
     const float speed = speedLimit * (s->scene.is_metric ? 3.6 : 2.2369362921);
     const float speed_offset = speedLimitOffset * (s->scene.is_metric ? 3.6 : 2.2369362921);
 
