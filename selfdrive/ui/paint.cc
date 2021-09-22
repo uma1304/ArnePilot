@@ -330,8 +330,9 @@ static void ui_draw_vision_turnspeed(UIState *s) {
 
   if (show) {
     const Rect maxspeed_rect = {bdr_s * 2, int(bdr_s * 1.5), 184, 202};
-    const Rect speed_sign_rect = {maxspeed_rect.right() + bdr_s + 2 * speed_sgn_r, maxspeed_rect.y, 
-                                  2 * speed_sgn_r, maxspeed_rect.h};
+    const Rect speed_sign_rect = {maxspeed_rect.centerX() - speed_sgn_r, 
+                                  maxspeed_rect.bottom() + int(1.5 * bdr_s) + 2 * speed_sgn_r, 
+                                  2 * speed_sgn_r, maxspeed_rect.h};                                  
     const float speed = turnSpeed * (s->scene.is_metric ? 3.6 : 2.2369362921);
 
     auto turnSpeedControlState = longitudinal_plan.getTurnSpeedControlState();
