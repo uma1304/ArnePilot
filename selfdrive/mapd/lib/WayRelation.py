@@ -1,5 +1,6 @@
 from selfdrive.mapd.lib.geo import DIRECTION, R, vectors, bearing_to_points, distance_to_points
 from selfdrive.config import Conversions as CV
+from selfdrive.mapd.config import LANE_WIDTH
 from common.basedir import BASEDIR
 from datetime import datetime as dt
 import numpy as np
@@ -8,7 +9,6 @@ import json
 
 
 _WAY_BBOX_PADING = 80. / R  # 80 mts of pading to bounding box. (expressed in radians)
-_LANE_WIDTH = 3.7  # Lane width estimate. Used for detecting departures from way.
 
 
 with open(BASEDIR + "/selfdrive/mapd/lib/default_speeds.json", "rb") as f:
@@ -202,7 +202,7 @@ class WayRelation():
   def id(self):
     return self.way.id
 
-  def update(self, location_rad, bearing_rad, location_accuracy):
+  def update(self, location_rad, bearing_rad, location_stdev):
     """Will update and validate the associated way with a given `location_rad` and `bearing_rad`.
        Specifically it will find the nodes behind and ahead of the current location and bearing.
        If no proper fit to the way geometry, the way relation is marked as invalid.
@@ -256,9 +256,15 @@ class WayRelation():
     min_h_possible_idx = np.argmin(h_possible)
     min_delta_idx = possible_idxs[min_h_possible_idx]
 
-    # - If the distance to the road is greater than the accuracy + half the maximum road width estimate then we
-    # are most likely diverting from this route.
-    diverting = h_possible[min_h_possible_idx] > location_accuracy + self.lanes * _LANE_WIDTH / 2.
+    # - If the distance to the way is over 4 standard deviations of the gps accuracy + half the maximum road width
+    # estimate, then we are way too far to stick to this way (i.e. we are not on this way anymore)
+    half_road_width_estimate = self.lanes * LANE_WIDTH / 2.
+    if h_possible[min_h_possible_idx] > 4. * location_stdev + half_road_width_estimate:
+      return
+
+    # - If the distance to the road is greater than 2 standard deviations of the gps accuracy + half the maximum road
+    # width estimate then we are most likely diverting from this route.
+    diverting = h_possible[min_h_possible_idx] > 2. * location_stdev + half_road_width_estimate
 
     # Populate location variables with result
     if is_ahead[min_delta_idx]:

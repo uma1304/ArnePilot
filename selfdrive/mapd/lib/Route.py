@@ -183,7 +183,7 @@ class Route():
   def current_wr(self):
     return self._ordered_way_relations[0] if len(self._ordered_way_relations) else None
 
-  def update(self, location_rad, bearing_rad, accuracy):
+  def update(self, location_rad, bearing_rad, location_stdev):
     """Will update the route structure based on the given `location_rad` and `bearing_rad` assuming progress on the
     route on the original direction. If direction has changed or active point on the route can not be found, the route
     will become invalid.
@@ -199,7 +199,7 @@ class Route():
     # with the way relations remaining ahead.
     for idx, wr in enumerate(self._ordered_way_relations):
       active_direction = wr.direction
-      wr.update(location_rad, bearing_rad, accuracy)
+      wr.update(location_rad, bearing_rad, location_stdev)
 
       if not wr.active:
         continue

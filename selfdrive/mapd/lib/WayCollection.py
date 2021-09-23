@@ -1,5 +1,6 @@
 from selfdrive.mapd.lib.WayRelation import WayRelation
 from selfdrive.mapd.lib.Route import Route
+from selfdrive.mapd.config import LANE_WIDTH
 import uuid
 
 
@@ -26,15 +27,15 @@ class WayCollection():
       for node_id in wr.edge_nodes_ids:
         self.wr_index[node_id] = self.wr_index.get(node_id, []) + [wr]
 
-  def get_route(self, location_rad, bearing_rad, accuracy):
+  def get_route(self, location_rad, bearing_rad, location_stdev):
     """Provides the best route found in the way collection based on current location and bearing.
     """
-    if location_rad is None or bearing_rad is None or accuracy is None:
+    if location_rad is None or bearing_rad is None or location_stdev is None:
       return None
 
     # Update all way relations in collection to the provided location and bearing.
     for wr in self.way_relations:
-      wr.update(location_rad, bearing_rad, accuracy)
+      wr.update(location_rad, bearing_rad, location_stdev)
 
     # Get the way relations where a match was found. i.e. those now marked as active as long as the direction of
     # travel is valid.
@@ -62,11 +63,13 @@ class WayCollection():
       elif len(wr_acceptable_bearing) == 1:
         current = wr_acceptable_bearing[0]
 
-      # If more than one with acceptable bearing, filter the ones with distance to way lower than GPS accuracy.
       else:
-        wr_accurate_distance = list(filter(lambda wr: wr.distance_to_way <= accuracy, wr_acceptable_bearing))
+        # If more than one with acceptable bearing, filter the ones with distance to way lower than 2 standard
+        # deviation from GPS accuracy (95%) + half the road width estimate.
+        wr_accurate_distance = [wr for wr in wr_acceptable_bearing
+                                if wr.distance_to_way <= 2. * location_stdev + wr.lanes * LANE_WIDTH / 2.]
 
-        # If none with distance under accuracy, then select the closest to the way
+        # If none with accurate distance to way, then select the closest to the way
         if len(wr_accurate_distance) == 0:
           wr_acceptable_bearing.sort(key=lambda wr: wr.distance_to_way)
           current = wr_acceptable_bearing[0]
