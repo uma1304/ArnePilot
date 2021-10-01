@@ -155,7 +155,7 @@ static int toyota_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
 
     // GAS PEDAL: safety check
     if (addr == 0x200) {
-      if (!controls_allowed) {
+      if (!controls_allowed || brake_pressed) {
         if (GET_BYTE(to_send, 0) || GET_BYTE(to_send, 1)) {
           tx = 0;
         }
@@ -166,7 +166,7 @@ static int toyota_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     if (addr == 0x343) {
       int desired_accel = (GET_BYTE(to_send, 0) << 8) | GET_BYTE(to_send, 1);
       desired_accel = to_signed(desired_accel, 16);
-      if (!controls_allowed) {
+      if (!controls_allowed) || brake_pressed {
         if (desired_accel != 0) {
           tx = 0;
         }
