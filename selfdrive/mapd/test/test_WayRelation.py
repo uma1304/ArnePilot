@@ -9,7 +9,8 @@ from selfdrive.mapd.lib.WayRelation import WayRelation, is_osm_time_condition_ac
   conditional_speed_limit_for_osm_tag_limit_string, speed_limit_for_osm_tag_limit_string
 from selfdrive.mapd.config import LANE_WIDTH
 from selfdrive.mapd.lib.geo import DIRECTION, R, vectors
-from selfdrive.mapd.test.mock_data import mockOSMWay_01_01_LongCurvy, mockOSMWay_01_02_Loop
+from selfdrive.mapd.test.mock_data import mockOSMWay_01_01_LongCurvy, mockOSMWay_01_02_Loop, \
+  mockOSMWay_02_01_CurvyTownWithIntersections
 
 
 class TestWayRelationFileFunctions(unittest.TestCase):
@@ -230,6 +231,17 @@ class TestWayRelation(unittest.TestCase):
     wayRelation = WayRelation(mockOSMWay_01_01_LongCurvy)
 
     self.assertEqual(wayRelation.id, 179532213)
+
+  def test_way_relation_road_name(self):
+    # road name when no tag for name or ref
+    wayRelation = WayRelation(mockOSMWay_01_02_Loop)
+    self.assertIsNone(wayRelation.road_name)
+    # road name based on ref tag
+    wayRelation = WayRelation(mockOSMWay_01_01_LongCurvy)
+    self.assertEqual(wayRelation.road_name, "B 96")
+    # road name based on name tag
+    wayRelation = WayRelation(mockOSMWay_02_01_CurvyTownWithIntersections)
+    self.assertEqual(wayRelation.road_name, "Hauptstraße")
 
   def test_way_relation_update_resets_on_update(self):
     wayRelation = WayRelation(mockOSMWay_01_01_LongCurvy)
