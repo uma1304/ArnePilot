@@ -126,6 +126,8 @@ class CarController():
 
     if dragonconf.dpAtl and dragonconf.dpAtlOpLong and not CS.out.cruiseActualEnabled:
       pcm_accel_cmd = 0
+      if CS.CP.enableGasInterceptor:
+        interceptor_gas_cmd = 0.
 
     # we can spam can to cancel the system even if we are using lat only control
     if (frame % 3 == 0 and CS.CP.openpilotLongitudinalControl) or pcm_cancel_cmd:
