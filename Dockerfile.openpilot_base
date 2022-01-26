@@ -63,4 +63,5 @@ RUN pyenv install 3.8.5 && \
     cd /tmp && \
     pipenv install --system --deploy --dev --clear && \
     pip uninstall -y pipenv
-RUN pip install overpy
+RUN pip install overpy 
+RUN pip install raven
