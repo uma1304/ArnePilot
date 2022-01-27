@@ -10,7 +10,7 @@ import subprocess
 import datetime
 import textwrap
 from typing import Dict, List
-from selfdrive.swaglog import cloudlog, add_logentries_handler
+from selfdrive.swaglog import cloudlog, add_file_handler
 from common.op_params import opParams
 
 traffic_lights = opParams().get('traffic_lights')
@@ -149,7 +149,7 @@ if not prebuilt:
         errors = [line.decode('utf8', 'replace') for line in compile_output
                   if any([err in line for err in [b'error: ', b'not found, needed by target']])]
         error_s = "\n".join(errors)
-        add_logentries_handler(cloudlog)
+        add_file_handler(cloudlog)
         cloudlog.error("scons build failed\n" + error_s)
 
         try:
@@ -706,7 +706,7 @@ if __name__ == "__main__":
   try:
     main()
   except Exception:
-    add_logentries_handler(cloudlog)
+    add_file_handler(cloudlog)
     cloudlog.exception("Manager failed to start")
 
     try:
