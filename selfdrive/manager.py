@@ -314,7 +314,7 @@ if ANDROID:
 car_started_processes += ['modeld']
 
 def register_managed_process(name, desc, car_started=False):
-  global managed_processes, car_started_processes, persistent_processes
+  #global managed_processes, car_started_processes, persistent_processes
   print("registering %s" % name)
   managed_processes[name] = desc
   if car_started:
