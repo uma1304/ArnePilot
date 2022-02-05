@@ -41,7 +41,7 @@ UPLOAD_ATTR_VALUE = b'1'
 LOG_PATH = '/data/media/0/gpx_logs/'
 
 # osm api
-API_HEADER = {'Authorization': 'Bearer 2pvUyXfk9vizuh7PwQFSEYBtFWcM-Pu7vxApUjSA0fc'}
+API_HEADER = {'Authorization': 'Bearer wP6hZD14Z9ZcbEwDiSEdhSwlyjOfIjFqBkW6YrfEf7o'}
 VERSION_URL = 'https://api.openstreetmap.org/api/versions'
 UPLOAD_URL = 'https://api.openstreetmap.org/api/0.6/gpx/create'
 
