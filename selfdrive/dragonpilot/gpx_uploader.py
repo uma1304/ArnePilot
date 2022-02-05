@@ -91,7 +91,7 @@ class GpxUploader():
     fn = os.path.basename(filename)
     data = {
       'description': "Routes from dragonpilot %s (%s)." % (self._dp_version, self._car_model),
-      'visibility': 'identifiable'
+      'visibility': 'public'
     }
     files = {
       "file": (fn, open(filename, 'rb'))
