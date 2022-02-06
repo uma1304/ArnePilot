@@ -24,7 +24,7 @@ class OSM():
     q = """
         way(""" + bbox_str + """)
           [highway]
-          [highway!~"^(footway|path|corridor|bridleway|steps|cycleway|construction|bus_guideway|escape|service|track)$"];
+          [highway!~"^(footway|path|corridor|bridleway|steps|cycleway|construction|bus_guideway|escape|track)$"];
         (._;>;);
         out;
         """
