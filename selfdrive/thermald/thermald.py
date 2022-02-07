@@ -98,7 +98,7 @@ def setup_eon_fan():
 
 
 def set_eon_fan(val):
-  global LEON, last_eon_fan_val
+  global last_eon_fan_val
 
   if last_eon_fan_val is None or last_eon_fan_val != val:
     bus = SMBus(7, force=True)
