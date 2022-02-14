@@ -40,7 +40,7 @@ _HIGHWAY_RANK = {
   'unclassified': 50,
   'residential': 60,
   'living_street': 61,
-  None: 100,
+  'service': 65
 }
 
 
@@ -156,7 +156,7 @@ class WayRelation():
     self.name = way.tags.get('name')
     self.ref = way.tags.get('ref')
     self.highway_type = way.tags.get("highway")
-    self.highway_rank = _HIGHWAY_RANK.get(self.highway_type)
+    self.highway_rank = _HIGHWAY_RANK.get(self.highway_type, 100)
     try:
       self.lanes = int(way.tags.get('lanes'))
     except Exception:
