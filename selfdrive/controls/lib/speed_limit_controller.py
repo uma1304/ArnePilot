@@ -15,7 +15,7 @@ _PARAMS_UPDATE_PERIOD = 2.  # secs. Time between parameter updates.
 _TEMP_INACTIVE_GUARD_PERIOD = 300.  #300s is always on mpd, push ui button to perminantly deactivate. Original is 1 secs Time to wait after activation before considering temp deactivation signal but causes engagement confusion.
 
 # Lookup table for speed limit percent offset depending on speed.
-_LIMIT_PERC_OFFSET_V = [0.316, 0.19, 0.133, 0.118, 0.105, 0.095, 0.455, 0.24, 0.21] #about 5mph below 60mph, 15mph above 60mph
+_LIMIT_PERC_OFFSET_V = [0.316, 0.19, 0.133, 0.118, 0.105, 0.095, 0.12, 0.24, 0.21] #about 5mph below 60mph, 15mph above 60mph
 _LIMIT_PERC_OFFSET_BP = [6.7, 11.18, 15.8, 17.88, 20.12, 22.35, 24.58, 26.8, 31.29]
 
 SpeedLimitControlState = log.LongitudinalPlan.SpeedLimitControlState
