@@ -7,7 +7,7 @@ This README describes the custom features build by Arne Schwarck and Kumar on to
 
 For a demo of this version 0.5.7(old) of ArnePilot
 
-Find me on Discord https://discord.gg/Ebgn8Mr
+Find me on Discord https://discord.gg/Rx7EQHy
 
 # Installation
 
