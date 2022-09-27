@@ -2,11 +2,11 @@ import numpy as np
 from enum import Enum
 from selfdrive.mapd.lib.geo import DIRECTION, R, vectors
 
-from selfdrive.hardware import EON
+#from selfdrive.hardware import EON
 
-if EON:
+try:
   from opspline import splev, splprep  # pylint: disable=E0401
-else:
+except Exception:
   from scipy.interpolate import splev, splprep
 
 
