@@ -1,6 +1,5 @@
 from selfdrive.mapd.lib.geo import DIRECTION, R, vectors, bearing_to_points, distance_to_points
 from selfdrive.config import Conversions as CV
-from common.basedir import BASEDIR
 from datetime import datetime as dt
 import numpy as np
 import re
@@ -11,7 +10,7 @@ _WAY_BBOX_PADING = 80. / R  # 80 mts of pading to bounding box. (expressed in ra
 _LANE_WIDTH = 3.7  # Lane width estimate. Used for detecting departures from way.
 
 
-with open(BASEDIR + "/selfdrive/mapd/lib/default_speeds.json", "rb") as f:
+with open("/content/openpilot/selfdrive/mapd/lib/default_speeds.json", "rb") as f:
   _COUNTRY_LIMITS = json.loads(f.read())
 
 
