@@ -32,15 +32,18 @@ class OSM():
           [highway]
           [highway!~"^(footway|path|corridor|bridleway|steps|cycleway|construction|bus_guideway|escape|service|track)$"];
         (._;>;);
-        out;
+        out;""" + """is_in""" + lat_lon + """;area._[admin_level~"[24]"];
+        convert area ::id = id(), admin_level = t['admin_level'],
+        name = t['name'], "ISO3166-1:alpha2" = t['ISO3166-1:alpha2'];out;
         """
     try:
-      ways = self.api.query(q).ways
+        query = self.api.query(q)
+        areas, ways = query.areas, query.ways
     except Exception as e:
       print(f'Exception while querying OSM:\n{e}')
-      ways = []
+      areas, ways = [],[]
 
-    return ways
+    return areas, ways
 
   def simulator_fetch(self):
     _debug('OSM: Start simulator fetch')
