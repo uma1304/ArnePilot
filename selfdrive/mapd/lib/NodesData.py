@@ -28,9 +28,14 @@ def nodes_raw_data_array_for_wr(wr, drop_last=False):
   data = np.array(list(map(lambda n: (n.id, n.lat, n.lon, sl), wr.way.nodes)), dtype=float)
 
   # reverse the order if way direction is backwards
+  for count, node in enumerate(wr.way.nodes):
+    if 'highway' in node.tags and node.tags['highway']=='stop' and 'direction' in node.tags:
+      if (wr.direction == DIRECTION.BACKWARD and node.tags['direction'] == 'backward') or (wr.direction == DIRECTION.FORWARD and node.tags['direction'] == 'forward'):
+        data[count][3] = 0.1
+
   if wr.direction == DIRECTION.BACKWARD:
     data = np.flip(data, axis=0)
-
+        
   # drop last if requested
   return data[:-1] if drop_last else data
 
