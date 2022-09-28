@@ -173,7 +173,11 @@ def speed_limit_value_for_highway_type(areas, tags):
         break #stop searching region
   except KeyError:
     pass
-  return max_speed
+  v = re.match(r'^\s*([0-9]{1,3})\s*?(mph)?\s*$', max_speed)
+  if v is None:
+    return None
+  conv = CV.MPH_TO_MS if v[2] is not None and v[2] == "mph" else CV.KPH_TO_MS
+  return conv * float(max_speed)
 
 
 class WayRelation():
