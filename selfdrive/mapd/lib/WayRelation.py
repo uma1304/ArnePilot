@@ -141,7 +141,7 @@ def conditional_speed_limit_for_osm_tag_limit_string(limit_string):
   # If we get here, no current date-time conditon is active.
   return 0.
 
-def speed_limit_value_for_highway_type(areas, tags)
+def speed_limit_value_for_highway_type(areas, tags):
   max_speed = 0
   try:
     for area in areas:
