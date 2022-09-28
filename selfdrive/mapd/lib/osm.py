@@ -27,6 +27,7 @@ class OSM():
     bbox_angle = np.degrees(radius / R)
     # fetch all ways and nodes on this ways in bbox
     bbox_str = f'{str(lat - bbox_angle)},{str(lon - bbox_angle)},{str(lat + bbox_angle)},{str(lon + bbox_angle)}'
+    lat_lon = "(%f,%f)" % (lat, lon)
     q = """
         way(""" + bbox_str + """)
           [highway]
