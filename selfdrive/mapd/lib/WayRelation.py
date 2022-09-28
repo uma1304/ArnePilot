@@ -146,7 +146,8 @@ def speed_limit_value_for_highway_type(areas, tags):
   try:
     for area in areas:
       if area.tags.get('admin_level', '') == "2":
-        geocode_country = area.tags.get('ISO3166-1:alpha2', '')
+          if area.tags.get('ISO3166-1:alpha2', '') =! '':
+            geocode_country = area.tags.get('ISO3166-1:alpha2', '')
       elif area.tags.get('admin_level', '') == "4":
         geocode_region = area.tags.get('name', '')
     country_rules = DEFAULT_SPEEDS_BY_REGION.get(geocode_country, {})
@@ -171,8 +172,8 @@ def speed_limit_value_for_highway_type(areas, tags):
       if rule_valid:
         max_speed = rule['speed']
         break #stop searching region
-  except KeyError:
-    pass
+  except KeyError as e:
+    print(e)
   v = re.match(r'^\s*([0-9]{1,3})\s*?(mph)?\s*$', max_speed)
   if v is None:
     return None
