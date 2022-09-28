@@ -13,6 +13,8 @@ _LANE_WIDTH = 3.7  # Lane width estimate. Used for detecting departures from way
 with open("/content/openpilot/selfdrive/mapd/lib/default_speeds.json", "rb") as f:
   _COUNTRY_LIMITS = json.loads(f.read())
 
+with open(BASEDIR + "/selfdrive/mapd/lib/default_speeds_by_region.json", "rb") as f:
+  DEFAULT_SPEEDS_BY_REGION = json.loads(f.read())
 
 _WD = {
   'Mo': 0,
@@ -139,12 +141,47 @@ def conditional_speed_limit_for_osm_tag_limit_string(limit_string):
   # If we get here, no current date-time conditon is active.
   return 0.
 
+def speed_limit_value_for_highway_type(areas, tags)
+  max_speed = 0
+  try:
+    for area in areas:
+      if area.tags.get('admin_level', '') == "2":
+        geocode_country = area.tags.get('ISO3166-1:alpha2', '')
+      elif area.tags.get('admin_level', '') == "4":
+        geocode_region = area.tags.get('name', '')
+    country_rules = DEFAULT_SPEEDS_BY_REGION.get(geocode_country, {})
+    country_defaults = country_rules.get('Default', [])
+    for rule in country_defaults:
+      rule_valid = all(
+        tag_name in tags
+        and tags[tag_name] == value
+        for tag_name, value in rule['tags'].items()
+      )
+      if rule_valid:
+        max_speed = rule['speed']
+        break #stop searching country
+
+    region_rules = country_rules.get(geocode_region, [])
+    for rule in region_rules:
+      rule_valid = all(
+        tag_name in tags
+        and tags[tag_name] == value
+        for tag_name, value in rule['tags'].items()
+      )
+      if rule_valid:
+        max_speed = rule['speed']
+        break #stop searching region
+  except KeyError:
+    pass
+  return max_speed
+
 
 class WayRelation():
   """A class that represent the relationship of an OSM way and a given `location` and `bearing` of a driving vehicle.
   """
-  def __init__(self, way):
+  def __init__(self, areas, way):
     self.way = way
+    self.areas = areas
     self.reset_location_variables()
     self.direction = DIRECTION.NONE
     self._speed_limit = None
@@ -324,7 +361,8 @@ class WayRelation():
           limit_string = self.way.tags.get("maxspeed:backward")
 
       limit = speed_limit_for_osm_tag_limit_string(limit_string)
-
+    if limit == 0.:
+      limit = speed_limit_value_for_highway_type(self.areas, self.way.tags)
     self._speed_limit = limit
     return self._speed_limit
 
