@@ -13,7 +13,7 @@ _LANE_WIDTH = 3.7  # Lane width estimate. Used for detecting departures from way
 with open("/content/openpilot/selfdrive/mapd/lib/default_speeds.json", "rb") as f:
   _COUNTRY_LIMITS = json.loads(f.read())
 
-with open("/content/selfdrive/mapd/lib/default_speeds_by_region.json", "rb") as f:
+with open("/content/openpilot/selfdrive/mapd/lib/default_speeds_by_region.json", "rb") as f:
   DEFAULT_SPEEDS_BY_REGION = json.loads(f.read())
 
 _WD = {
