@@ -146,7 +146,7 @@ def speed_limit_value_for_highway_type(areas, tags):
   try:
     for area in areas:
       if area.tags.get('admin_level', '') == "2":
-          if area.tags.get('ISO3166-1:alpha2', '') =! '':
+          if area.tags.get('ISO3166-1:alpha2', '') != '':
             geocode_country = area.tags.get('ISO3166-1:alpha2', '')
       elif area.tags.get('admin_level', '') == "4":
         geocode_region = area.tags.get('name', '')
