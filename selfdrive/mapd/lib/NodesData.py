@@ -33,8 +33,16 @@ def nodes_raw_data_array_for_wr(wr, drop_last=False):
       if (wr.direction == DIRECTION.BACKWARD and node.tags['direction'] == 'backward') or (wr.direction == DIRECTION.FORWARD and node.tags['direction'] == 'forward'):
         if node.tags['highway'] == 'stop':
           data[count][3] = 0.1
-        elif node.tags['highway'] == 'give_way':
+        if node.tags['highway'] == 'give_way':
           data[count][3] = 2.7777
+    if 'traffic_calming' in node.tags:
+      if node.tags['traffic_calming'] == 'bump' or node.tags['traffic_calming'] == 'hump':
+        data[count][3] = 2.24
+      if node.tags['traffic_calming'] == 'chicane' or node.tags['traffic_calming'] == 'choker':
+        data[count][3] = 20/3.6
+      if node.tags['traffic_calming'] == 'yes':
+        data[count][3] = 40/3.6
+        
 
   if wr.direction == DIRECTION.BACKWARD:
     data = np.flip(data, axis=0)
