@@ -29,9 +29,12 @@ def nodes_raw_data_array_for_wr(wr, drop_last=False):
 
   # reverse the order if way direction is backwards
   for count, node in enumerate(wr.way.nodes):
-    if 'highway' in node.tags and node.tags['highway']=='stop' and 'direction' in node.tags:
+    if 'highway' in node.tags and 'direction' in node.tags and (node.tags['highway'] == 'stop' or node.tags['highway'] == 'give_way'):
       if (wr.direction == DIRECTION.BACKWARD and node.tags['direction'] == 'backward') or (wr.direction == DIRECTION.FORWARD and node.tags['direction'] == 'forward'):
-        data[count][3] = 0.1
+        if node.tags['highway'] == 'stop':
+          data[count][3] = 0.1
+        elif node.tags['highway'] == 'give_way'):
+          data[count][3] = 2.7777
 
   if wr.direction == DIRECTION.BACKWARD:
     data = np.flip(data, axis=0)
