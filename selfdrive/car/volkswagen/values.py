@@ -2,7 +2,7 @@ from cereal import car
 from selfdrive.car import dbc_dict
 
 class CarControllerParams:
-  HCA_STEP = 2                   # HCA message frequency 50Hz on all vehicles
+  HCA_STEP = 7                   # HCA message frequency 50Hz on all vehicles
   MQB_LDW_STEP = 10              # LDW message frequency 10Hz on MQB
   PQ_LDW_STEP = 5                # LDW message frequency 20Hz on PQ35/PQ46/NMS
   GRA_ACC_STEP = 3               # GRA_ACC_01 message frequency 33Hz
