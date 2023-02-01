@@ -61,12 +61,23 @@ def create_mqb_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
 #                                                                         #
 # ----------------------------------------------------------------------- #
 
+def create_pq_awv_control(packer, bus, idx, led_orange, led_green):
+  values = {
+    "AWV_2_Fehler" : 1 if led_orange else 0,
+    "AWV_2_Status" : 1 if led_green else 0,
+    "AWV_Zaehler": idx,
+  }
+
+  dat = packer.make_can_msg("mAWV", bus, values)[2]
+  values["AWV_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
+  return packer.make_can_msg("mAWV", bus, values)
+
 def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values = {
     "HCA_Zaehler": idx,
     "LM_Offset": abs(apply_steer),
     "LM_OffSign": 1 if apply_steer < 0 else 0,
-    "HCA_Status": 5 if (lkas_enabled and apply_steer != 0) else 3,
+    "HCA_Status": 7 if (lkas_enabled and apply_steer != 0) else 3,
     "Vib_Freq": 16,
   }
 
@@ -74,23 +85,25 @@ def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values["HCA_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
   return packer.make_can_msg("HCA_1", bus, values)
 
-def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible,
-                          ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc):
+def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, leftLaneVisible, rightLaneVisible,
+                           ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc):
   if hca_enabled:
-    left_lane_hud = 3 if left_lane_visible else 1
-    right_lane_hud = 3 if right_lane_visible else 1
+    leftlanehud = 3 if leftLaneVisible else 1
+    rightlanehud = 3 if rightLaneVisible else 1
   else:
-    left_lane_hud = 2 if left_lane_visible else 1
-    right_lane_hud = 2 if right_lane_visible else 1
+    leftlanehud = 2 if leftLaneVisible else 1
+    rightlanehud = 2 if rightLaneVisible else 1
 
   values = {
-    "Right_Lane_Status": right_lane_hud,
-    "Left_Lane_Status": left_lane_hud,
+    "Right_Lane_Status": rightlanehud,
+    "Left_Lane_Status": leftlanehud,
     "SET_ME_X1": 1,
     "Kombi_Lamp_Orange": 1 if hca_enabled and steering_pressed else 0,
     "Kombi_Lamp_Green": 1 if hca_enabled and not steering_pressed else 0,
   }
   return packer.make_can_msg("LDW_1", bus, values)
+
+pass
 
 def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
   pass
